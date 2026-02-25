@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useStore, ELEMENTS, ElementType } from '../store';
 import { identifyMolecule } from '../identifier';
-import { Trash2, RefreshCw, X, Plus } from 'lucide-react';
+import { Trash2, RefreshCw, X, Plus, Sun, Globe } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import { ChallengeMode } from './ChallengeMode';
 
@@ -20,9 +20,41 @@ export function UI() {
       <div className="flex justify-between items-start w-full gap-4">
         {/* Top Left */}
         <div className="flex flex-col gap-4 w-full md:w-64">
+          
+          {/* Logo & Settings */}
+          <div className="flex items-center justify-between bg-zinc-900/80 backdrop-blur-md p-3 md:p-4 rounded-2xl border border-white/10 shadow-2xl pointer-events-auto w-full">
+            <div className="flex items-center gap-3">
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
+                <circle cx="10" cy="22" r="6" fill="#6366f1" />
+                <circle cx="22" cy="10" r="8" fill="#a855f7" />
+                <path d="M12 18L18 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+                <path d="M16 22L22 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
+              </svg>
+              <span className="text-white font-black text-xl tracking-tight hidden sm:inline">Bond<span className="text-indigo-400">Lab</span></span>
+            </div>
+            
+            <div className="flex items-center gap-1">
+              <button 
+                className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors"
+                title="Toggle Light Mode (Coming Soon)"
+                onClick={() => alert("Light mode coming soon!")}
+              >
+                <Sun size={18} />
+              </button>
+              <button 
+                className="p-2 text-zinc-400 hover:text-white hover:bg-white/10 rounded-xl transition-colors flex items-center gap-1"
+                title="Change Language (Coming Soon)"
+                onClick={() => alert("Multi-language support coming soon!")}
+              >
+                <Globe size={18} />
+                <span className="text-xs font-bold hidden sm:inline">EN</span>
+              </button>
+            </div>
+          </div>
+
           {/* Desktop Elements Panel */}
           <div className="hidden md:flex flex-col bg-zinc-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-2xl pointer-events-auto">
-            <h1 className="text-white font-bold text-xl mb-4 tracking-tight">Elements</h1>
+            <h1 className="text-white font-bold text-sm mb-4 tracking-wider uppercase opacity-70">Elements</h1>
             <div className="flex flex-col gap-3">
               {(Object.keys(ELEMENTS) as ElementType[]).map(el => {
                 const data = ELEMENTS[el];
