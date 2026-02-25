@@ -1,5 +1,22 @@
 import { Atom, Bond } from './store';
 
+export const KNOWN_MOLECULES = [
+  { name: 'Water', formula: 'H₂O', c: 0, h: 2, n: 0, o: 1, s: 2, d: 0, t: 0 },
+  { name: 'Methane', formula: 'CH₄', c: 1, h: 4, n: 0, o: 0, s: 4, d: 0, t: 0 },
+  { name: 'Carbon Dioxide', formula: 'CO₂', c: 1, h: 0, n: 0, o: 2, s: 0, d: 2, t: 0 },
+  { name: 'Ammonia', formula: 'NH₃', c: 0, h: 3, n: 1, o: 0, s: 3, d: 0, t: 0 },
+  { name: 'Ethane', formula: 'C₂H₆', c: 2, h: 6, n: 0, o: 0, s: 7, d: 0, t: 0 },
+  { name: 'Ethene', formula: 'C₂H₄', c: 2, h: 4, n: 0, o: 0, s: 4, d: 1, t: 0 },
+  { name: 'Ethyne', formula: 'C₂H₂', c: 2, h: 2, n: 0, o: 0, s: 2, d: 0, t: 1 },
+  { name: 'Oxygen', formula: 'O₂', c: 0, h: 0, n: 0, o: 2, s: 0, d: 1, t: 0 },
+  { name: 'Nitrogen', formula: 'N₂', c: 0, h: 0, n: 2, o: 0, s: 0, d: 0, t: 1 },
+  { name: 'Hydrogen', formula: 'H₂', c: 0, h: 2, n: 0, o: 0, s: 1, d: 0, t: 0 },
+  { name: 'Methanol', formula: 'CH₃OH', c: 1, h: 4, n: 0, o: 1, s: 5, d: 0, t: 0 },
+  { name: 'Ethanol', formula: 'C₂H₅OH', c: 2, h: 6, n: 0, o: 1, s: 8, d: 0, t: 0 },
+  { name: 'Formaldehyde', formula: 'CH₂O', c: 1, h: 2, n: 0, o: 1, s: 2, d: 1, t: 0 },
+  { name: 'Hydrogen Cyanide', formula: 'HCN', c: 1, h: 1, n: 1, o: 0, s: 1, d: 0, t: 1 },
+];
+
 export function identifyMolecule(atoms: Atom[], bonds: Bond[]): { name: string, formula: string } | null {
   if (atoms.length === 0) return null;
 
@@ -13,26 +30,12 @@ export function identifyMolecule(atoms: Atom[], bonds: Bond[]): { name: string, 
     if (b.order === 3) bondCounts.triple++;
   }
 
-  // Helper to check exact match
-  const match = (c: number, h: number, n: number, o: number, s: number, d: number, t: number) => {
-    return counts.C === c && counts.H === h && counts.N === n && counts.O === o &&
-           bondCounts.single === s && bondCounts.double === d && bondCounts.triple === t;
-  };
-
-  if (match(0, 2, 0, 1, 2, 0, 0)) return { name: 'Water', formula: 'H₂O' };
-  if (match(1, 4, 0, 0, 4, 0, 0)) return { name: 'Methane', formula: 'CH₄' };
-  if (match(1, 0, 0, 2, 0, 2, 0)) return { name: 'Carbon Dioxide', formula: 'CO₂' };
-  if (match(0, 3, 1, 0, 3, 0, 0)) return { name: 'Ammonia', formula: 'NH₃' };
-  if (match(2, 6, 0, 0, 7, 0, 0)) return { name: 'Ethane', formula: 'C₂H₆' };
-  if (match(2, 4, 0, 0, 4, 1, 0)) return { name: 'Ethene', formula: 'C₂H₄' };
-  if (match(2, 2, 0, 0, 2, 0, 1)) return { name: 'Ethyne', formula: 'C₂H₂' };
-  if (match(0, 0, 0, 2, 0, 1, 0)) return { name: 'Oxygen', formula: 'O₂' };
-  if (match(0, 0, 2, 0, 0, 0, 1)) return { name: 'Nitrogen', formula: 'N₂' };
-  if (match(0, 2, 0, 0, 1, 0, 0)) return { name: 'Hydrogen', formula: 'H₂' };
-  if (match(1, 4, 0, 1, 5, 0, 0)) return { name: 'Methanol', formula: 'CH₃OH' };
-  if (match(2, 6, 0, 1, 8, 0, 0)) return { name: 'Ethanol', formula: 'C₂H₅OH' };
-  if (match(1, 2, 0, 1, 2, 1, 0)) return { name: 'Formaldehyde', formula: 'CH₂O' };
-  if (match(1, 1, 1, 0, 1, 0, 1)) return { name: 'Hydrogen Cyanide', formula: 'HCN' };
+  for (const mol of KNOWN_MOLECULES) {
+    if (counts.C === mol.c && counts.H === mol.h && counts.N === mol.n && counts.O === mol.o &&
+        bondCounts.single === mol.s && bondCounts.double === mol.d && bondCounts.triple === mol.t) {
+      return { name: mol.name, formula: mol.formula };
+    }
+  }
 
   // Generate generic formula
   let formula = '';

@@ -170,7 +170,35 @@ export function PhysicsEngine() {
             const dot = Math.max(-1, Math.min(1, dir1.dot(dir2)));
             const angle = Math.acos(dot);
             
-            const angleDiff = idealAngle - angle;
+            let currentIdealAngle = idealAngle;
+            let repulsionFactor = 1.0;
+
+            if (numDomains >= 4) {
+              if (d1.type === 'lp' && d2.type === 'lp') {
+                currentIdealAngle = 114 * Math.PI / 180;
+                repulsionFactor = 1.5;
+              } else if (d1.type === 'lp' || d2.type === 'lp') {
+                if (numLonePairs === 1) currentIdealAngle = 111.8 * Math.PI / 180;
+                else currentIdealAngle = 109.5 * Math.PI / 180;
+                repulsionFactor = 1.2;
+              } else {
+                if (numLonePairs === 1) currentIdealAngle = 107 * Math.PI / 180;
+                else if (numLonePairs === 2) currentIdealAngle = 104.5 * Math.PI / 180;
+                else currentIdealAngle = 109.47 * Math.PI / 180;
+                repulsionFactor = 0.8;
+              }
+            } else if (numDomains === 3) {
+              if (d1.type === 'lp' || d2.type === 'lp') {
+                currentIdealAngle = 122 * Math.PI / 180;
+                repulsionFactor = 1.2;
+              } else {
+                if (numLonePairs === 1) currentIdealAngle = 116 * Math.PI / 180;
+                else currentIdealAngle = 120 * Math.PI / 180;
+                repulsionFactor = 0.8;
+              }
+            }
+
+            const angleDiff = currentIdealAngle - angle;
             
             let axis = new THREE.Vector3().crossVectors(dir1, dir2);
             if (axis.lengthSq() < 0.001) {
@@ -183,7 +211,7 @@ export function PhysicsEngine() {
             const f1Dir = new THREE.Vector3().crossVectors(dir1, axis).normalize();
             const f2Dir = new THREE.Vector3().crossVectors(dir2, axis).normalize().negate();
             
-            const forceMag = K_VSEPR * angleDiff;
+            const forceMag = K_VSEPR * angleDiff * repulsionFactor;
             
             const f1 = f1Dir.multiplyScalar(forceMag);
             const f2 = f2Dir.multiplyScalar(forceMag);

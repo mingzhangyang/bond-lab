@@ -10,6 +10,9 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
   const data = ELEMENTS[element];
   const setDraggedAtom = useStore(state => state.setDraggedAtom);
   const draggedAtom = useStore(state => state.draggedAtom);
+  const selectedAtom = useStore(state => state.selectedAtom);
+  const setSelectedAtom = useStore(state => state.setSelectedAtom);
+  const addBond = useStore(state => state.addBond);
   const [hovered, setHovered] = useState(false);
   const { camera, size, raycaster } = useThree();
 
@@ -71,6 +74,8 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
     };
   }, [draggedAtom, id, camera, size, raycaster, setDraggedAtom]);
 
+  const isSelected = selectedAtom === id;
+
   return (
     <mesh
       ref={meshRef}
@@ -80,13 +85,29 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
         e.stopPropagation();
         setDraggedAtom(id);
       }}
+      onClick={(e) => {
+        e.stopPropagation();
+        if (selectedAtom === null) {
+          setSelectedAtom(id);
+        } else if (selectedAtom === id) {
+          setSelectedAtom(null);
+        } else {
+          addBond(selectedAtom, id);
+          setSelectedAtom(null);
+        }
+      }}
       onContextMenu={(e) => {
         e.stopPropagation();
         useStore.getState().removeAtom(id);
       }}
     >
       <sphereGeometry args={[data.vdwRadius * 0.4, 32, 32]} />
-      <meshStandardMaterial color={data.color} roughness={0.3} metalness={0.1} emissive={hovered ? '#333' : '#000'} />
+      <meshStandardMaterial 
+        color={data.color} 
+        roughness={0.3} 
+        metalness={0.1} 
+        emissive={isSelected ? '#666' : (hovered ? '#333' : '#000')} 
+      />
       <Html center position={[0, 0, data.vdwRadius * 0.4 + 0.2]} style={{ pointerEvents: 'none' }}>
         <div className="text-white font-bold text-sm drop-shadow-md select-none" style={{ textShadow: '0px 0px 2px black, 0px 0px 4px black' }}>
           {data.symbol}

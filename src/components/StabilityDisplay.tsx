@@ -21,8 +21,13 @@ export function StabilityDisplay() {
   if (report.score < 50) color = 'text-red-400';
 
   return (
-    <div className="bg-zinc-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-2xl pointer-events-auto mt-4 max-w-xs">
-      <h2 className="text-white font-bold text-sm mb-2 opacity-70 uppercase tracking-wider">Stability Score</h2>
+    <div className="bg-zinc-900/80 backdrop-blur-md p-4 rounded-2xl border border-white/10 shadow-2xl pointer-events-auto w-full">
+      <div className="flex justify-between items-end mb-2">
+        <h2 className="text-white font-bold text-sm opacity-70 uppercase tracking-wider">Stability</h2>
+        <div className={`text-xs font-mono font-bold ${report.energy > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
+          {report.energy > 0 ? '+' : ''}{report.energy} kJ/mol
+        </div>
+      </div>
       <div className={`text-3xl font-bold ${color}`}>{report.score}/100</div>
       {report.issues.length > 0 && (
         <ul className="mt-3 text-xs text-zinc-400 space-y-1">

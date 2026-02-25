@@ -26,19 +26,43 @@ interface GameState {
   atoms: Atom[];
   bonds: Bond[];
   draggedAtom: string | null;
+  selectedAtom: string | null;
+  
+  // Challenge Mode
+  challengeActive: boolean;
+  challengeTarget: { name: string, formula: string } | null;
+  challengeTimeLeft: number;
+  challengeTotalTime: number;
+  challengeStatus: 'idle' | 'playing' | 'won' | 'lost';
+  
   setDraggedAtom: (id: string | null) => void;
+  setSelectedAtom: (id: string | null) => void;
   addAtom: (element: ElementType) => string;
   removeAtom: (id: string) => void;
   addBond: (source: string, target: string) => void;
   removeBond: (id: string) => void;
   clear: () => void;
+  
+  startChallenge: (target: { name: string, formula: string }, timeLimit: number) => void;
+  tickChallenge: () => void;
+  winChallenge: () => void;
+  stopChallenge: () => void;
 }
 
 export const useStore = create<GameState>((set, get) => ({
   atoms: [],
   bonds: [],
   draggedAtom: null,
+  selectedAtom: null,
+  
+  challengeActive: false,
+  challengeTarget: null,
+  challengeTimeLeft: 0,
+  challengeTotalTime: 0,
+  challengeStatus: 'idle',
+  
   setDraggedAtom: (id) => set({ draggedAtom: id }),
+  setSelectedAtom: (id) => set({ selectedAtom: id }),
   addAtom: (element) => {
     const id = uuidv4();
     set((state) => ({
@@ -48,7 +72,8 @@ export const useStore = create<GameState>((set, get) => ({
   },
   removeAtom: (id) => set((state) => ({
     atoms: state.atoms.filter(a => a.id !== id),
-    bonds: state.bonds.filter(b => b.source !== id && b.target !== id)
+    bonds: state.bonds.filter(b => b.source !== id && b.target !== id),
+    selectedAtom: state.selectedAtom === id ? null : state.selectedAtom
   })),
   addBond: (source, target) => set((state) => {
     if (source === target) return state;
@@ -84,5 +109,33 @@ export const useStore = create<GameState>((set, get) => ({
   removeBond: (id) => set((state) => ({
     bonds: state.bonds.filter(b => b.id !== id)
   })),
-  clear: () => set({ atoms: [], bonds: [] })
+  clear: () => set({ atoms: [], bonds: [], selectedAtom: null }),
+  
+  startChallenge: (target, timeLimit) => set({
+    atoms: [],
+    bonds: [],
+    selectedAtom: null,
+    challengeActive: true,
+    challengeTarget: target,
+    challengeTimeLeft: timeLimit,
+    challengeTotalTime: timeLimit,
+    challengeStatus: 'playing'
+  }),
+  
+  tickChallenge: () => set((state) => {
+    if (state.challengeStatus !== 'playing') return state;
+    const newTime = state.challengeTimeLeft - 1;
+    if (newTime <= 0) {
+      return { challengeTimeLeft: 0, challengeStatus: 'lost' };
+    }
+    return { challengeTimeLeft: newTime };
+  }),
+  
+  winChallenge: () => set({ challengeStatus: 'won' }),
+  
+  stopChallenge: () => set({
+    challengeActive: false,
+    challengeTarget: null,
+    challengeStatus: 'idle'
+  })
 }));
