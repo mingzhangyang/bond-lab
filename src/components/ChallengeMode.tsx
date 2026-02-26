@@ -7,14 +7,86 @@ import {
   Target,
   Zap,
   ChevronDown,
-  ChevronUp,
 } from 'lucide-react';
 import { useStore } from '../store';
 import { KNOWN_MOLECULES, identifyMolecule } from '../identifier';
 import { getMessages, localizeMoleculeName, type Language } from '../i18n';
-import { getProgressColorClass, shouldExpandMobileChallenge } from '../challengeLayout';
+import {
+  getChallengeTimerArc,
+  getProgressColorClass,
+  shouldUseMobileChallengeDrawer,
+} from '../challengeLayout';
 
 type Messages = ReturnType<typeof getMessages>;
+
+const TIMER_RING_RADIUS = 22;
+const TIMER_RING_VIEWBOX = 56;
+
+interface MobileChallengeTriggerProps {
+  messages: Messages;
+  isDark: boolean;
+  isOpen: boolean;
+  onToggle: () => void;
+  timerArc: ReturnType<typeof getChallengeTimerArc> | null;
+}
+
+function MobileChallengeTrigger({
+  messages,
+  isDark,
+  isOpen,
+  onToggle,
+  timerArc,
+}: MobileChallengeTriggerProps) {
+  const buttonToneClass = isDark
+    ? 'text-zinc-100 border-white/20 bg-zinc-900/80'
+    : 'text-zinc-800 border-zinc-300/90 bg-white/88';
+  const ringTrackClass = isDark ? 'text-white/25' : 'text-zinc-500/35';
+  const ringActiveClass = timerArc
+    ? (timerArc.remainingRatio <= 0.2 ? 'text-red-500' : 'text-indigo-400')
+    : (isDark ? 'text-indigo-300' : 'text-indigo-600');
+
+  return (
+    <button
+      onClick={onToggle}
+      aria-label={isOpen ? messages.ui.close : messages.challenge.title}
+      aria-expanded={isOpen}
+      className={`md:hidden fixed left-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[56] h-14 w-14 rounded-full border shadow-xl backdrop-blur-md pointer-events-auto transition-transform active:scale-95 touch-manipulation ${buttonToneClass}`}
+    >
+      <svg
+        viewBox={`0 0 ${TIMER_RING_VIEWBOX} ${TIMER_RING_VIEWBOX}`}
+        className={`pointer-events-none absolute inset-0 -rotate-90 ${ringActiveClass}`}
+        aria-hidden="true"
+      >
+        <circle
+          cx={TIMER_RING_VIEWBOX / 2}
+          cy={TIMER_RING_VIEWBOX / 2}
+          r={TIMER_RING_RADIUS}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="3"
+          className={ringTrackClass}
+        />
+        {timerArc && (
+          <circle
+            cx={TIMER_RING_VIEWBOX / 2}
+            cy={TIMER_RING_VIEWBOX / 2}
+            r={TIMER_RING_RADIUS}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="3"
+            strokeLinecap="round"
+            strokeDasharray={timerArc.strokeDasharray}
+            strokeDashoffset={timerArc.strokeDashoffset}
+            className="transition-[stroke-dashoffset] duration-1000 ease-linear motion-reduce:transition-none"
+          />
+        )}
+      </svg>
+      <span className="relative z-10 flex h-full w-full items-center justify-center">
+        {timerArc ? <Timer size={18} /> : <Target size={18} />}
+      </span>
+    </button>
+  );
+}
 
 interface ChallengeStartButtonProps {
   messages: Messages;
@@ -38,9 +110,19 @@ interface ActiveChallengePanelProps {
   language: Language;
   messages: Messages;
   onStart: () => void;
+  isDrawerLayout: boolean;
+  isMobileDrawerOpen: boolean;
+  setIsMobileDrawerOpen: (isOpen: boolean) => void;
 }
 
-function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePanelProps) {
+function ActiveChallengePanel({
+  language,
+  messages,
+  onStart,
+  isDrawerLayout,
+  isMobileDrawerOpen,
+  setIsMobileDrawerOpen,
+}: ActiveChallengePanelProps) {
   const challengeTarget = useStore((state) => state.challengeTarget);
   const challengeTimeLeft = useStore((state) => state.challengeTimeLeft);
   const challengeTotalTime = useStore((state) => state.challengeTotalTime);
@@ -52,7 +134,6 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
   const bonds = useStore((state) => state.bonds);
   const theme = useStore((state) => state.theme);
   const isDark = theme === 'dark';
-  const [isMobileExpanded, setIsMobileExpanded] = useState(() => shouldExpandMobileChallenge(challengeStatus));
 
   useEffect(() => {
     if (challengeStatus !== 'playing') return;
@@ -71,12 +152,11 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
     }
   }, [atoms, bonds, challengeStatus, challengeTarget, winChallenge]);
 
-  useEffect(() => {
-    setIsMobileExpanded(shouldExpandMobileChallenge(challengeStatus));
-  }, [challengeStatus, challengeTarget?.name]);
-
   const progress = challengeTotalTime ? (challengeTimeLeft / challengeTotalTime) * 100 : 0;
   const progressColorClass = getProgressColorClass(progress);
+  const timerArc = challengeStatus === 'playing'
+    ? getChallengeTimerArc(challengeTimeLeft, challengeTotalTime, TIMER_RING_RADIUS)
+    : null;
 
   const panelClass = 'lab-panel lab-panel-glow';
   const primaryTextClass = isDark ? 'text-white' : 'text-zinc-900';
@@ -84,16 +164,147 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
   const iconButtonClass = isDark
     ? 'lab-tile text-zinc-300 hover:text-white border'
     : 'lab-tile text-zinc-600 hover:text-zinc-900 border';
+
   const localizedTargetName = challengeTarget
     ? localizeMoleculeName(language, challengeTarget.name)
     : null;
-  const isCompactMobile = challengeStatus === 'playing' && !isMobileExpanded;
-  const toggleLabel = isMobileExpanded ? 'Collapse challenge details' : 'Expand challenge details';
+
+  if (isDrawerLayout) {
+    return (
+      <>
+        <MobileChallengeTrigger
+          messages={messages}
+          isDark={isDark}
+          isOpen={isMobileDrawerOpen}
+          onToggle={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
+          timerArc={timerArc}
+        />
+
+        {isMobileDrawerOpen && (
+          <button
+            className="md:hidden fixed inset-0 bg-black/45 backdrop-blur-sm pointer-events-auto z-[53]"
+            onClick={() => setIsMobileDrawerOpen(false)}
+            aria-label={messages.ui.close}
+          />
+        )}
+
+        <div
+          className={`md:hidden fixed inset-x-0 bottom-0 z-[55] pointer-events-auto transform transition-transform duration-300 ease-in-out ${
+            isMobileDrawerOpen ? 'translate-y-0' : 'translate-y-full'
+          }`}
+        >
+          <div className={`rounded-t-3xl border px-5 pt-4 pb-[calc(1.2rem+env(safe-area-inset-bottom))] backdrop-blur-xl ${panelClass}`}>
+            {challengeStatus === 'playing' && (
+              <div className={`mb-4 h-1.5 rounded-full ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
+                <div
+                  className={`h-full rounded-full ${progressColorClass} transition-all duration-1000 ease-linear motion-reduce:transition-none`}
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            )}
+
+            <div className={`mx-auto mb-4 h-1.5 w-12 rounded-full ${isDark ? 'bg-zinc-600' : 'bg-zinc-300'}`} />
+            <div className="mb-4 flex items-center justify-between gap-2">
+              <div className="info-display flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest min-w-0">
+                <Target size={16} className="shrink-0" />
+                <span>{messages.challenge.target}</span>
+              </div>
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={() => setIsMobileDrawerOpen(false)}
+                  aria-label={messages.ui.close}
+                  className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
+                >
+                  <ChevronDown size={16} />
+                </button>
+                <button
+                  onClick={stopChallenge}
+                  aria-label={messages.challenge.close}
+                  className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {challengeStatus === 'playing' && challengeTarget && (
+              <div className="flex flex-col items-center text-center">
+                <div className={`info-display font-black text-2xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
+                <div className="lab-accent-pill font-mono text-lg px-4 py-1 rounded-lg border border-indigo-500/20 mb-5 shadow-inner">
+                  {challengeTarget.formula}
+                </div>
+
+                <div
+                  className={`flex items-center gap-2 text-4xl font-black ${
+                    challengeTimeLeft <= 10 ? 'text-red-500 motion-safe:animate-pulse' : primaryTextClass
+                  }`}
+                >
+                  <Timer size={30} className={challengeTimeLeft <= 10 ? 'motion-safe:animate-bounce' : ''} />
+                  <span className="tabular-nums">
+                    {challengeTimeLeft}
+                    {messages.challenge.secondsShort}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {challengeStatus === 'won' && (
+              <div className="flex flex-col items-center text-center py-2">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-yellow-400/20 blur-xl rounded-full" />
+                  <Trophy className="w-16 h-16 text-yellow-400 relative z-10 mb-4" />
+                </div>
+                <div className={`info-display font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.wonHeadline}</div>
+                <div className={`text-sm mb-6 ${secondaryTextClass}`}>
+                  {messages.challenge.wonMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
+                </div>
+                {challengeTarget && (
+                  <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+                    {challengeTarget.formula}
+                  </div>
+                )}
+                <button
+                  onClick={onStart}
+                  className="lab-fab w-full min-h-[48px] text-white py-3 rounded-xl font-bold transition-all active:scale-95 touch-manipulation"
+                >
+                  {messages.challenge.next}
+                </button>
+              </div>
+            )}
+
+            {challengeStatus === 'lost' && (
+              <div className="flex flex-col items-center text-center py-2">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-red-500/20 blur-xl rounded-full" />
+                  <AlertCircle className="w-16 h-16 text-red-500 relative z-10 mb-4" />
+                </div>
+                <div className={`info-display font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.lostHeadline}</div>
+                <div className={`text-sm mb-6 ${secondaryTextClass}`}>
+                  {messages.challenge.lostMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
+                </div>
+                {challengeTarget && (
+                  <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+                    {challengeTarget.formula}
+                  </div>
+                )}
+                <button
+                  onClick={onStart}
+                  className={`lab-tile w-full min-h-[48px] py-3 rounded-xl font-bold transition-all border active:scale-95 touch-manipulation ${
+                    isDark ? 'text-white' : 'text-zinc-900'
+                  }`}
+                >
+                  {messages.challenge.retry}
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
-    <div
-      className={`lab-reveal fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] md:static md:inset-auto md:bottom-auto w-auto md:w-full p-4 md:p-6 rounded-3xl border pointer-events-auto z-[45] overflow-hidden flex flex-col ${panelClass}`}
-    >
+    <div className={`lab-reveal rounded-3xl border pointer-events-auto z-[45] overflow-hidden flex flex-col w-full p-6 ${panelClass}`}>
       {challengeStatus === 'playing' && (
         <div className={`absolute top-0 left-0 w-full h-1.5 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
           <div
@@ -103,52 +314,21 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
         </div>
       )}
 
-      <div className={`flex justify-between items-start gap-2 ${isCompactMobile ? 'mb-3' : 'mb-6'}`}>
+      <div className="flex justify-between items-start gap-2 mb-6">
         <div className="info-display flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest min-w-0">
           <Target size={16} className="shrink-0" />
           <span>{messages.challenge.target}</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
-          {challengeStatus === 'playing' && isCompactMobile && (
-            <div
-              className={`lab-accent-pill font-mono text-sm px-3 py-1 rounded-full border border-indigo-500/20 ${
-                challengeTimeLeft <= 10 ? 'text-red-500' : ''
-              }`}
-            >
-              {challengeTimeLeft}
-              {messages.challenge.secondsShort}
-            </div>
-          )}
-          {challengeStatus === 'playing' && (
-            <button
-              onClick={() => setIsMobileExpanded((expanded) => !expanded)}
-              aria-label={toggleLabel}
-              title={toggleLabel}
-              className={`md:hidden h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
-            >
-              {isMobileExpanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-            </button>
-          )}
-          <button
-            onClick={stopChallenge}
-            aria-label={messages.challenge.close}
-            className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
-          >
-            <X size={16} />
-          </button>
-        </div>
+        <button
+          onClick={stopChallenge}
+          aria-label={messages.challenge.close}
+          className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
+        >
+          <X size={16} />
+        </button>
       </div>
 
-      {isCompactMobile && challengeTarget && (
-        <div className="md:hidden">
-          <div className={`info-display font-black text-lg tracking-tight truncate ${primaryTextClass}`}>{localizedTargetName}</div>
-          <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mt-1 shadow-inner">
-            {challengeTarget.formula}
-          </div>
-        </div>
-      )}
-
-      {challengeStatus === 'playing' && challengeTarget && !isCompactMobile && (
+      {challengeStatus === 'playing' && challengeTarget && (
         <div className="flex flex-col items-center text-center">
           <div className={`info-display font-black text-2xl md:text-3xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
           <div className="lab-accent-pill font-mono text-lg md:text-xl px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
@@ -179,6 +359,11 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.wonMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
+          {challengeTarget && (
+            <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+              {challengeTarget.formula}
+            </div>
+          )}
           <button
             onClick={onStart}
             className="lab-fab w-full min-h-[48px] text-white py-3 rounded-xl font-bold transition-all active:scale-95 touch-manipulation"
@@ -198,6 +383,11 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.lostMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
+          {challengeTarget && (
+            <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+              {challengeTarget.formula}
+            </div>
+          )}
           <button
             onClick={onStart}
             className={`lab-tile w-full min-h-[48px] py-3 rounded-xl font-bold transition-all border active:scale-95 touch-manipulation ${
@@ -214,19 +404,102 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
 
 export function ChallengeMode() {
   const challengeActive = useStore((state) => state.challengeActive);
+  const challengeStatus = useStore((state) => state.challengeStatus);
   const startChallenge = useStore((state) => state.startChallenge);
   const language = useStore((state) => state.language);
+  const theme = useStore((state) => state.theme);
+
   const messages = useMemo(() => getMessages(language), [language]);
+  const isDark = theme === 'dark';
+  const [isNarrowViewport, setIsNarrowViewport] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(max-width: 1023px)').matches
+  ));
+  const [isCoarsePointer, setIsCoarsePointer] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(hover: none), (pointer: coarse)').matches
+  ));
+  const [hasTouchInput, setHasTouchInput] = useState(() => (
+    typeof window !== 'undefined'
+    && (
+      ('ontouchstart' in window)
+      || ((window.navigator?.maxTouchPoints ?? 0) > 0)
+    )
+  ));
+  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const narrowMedia = window.matchMedia('(max-width: 1023px)');
+    const coarseMedia = window.matchMedia('(hover: none), (pointer: coarse)');
+    const updateLayout = () => {
+      setIsNarrowViewport(narrowMedia.matches);
+      setIsCoarsePointer(coarseMedia.matches);
+      setHasTouchInput(('ontouchstart' in window) || ((window.navigator?.maxTouchPoints ?? 0) > 0));
+    };
+    updateLayout();
+    narrowMedia.addEventListener('change', updateLayout);
+    coarseMedia.addEventListener('change', updateLayout);
+    return () => {
+      narrowMedia.removeEventListener('change', updateLayout);
+      coarseMedia.removeEventListener('change', updateLayout);
+    };
+  }, []);
+
+  const isDrawerLayout = shouldUseMobileChallengeDrawer(isNarrowViewport, isCoarsePointer, hasTouchInput);
+
+  useEffect(() => {
+    if (!isDrawerLayout) {
+      setIsMobileDrawerOpen(false);
+      return;
+    }
+    if (challengeActive) {
+      setIsMobileDrawerOpen(true);
+    }
+  }, [isDrawerLayout, challengeActive]);
+
+  useEffect(() => {
+    if (!isDrawerLayout || !challengeActive) return;
+    if (challengeStatus !== 'playing') {
+      setIsMobileDrawerOpen(true);
+    }
+  }, [isDrawerLayout, challengeActive, challengeStatus]);
 
   const handleStart = () => {
     const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
     const timeLimit = 30 + randomMol.atomCount * 5;
     startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
+    if (isDrawerLayout) {
+      setIsMobileDrawerOpen(true);
+    }
   };
 
   if (!challengeActive) {
+    if (isDrawerLayout) {
+      return (
+        <MobileChallengeTrigger
+          messages={messages}
+          isDark={isDark}
+          isOpen={false}
+          onToggle={handleStart}
+          timerArc={null}
+        />
+      );
+    }
+
     return <ChallengeStartButton messages={messages} onStart={handleStart} />;
   }
 
-  return <ActiveChallengePanel language={language} messages={messages} onStart={handleStart} />;
+  return (
+    <ActiveChallengePanel
+      language={language}
+      messages={messages}
+      onStart={handleStart}
+      isDrawerLayout={isDrawerLayout}
+      isMobileDrawerOpen={isMobileDrawerOpen}
+      setIsMobileDrawerOpen={setIsMobileDrawerOpen}
+    />
+  );
 }

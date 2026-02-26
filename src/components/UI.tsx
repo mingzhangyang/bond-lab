@@ -119,13 +119,9 @@ export function UI() {
     } as const;
     return isDark ? labels[language].light : labels[language].dark;
   }, [isDark, language]);
-  const currentLanguageLabel = useMemo(
-    () => LANGUAGE_OPTIONS.find((option) => option.code === language)?.label ?? language.toUpperCase(),
-    [language],
-  );
 
   const panelClass = 'lab-panel lab-panel-glow border backdrop-blur-xl';
-  const topBarPanelClass = 'lab-panel backdrop-blur-xl';
+  const topBarPanelClass = 'bg-transparent';
   const softPanelClass = 'lab-soft-panel border backdrop-blur-md';
   const primaryTextClass = isDark ? 'text-zinc-100' : 'text-zinc-900';
   const secondaryTextClass = isDark ? 'text-zinc-400' : 'text-zinc-600';
@@ -175,7 +171,7 @@ export function UI() {
                 height={32}
                 className="shrink-0"
               />
-              <span className={`info-display font-black text-xl tracking-tight hidden sm:inline ${primaryTextClass}`}>
+              <span className={`info-display font-black text-lg sm:text-xl tracking-tight ${primaryTextClass}`}>
                 Bond<span className="text-indigo-400">Lab</span>
               </span>
             </div>
@@ -221,11 +217,11 @@ export function UI() {
                 }}
               />
               <div
-                className={`absolute right-0 top-full mt-2 w-64 rounded-xl p-2 shadow-xl z-[60] ${softPanelClass}`}
+                className={`absolute right-0 top-full mt-2 w-52 rounded-xl p-2 shadow-xl z-[60] sm:w-56 ${softPanelClass}`}
                 role="menu"
               >
                 <button
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between gap-2 ${settingsItemClass}`}
+                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
                   role="menuitem"
                   onClick={() => {
                     toggleTheme();
@@ -233,11 +229,8 @@ export function UI() {
                     setIsLanguageSubmenuOpen(false);
                   }}
                 >
-                  <span className="flex items-center gap-2">
-                    {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                    {messages.ui.themeToggle}
-                  </span>
-                  <span className="text-xs font-semibold">{themeActionText}</span>
+                  {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                  <span>{themeActionText}</span>
                 </button>
                 <button
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between ${settingsItemClass}`}
@@ -252,8 +245,7 @@ export function UI() {
                     <Globe size={16} />
                     {messages.ui.languageToggle}
                   </span>
-                  <span className="flex items-center gap-1 text-xs font-bold">
-                    {currentLanguageLabel}
+                  <span className="flex items-center text-xs font-bold">
                     <ChevronRight size={14} className={isLanguageSubmenuOpen ? 'rotate-90 transition-transform' : 'transition-transform'} />
                   </span>
                 </button>
