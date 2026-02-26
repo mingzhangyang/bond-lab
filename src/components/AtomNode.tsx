@@ -1,47 +1,58 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { useFrame, useThree } from '@react-three/fiber';
+import React, { useEffect, useRef, useState } from 'react';
+import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { useStore, ELEMENTS, ElementType } from '../store';
-import { atomPositions } from '../physics';
-import { Html } from '@react-three/drei';
+import { Text } from '@react-three/drei';
+import { useStore, ELEMENTS, type ElementType } from '../store';
+import { atomPositions, setAtomMeshRef } from '../physics';
 
-export function AtomNode({ id, element }: { id: string, element: ElementType }) {
+interface AtomNodeProps {
+  id: string;
+  element: ElementType;
+}
+
+function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const pointerRef = useRef(new THREE.Vector2());
+  const planeNormalRef = useRef(new THREE.Vector3());
+  const planeRef = useRef(new THREE.Plane());
+  const targetRef = useRef(new THREE.Vector3());
   const data = ELEMENTS[element];
-  const setDraggedAtom = useStore(state => state.setDraggedAtom);
-  const draggedAtom = useStore(state => state.draggedAtom);
-  const selectedAtom = useStore(state => state.selectedAtom);
-  const setSelectedAtom = useStore(state => state.setSelectedAtom);
-  const addBond = useStore(state => state.addBond);
-  const removeAtom = useStore(state => state.removeAtom);
-  const interactionMode = useStore(state => state.interactionMode);
+  const setDraggedAtom = useStore((state) => state.setDraggedAtom);
+  const isDragged = useStore((state) => state.draggedAtom === id);
+  const isSelected = useStore((state) => state.selectedAtom === id);
+  const setSelectedAtom = useStore((state) => state.setSelectedAtom);
+  const addBond = useStore((state) => state.addBond);
+  const removeAtom = useStore((state) => state.removeAtom);
+  const interactionMode = useStore((state) => state.interactionMode);
   const [hovered, setHovered] = useState(false);
   const { camera, size, raycaster } = useThree();
 
-  useFrame(() => {
-    if (meshRef.current && atomPositions[id]) {
-      meshRef.current.position.copy(atomPositions[id]);
-    }
-  });
+  useEffect(() => {
+    if (!meshRef.current) return;
+    setAtomMeshRef(id, meshRef.current);
+    return () => setAtomMeshRef(id, null);
+  }, [id]);
 
   useEffect(() => {
-    if (draggedAtom !== id) return;
+    if (!isDragged) return;
 
     const handlePointerMove = (e: PointerEvent) => {
       if (!atomPositions[id]) return;
-      
-      const x = (e.clientX / size.width) * 2 - 1;
-      const y = -(e.clientY / size.height) * 2 + 1;
-      
-      raycaster.setFromCamera(new THREE.Vector2(x, y), camera);
-      
-      const planeNormal = camera.getWorldDirection(new THREE.Vector3());
-      const plane = new THREE.Plane(planeNormal, -planeNormal.dot(atomPositions[id]));
-      
-      const target = new THREE.Vector3();
-      raycaster.ray.intersectPlane(plane, target);
-      
-      if (target) {
+
+      const pointer = pointerRef.current;
+      pointer.set(
+        (e.clientX / size.width) * 2 - 1,
+        -(e.clientY / size.height) * 2 + 1,
+      );
+      raycaster.setFromCamera(pointer, camera);
+
+      const planeNormal = planeNormalRef.current;
+      camera.getWorldDirection(planeNormal);
+      const plane = planeRef.current;
+      plane.set(planeNormal, -planeNormal.dot(atomPositions[id]));
+
+      const target = targetRef.current;
+      if (raycaster.ray.intersectPlane(plane, target)) {
         atomPositions[id].copy(target);
       }
     };
@@ -49,21 +60,20 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
     const handlePointerUp = () => {
       setDraggedAtom(null);
       if (useStore.getState().interactionMode !== 'build') return;
-      
+
       const p1 = atomPositions[id];
       if (!p1) return;
-      
+
       const atoms = useStore.getState().atoms;
-      const addBond = useStore.getState().addBond;
-      
+      const addBondAction = useStore.getState().addBond;
+
       for (const other of atoms) {
         if (other.id === id) continue;
         const p2 = atomPositions[other.id];
         if (!p2) continue;
-        
-        const dist = p1.distanceTo(p2);
-        if (dist < 1.5) {
-          addBond(id, other.id);
+
+        if (p1.distanceTo(p2) < 1.5) {
+          addBondAction(id, other.id);
         }
       }
     };
@@ -75,9 +85,7 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
       window.removeEventListener('pointermove', handlePointerMove);
       window.removeEventListener('pointerup', handlePointerUp);
     };
-  }, [draggedAtom, id, camera, size, raycaster, setDraggedAtom]);
-
-  const isSelected = selectedAtom === id;
+  }, [isDragged, id, camera, size, raycaster, setDraggedAtom]);
 
   return (
     <mesh
@@ -97,6 +105,8 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
           setSelectedAtom(null);
           return;
         }
+
+        const selectedAtom = useStore.getState().selectedAtom;
         if (selectedAtom === null) {
           setSelectedAtom(id);
         } else if (selectedAtom === id) {
@@ -113,17 +123,25 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
       }}
     >
       <sphereGeometry args={[data.vdwRadius * 0.4, 32, 32]} />
-      <meshStandardMaterial 
-        color={data.color} 
-        roughness={0.3} 
-        metalness={0.1} 
-        emissive={isSelected ? '#666' : (hovered ? (interactionMode === 'delete' ? '#660000' : '#333') : '#000')} 
+      <meshStandardMaterial
+        color={data.color}
+        roughness={0.3}
+        metalness={0.1}
+        emissive={isSelected ? '#666' : (hovered ? (interactionMode === 'delete' ? '#660000' : '#333') : '#000')}
       />
-      <Html center position={[0, 0, data.vdwRadius * 0.4 + 0.2]} style={{ pointerEvents: 'none' }}>
-        <div className="text-white font-bold text-sm drop-shadow-md select-none" style={{ textShadow: '0px 0px 2px black, 0px 0px 4px black' }}>
-          {data.symbol}
-        </div>
-      </Html>
+      <Text
+        position={[0, 0, data.vdwRadius * 0.4 + 0.2]}
+        fontSize={0.32}
+        color="#ffffff"
+        anchorX="center"
+        anchorY="middle"
+        outlineColor="#000000"
+        outlineWidth={0.04}
+      >
+        {data.symbol}
+      </Text>
     </mesh>
   );
 }
+
+export const AtomNode = React.memo(AtomNodeImpl);

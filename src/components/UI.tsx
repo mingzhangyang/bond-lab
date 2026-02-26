@@ -21,8 +21,11 @@ export function UI() {
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
-  const molecule = identifyMolecule(atoms, bonds);
-  const moleculeName = molecule ? localizeMoleculeName(language, molecule.name) : null;
+  const molecule = useMemo(() => identifyMolecule(atoms, bonds), [atoms, bonds]);
+  const moleculeName = useMemo(
+    () => (molecule ? localizeMoleculeName(language, molecule.name) : null),
+    [language, molecule],
+  );
 
   const panelClass = isDark
     ? 'bg-zinc-900/80 border-white/10 shadow-2xl'

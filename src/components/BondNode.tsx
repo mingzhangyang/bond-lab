@@ -1,33 +1,24 @@
-import React, { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import React, { useEffect, useRef, useState } from 'react';
 import * as THREE from 'three';
-import { Bond, useStore } from '../store';
-import { atomPositions } from '../physics';
+import { type Bond, useStore } from '../store';
+import { setBondGroupRef } from '../physics';
 
-export function BondNode({ bond }: { bond: Bond }) {
-  const meshRef = useRef<THREE.Group>(null);
+interface BondNodeProps {
+  bond: Bond;
+}
+
+function BondNodeImpl({ bond }: BondNodeProps) {
+  const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const removeBond = useStore(state => state.removeBond);
-  const addBond = useStore(state => state.addBond);
-  const interactionMode = useStore(state => state.interactionMode);
-  
-  useFrame(() => {
-    if (!meshRef.current) return;
-    const p1 = atomPositions[bond.source];
-    const p2 = atomPositions[bond.target];
-    if (!p1 || !p2) return;
+  const removeBond = useStore((state) => state.removeBond);
+  const addBond = useStore((state) => state.addBond);
+  const interactionMode = useStore((state) => state.interactionMode);
 
-    const diff = new THREE.Vector3().subVectors(p2, p1);
-    const dist = diff.length();
-    const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
-
-    meshRef.current.position.copy(mid);
-    meshRef.current.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), diff.clone().normalize());
-    
-    meshRef.current.children.forEach(child => {
-      child.scale.set(1, dist, 1);
-    });
-  });
+  useEffect(() => {
+    if (!groupRef.current) return;
+    setBondGroupRef(bond.id, groupRef.current);
+    return () => setBondGroupRef(bond.id, null);
+  }, [bond.id]);
 
   const offsets = [];
   if (bond.order === 1) offsets.push(0);
@@ -35,15 +26,15 @@ export function BondNode({ bond }: { bond: Bond }) {
   if (bond.order === 3) offsets.push(-0.2, 0, 0.2);
 
   return (
-    <group 
-      ref={meshRef}
+    <group
+      ref={groupRef}
       onClick={(e) => {
         e.stopPropagation();
         if (interactionMode === 'delete') {
           removeBond(bond.id);
           return;
         }
-        addBond(bond.source, bond.target); // this upgrades the bond
+        addBond(bond.source, bond.target);
       }}
       onContextMenu={(e) => {
         e.nativeEvent.preventDefault();
@@ -67,3 +58,5 @@ export function BondNode({ bond }: { bond: Bond }) {
     </group>
   );
 }
+
+export const BondNode = React.memo(BondNodeImpl);

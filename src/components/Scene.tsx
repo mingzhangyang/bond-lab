@@ -4,7 +4,7 @@ import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { useStore } from '../store';
 import { AtomNode } from './AtomNode';
 import { BondNode } from './BondNode';
-import { PhysicsEngine } from '../physics';
+import { PhysicsEngine, TransformSync } from '../physics';
 
 export function Scene() {
   const atoms = useStore(state => state.atoms);
@@ -24,6 +24,7 @@ export function Scene() {
         <directionalLight position={[-10, -10, -5]} intensity={isDark ? 0.5 : 0.35} />
         
         <PhysicsEngine />
+        <TransformSync />
         
         <group>
           {atoms.map(atom => (

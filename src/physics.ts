@@ -1,11 +1,13 @@
+import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useStore, ELEMENTS } from './store';
-import { useEffect } from 'react';
+import { useStore } from './store';
 
 export const atomPositions: Record<string, THREE.Vector3> = {};
 export const atomVelocities: Record<string, THREE.Vector3> = {};
 export const lonePairs: Record<string, THREE.Vector3[]> = {};
+const atomMeshRefs: Record<string, THREE.Mesh> = {};
+const bondGroupRefs: Record<string, THREE.Group> = {};
 
 const IDEAL_BOND_LENGTH = 2.0;
 const LONE_PAIR_DIST = 1.0;
@@ -15,11 +17,87 @@ const K_REPULSION = 5.0;
 const DAMPING = 0.8;
 const MIN_DIST_SQ = 0.01;
 const MIN_DIST = 0.001;
+const BOND_UP_AXIS = new THREE.Vector3(0, 1, 0);
+
+export function setAtomMeshRef(id: string, mesh: THREE.Mesh | null): void {
+  if (mesh) {
+    atomMeshRefs[id] = mesh;
+    return;
+  }
+  delete atomMeshRefs[id];
+}
+
+export function setBondGroupRef(id: string, group: THREE.Group | null): void {
+  if (group) {
+    bondGroupRefs[id] = group;
+    return;
+  }
+  delete bondGroupRefs[id];
+}
+
+export function TransformSync() {
+  const atoms = useStore((state) => state.atoms);
+  const bonds = useStore((state) => state.bonds);
+  const diffRef = useRef(new THREE.Vector3());
+  const midRef = useRef(new THREE.Vector3());
+
+  useFrame(() => {
+    const diff = diffRef.current;
+    const mid = midRef.current;
+
+    for (const atom of atoms) {
+      const mesh = atomMeshRefs[atom.id];
+      const position = atomPositions[atom.id];
+      if (!mesh || !position) continue;
+      mesh.position.copy(position);
+    }
+
+    for (const bond of bonds) {
+      const group = bondGroupRefs[bond.id];
+      const p1 = atomPositions[bond.source];
+      const p2 = atomPositions[bond.target];
+      if (!group || !p1 || !p2) continue;
+
+      diff.subVectors(p2, p1);
+      const dist = diff.length();
+
+      mid.addVectors(p1, p2).multiplyScalar(0.5);
+      group.position.copy(mid);
+
+      if (dist > MIN_DIST) {
+        diff.multiplyScalar(1 / dist);
+        group.quaternion.setFromUnitVectors(BOND_UP_AXIS, diff);
+      }
+
+      for (const child of group.children) {
+        child.scale.set(1, dist, 1);
+      }
+    }
+  });
+
+  return null;
+}
 
 export function PhysicsEngine() {
-  const atoms = useStore(state => state.atoms);
-  const bonds = useStore(state => state.bonds);
-  const draggedAtom = useStore(state => state.draggedAtom);
+  const atoms = useStore((state) => state.atoms);
+  const bonds = useStore((state) => state.bonds);
+  const draggedAtom = useStore((state) => state.draggedAtom);
+  const forcesRef = useRef<Record<string, THREE.Vector3>>({});
+  const adjacencyRef = useRef<Record<string, string[]>>({});
+  const scratchRef = useRef({
+    diff: new THREE.Vector3(),
+    v1: new THREE.Vector3(),
+    v2: new THREE.Vector3(),
+    dir1: new THREE.Vector3(),
+    dir2: new THREE.Vector3(),
+    axis: new THREE.Vector3(),
+    tangent1: new THREE.Vector3(),
+    tangent2: new THREE.Vector3(),
+    force1: new THREE.Vector3(),
+    force2: new THREE.Vector3(),
+    random: new THREE.Vector3(),
+    lpDiff: new THREE.Vector3(),
+  });
 
   // Initialize new atoms
   useEffect(() => {
@@ -33,23 +111,60 @@ export function PhysicsEngine() {
         atomVelocities[atom.id] = new THREE.Vector3(0, 0, 0);
       }
     }
+
     // Cleanup removed atoms
-    const atomIds = new Set(atoms.map(a => a.id));
+    const atomIds = new Set(atoms.map((a) => a.id));
     for (const id in atomPositions) {
       if (!atomIds.has(id)) {
         delete atomPositions[id];
         delete atomVelocities[id];
         delete lonePairs[id];
+        delete atomMeshRefs[id];
       }
     }
   }, [atoms]);
 
-  useFrame((state, delta) => {
+  useFrame((_, delta) => {
     const dt = Math.min(delta, 0.05);
-    
-    const forces: Record<string, THREE.Vector3> = {};
+    const forces = forcesRef.current;
+    const adjacency = adjacencyRef.current;
+    const atomIds = new Set<string>();
+    const {
+      diff,
+      v1,
+      v2,
+      dir1,
+      dir2,
+      axis,
+      tangent1,
+      tangent2,
+      force1,
+      force2,
+      random,
+      lpDiff,
+    } = scratchRef.current;
+
     for (const atom of atoms) {
-      forces[atom.id] = new THREE.Vector3(0, 0, 0);
+      atomIds.add(atom.id);
+
+      if (!forces[atom.id]) {
+        forces[atom.id] = new THREE.Vector3();
+      } else {
+        forces[atom.id].set(0, 0, 0);
+      }
+
+      if (!adjacency[atom.id]) {
+        adjacency[atom.id] = [];
+      } else {
+        adjacency[atom.id].length = 0;
+      }
+    }
+
+    for (const id in forces) {
+      if (!atomIds.has(id)) delete forces[id];
+    }
+    for (const id in adjacency) {
+      if (!atomIds.has(id)) delete adjacency[id];
     }
 
     // 1. Global repulsion
@@ -61,25 +176,21 @@ export function PhysicsEngine() {
         const p2 = atomPositions[a2.id];
         if (!p1 || !p2) continue;
 
-        const diff = new THREE.Vector3().subVectors(p1, p2);
+        diff.subVectors(p1, p2);
         let distSq = diff.lengthSq();
         if (distSq < MIN_DIST_SQ) {
-          diff.set(Math.random(), Math.random(), Math.random()).normalize();
+          random.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+          diff.copy(random);
           distSq = MIN_DIST_SQ;
         }
 
-        const forceMag = K_REPULSION / distSq;
-        const force = diff.normalize().multiplyScalar(forceMag);
-        
-        forces[a1.id].add(force);
-        forces[a2.id].sub(force);
+        const forceScale = K_REPULSION / (distSq * Math.sqrt(distSq));
+        forces[a1.id].addScaledVector(diff, forceScale);
+        forces[a2.id].addScaledVector(diff, -forceScale);
       }
     }
 
     // 2. Bond springs
-    const adjacency: Record<string, string[]> = {};
-    for (const atom of atoms) adjacency[atom.id] = [];
-
     for (const bond of bonds) {
       const p1 = atomPositions[bond.source];
       const p2 = atomPositions[bond.target];
@@ -88,15 +199,13 @@ export function PhysicsEngine() {
       adjacency[bond.source].push(bond.target);
       adjacency[bond.target].push(bond.source);
 
-      const diff = new THREE.Vector3().subVectors(p2, p1);
+      diff.subVectors(p2, p1);
       const dist = diff.length();
       if (dist < MIN_DIST) continue;
-      
-      const forceMag = K_BOND * (dist - IDEAL_BOND_LENGTH);
-      const force = diff.normalize().multiplyScalar(forceMag);
 
-      forces[bond.source].add(force);
-      forces[bond.target].sub(force);
+      const forceScale = (K_BOND * (dist - IDEAL_BOND_LENGTH)) / dist;
+      forces[bond.source].addScaledVector(diff, forceScale);
+      forces[bond.target].addScaledVector(diff, -forceScale);
     }
 
     // 3. VSEPR (Local domain repulsion)
@@ -104,30 +213,7 @@ export function PhysicsEngine() {
       const pC = atomPositions[atom.id];
       if (!pC) continue;
 
-      const elementData = ELEMENTS[atom.element];
-      const totalBondOrder = bonds.filter(b => b.source === atom.id || b.target === atom.id).reduce((sum, b) => sum + b.order, 0);
-      
-      // Calculate lone pairs based on valence electrons and bonds
-      // H: 1 valence, 1 bond max -> 0 lone pairs
-      // C: 4 valence, 4 bonds max -> 0 lone pairs
-      // N: 5 valence, 3 bonds max -> (5 - 3) / 2 = 1 lone pair
-      // O: 6 valence, 2 bonds max -> (6 - 2) / 2 = 2 lone pairs
       let numLonePairs = 0;
-      if (atom.element === 'N') numLonePairs = 1;
-      if (atom.element === 'O') numLonePairs = 2;
-      
-      // If the atom forms fewer bonds than max, it might have unbonded electrons, but for simplicity in this engine, 
-      // we usually consider standard lone pairs. Let's stick to the standard octet rule for lone pairs.
-      // A more robust way:
-      // numLonePairs = Math.floor((elementData.valence - totalBondOrder) / 2);
-      // But wait, if N has 0 bonds, it has 5 valence electrons. (5-0)/2 = 2.5 -> 2 lone pairs? No, N typically forms 3 bonds and has 1 lone pair.
-      // Actually, the number of lone pairs is typically fixed by the element's group in standard organic molecules:
-      // N always has 1 lone pair (to make octet with 3 bonds).
-      // O always has 2 lone pairs (to make octet with 2 bonds).
-      // Let's use a fixed number based on the element for standard octet compliance.
-      numLonePairs = Math.max(0, Math.floor((8 - elementData.maxBonds * 2) / 2));
-      if (atom.element === 'H') numLonePairs = 0;
-      if (atom.element === 'C') numLonePairs = 0;
       if (atom.element === 'N') numLonePairs = 1;
       if (atom.element === 'O') numLonePairs = 2;
 
@@ -135,7 +221,8 @@ export function PhysicsEngine() {
       const lps = lonePairs[atom.id];
 
       while (lps.length < numLonePairs) {
-        lps.push(pC.clone().add(new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(LONE_PAIR_DIST)));
+        random.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+        lps.push(pC.clone().add(random.multiplyScalar(LONE_PAIR_DIST)));
       }
       while (lps.length > numLonePairs) {
         lps.pop();
@@ -143,7 +230,7 @@ export function PhysicsEngine() {
 
       const neighbors = adjacency[atom.id];
       const domains: { type: 'atom' | 'lp', id?: string, pos: THREE.Vector3 }[] = [];
-      
+
       for (const n of neighbors) {
         if (atomPositions[n]) domains.push({ type: 'atom', id: n, pos: atomPositions[n] });
       }
@@ -162,19 +249,19 @@ export function PhysicsEngine() {
           for (let j = i + 1; j < numDomains; j++) {
             const d1 = domains[i];
             const d2 = domains[j];
-            
-            const v1 = new THREE.Vector3().subVectors(d1.pos, pC);
-            const v2 = new THREE.Vector3().subVectors(d2.pos, pC);
-            
+
+            v1.subVectors(d1.pos, pC);
+            v2.subVectors(d2.pos, pC);
+
             const len1 = v1.length() || 0.1;
             const len2 = v2.length() || 0.1;
-            
-            const dir1 = v1.clone().divideScalar(len1);
-            const dir2 = v2.clone().divideScalar(len2);
-            
+
+            dir1.copy(v1).divideScalar(len1);
+            dir2.copy(v2).divideScalar(len2);
+
             const dot = Math.max(-1, Math.min(1, dir1.dot(dir2)));
             const angle = Math.acos(dot);
-            
+
             let currentIdealAngle = idealAngle;
             let repulsionFactor = 1.0;
 
@@ -204,54 +291,55 @@ export function PhysicsEngine() {
             }
 
             const angleDiff = currentIdealAngle - angle;
-            
-            let axis = new THREE.Vector3().crossVectors(dir1, dir2);
+
+            axis.crossVectors(dir1, dir2);
             if (axis.lengthSq() < 0.001) {
-              axis = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
-              axis.cross(dir1).normalize();
+              random.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5);
+              random.cross(dir1);
+              if (random.lengthSq() < MIN_DIST_SQ) {
+                random.set(1, 0, 0).cross(dir1);
+              }
+              axis.copy(random).normalize();
             } else {
               axis.normalize();
             }
-            
-            const f1Dir = new THREE.Vector3().crossVectors(dir1, axis).normalize();
-            const f2Dir = new THREE.Vector3().crossVectors(dir2, axis).normalize().negate();
-            
-            const forceMag = K_VSEPR * angleDiff * repulsionFactor;
-            
-            const f1 = f1Dir.multiplyScalar(forceMag);
-            const f2 = f2Dir.multiplyScalar(forceMag);
-            
-            if (d1.type === 'atom') forces[d1.id!].add(f1);
-            else d1.pos.add(f1.clone().multiplyScalar(dt));
 
-            if (d2.type === 'atom') forces[d2.id!].add(f2);
-            else d2.pos.add(f2.clone().multiplyScalar(dt));
-            
-            forces[atom.id].sub(f1).sub(f2);
+            tangent1.crossVectors(dir1, axis).normalize();
+            tangent2.crossVectors(dir2, axis).normalize().negate();
+
+            const forceMag = K_VSEPR * angleDiff * repulsionFactor;
+
+            force1.copy(tangent1).multiplyScalar(forceMag);
+            force2.copy(tangent2).multiplyScalar(forceMag);
+
+            if (d1.type === 'atom') forces[d1.id!].add(force1);
+            else d1.pos.addScaledVector(force1, dt);
+
+            if (d2.type === 'atom') forces[d2.id!].add(force2);
+            else d2.pos.addScaledVector(force2, dt);
+
+            forces[atom.id].sub(force1).sub(force2);
           }
         }
       }
 
       // Pull lone pairs towards central atom
       for (const lp of lps) {
-        const diff = new THREE.Vector3().subVectors(pC, lp);
-        const dist = diff.length();
+        lpDiff.subVectors(pC, lp);
+        const dist = lpDiff.length();
         if (dist < MIN_DIST) continue;
         const forceMag = K_BOND * (dist - LONE_PAIR_DIST);
-        const force = diff.normalize().multiplyScalar(forceMag);
-        lp.add(force.clone().multiplyScalar(dt));
-        forces[atom.id].sub(force);
+        const forceScale = forceMag / dist;
+        lp.addScaledVector(lpDiff, forceScale * dt);
+        forces[atom.id].addScaledVector(lpDiff, -forceScale);
       }
     }
 
     // 4. Center gravity
     for (const atom of atoms) {
       const p = atomPositions[atom.id];
-      if (p) {
-        const dist = p.length();
-        if (dist > 0.1) {
-          forces[atom.id].add(p.clone().normalize().multiplyScalar(-0.5 * dist));
-        }
+      if (p && p.lengthSq() > 0.01) {
+        forces[atom.id].addScaledVector(p, -0.5);
       }
     }
 
@@ -261,14 +349,15 @@ export function PhysicsEngine() {
         atomVelocities[atom.id].set(0, 0, 0);
         continue;
       }
+
       const vel = atomVelocities[atom.id];
       const pos = atomPositions[atom.id];
       if (!vel || !pos) continue;
 
       const f = forces[atom.id];
-      vel.add(f.multiplyScalar(dt));
+      vel.addScaledVector(f, dt);
       vel.multiplyScalar(DAMPING);
-      pos.add(vel.clone().multiplyScalar(dt));
+      pos.addScaledVector(vel, dt);
     }
   });
 

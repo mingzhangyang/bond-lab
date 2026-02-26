@@ -1,70 +1,70 @@
 import React, { useEffect, useMemo } from 'react';
+import { X, Trophy, AlertCircle, Timer, Target, Zap } from 'lucide-react';
 import { useStore } from '../store';
 import { KNOWN_MOLECULES, identifyMolecule } from '../identifier';
-import { X, Trophy, AlertCircle, Timer, Target, Zap } from 'lucide-react';
-import { getMessages, localizeMoleculeName } from '../i18n';
+import { getMessages, localizeMoleculeName, type Language } from '../i18n';
 
-export function ChallengeMode() {
-  const challengeActive = useStore((state) => state.challengeActive);
+type Messages = ReturnType<typeof getMessages>;
+
+interface ChallengeStartButtonProps {
+  messages: Messages;
+  onStart: () => void;
+}
+
+function ChallengeStartButton({ messages, onStart }: ChallengeStartButtonProps) {
+  return (
+    <button
+      onClick={onStart}
+      className="group relative min-h-[44px] flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-95 w-full md:w-auto pointer-events-auto overflow-hidden"
+    >
+      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 motion-reduce:translate-y-0 transition-transform duration-300 ease-out" />
+      <Zap size={18} className="group-hover:scale-110 transition-transform" />
+      <span className="font-bold text-sm relative z-10">{messages.challenge.start}</span>
+    </button>
+  );
+}
+
+interface ActiveChallengePanelProps {
+  language: Language;
+  messages: Messages;
+  onStart: () => void;
+}
+
+function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePanelProps) {
   const challengeTarget = useStore((state) => state.challengeTarget);
   const challengeTimeLeft = useStore((state) => state.challengeTimeLeft);
   const challengeTotalTime = useStore((state) => state.challengeTotalTime);
   const challengeStatus = useStore((state) => state.challengeStatus);
-  const startChallenge = useStore((state) => state.startChallenge);
   const tickChallenge = useStore((state) => state.tickChallenge);
   const stopChallenge = useStore((state) => state.stopChallenge);
   const winChallenge = useStore((state) => state.winChallenge);
   const atoms = useStore((state) => state.atoms);
   const bonds = useStore((state) => state.bonds);
   const theme = useStore((state) => state.theme);
-  const language = useStore((state) => state.language);
-
-  const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
 
-  // Timer
   useEffect(() => {
-    if (!challengeActive || challengeStatus !== 'playing') return;
+    if (challengeStatus !== 'playing') return;
     const interval = setInterval(() => {
       tickChallenge();
     }, 1000);
     return () => clearInterval(interval);
-  }, [challengeActive, challengeStatus, tickChallenge]);
+  }, [challengeStatus, tickChallenge]);
 
-  // Check win condition
   useEffect(() => {
-    if (!challengeActive || challengeStatus !== 'playing' || !challengeTarget) return;
-    
+    if (challengeStatus !== 'playing' || !challengeTarget) return;
+
     const currentMolecule = identifyMolecule(atoms, bonds);
     if (currentMolecule && currentMolecule.name === challengeTarget.name) {
       winChallenge();
     }
-  }, [atoms, bonds, challengeActive, challengeStatus, challengeTarget, winChallenge]);
-
-  const handleStart = () => {
-    const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
-    // Give more time for complex molecules
-    const timeLimit = 30 + (randomMol.c + randomMol.h + randomMol.n + randomMol.o) * 5;
-    startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
-  };
-
-  if (!challengeActive) {
-    return (
-      <button 
-        onClick={handleStart}
-        className="group relative min-h-[44px] flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-95 w-full md:w-auto pointer-events-auto overflow-hidden"
-      >
-        <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 motion-reduce:translate-y-0 transition-transform duration-300 ease-out" />
-        <Zap size={18} className="group-hover:scale-110 transition-transform" />
-        <span className="font-bold text-sm relative z-10">{messages.challenge.start}</span>
-      </button>
-    );
-  }
+  }, [atoms, bonds, challengeStatus, challengeTarget, winChallenge]);
 
   const progress = challengeTotalTime ? (challengeTimeLeft / challengeTotalTime) * 100 : 0;
   let progressColor = 'bg-emerald-500';
   if (progress < 50) progressColor = 'bg-yellow-500';
   if (progress < 20) progressColor = 'bg-red-500';
+
   const panelClass = isDark
     ? 'bg-zinc-900/95 border-indigo-500/30 shadow-indigo-500/20'
     : 'bg-white/95 border-indigo-200 shadow-indigo-200/70';
@@ -79,11 +79,9 @@ export function ChallengeMode() {
 
   return (
     <div className={`fixed top-4 left-1/2 -translate-x-1/2 md:static md:translate-x-0 w-[calc(100%-2rem)] md:w-72 backdrop-blur-xl p-6 rounded-3xl border shadow-2xl pointer-events-auto z-40 overflow-hidden flex flex-col ${panelClass}`}>
-      
-      {/* Progress bar background */}
       {challengeStatus === 'playing' && (
         <div className={`absolute top-0 left-0 w-full h-1.5 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
-          <div 
+          <div
             className={`h-full ${progressColor} transition-all duration-1000 ease-linear motion-reduce:transition-none`}
             style={{ width: `${progress}%` }}
           />
@@ -110,7 +108,7 @@ export function ChallengeMode() {
           <div className="text-indigo-300 font-mono text-xl bg-indigo-500/10 px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
             {challengeTarget.formula}
           </div>
-          
+
           <div className={`flex items-center gap-2 text-4xl font-black ${challengeTimeLeft <= 10 ? 'text-red-500 motion-safe:animate-pulse' : primaryTextClass}`}>
             <Timer size={32} className={challengeTimeLeft <= 10 ? 'motion-safe:animate-bounce' : ''} />
             <span className="tabular-nums">{challengeTimeLeft}{messages.challenge.secondsShort}</span>
@@ -128,8 +126,8 @@ export function ChallengeMode() {
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.wonMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
-          <button 
-            onClick={handleStart}
+          <button
+            onClick={onStart}
             className="w-full min-h-[44px] bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95"
           >
             {messages.challenge.next}
@@ -147,8 +145,8 @@ export function ChallengeMode() {
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.lostMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
-          <button 
-            onClick={handleStart}
+          <button
+            onClick={onStart}
             className={`w-full min-h-[44px] py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 ${
               isDark ? 'bg-zinc-700 hover:bg-zinc-600 text-white' : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-900'
             }`}
@@ -159,4 +157,23 @@ export function ChallengeMode() {
       )}
     </div>
   );
+}
+
+export function ChallengeMode() {
+  const challengeActive = useStore((state) => state.challengeActive);
+  const startChallenge = useStore((state) => state.startChallenge);
+  const language = useStore((state) => state.language);
+  const messages = useMemo(() => getMessages(language), [language]);
+
+  const handleStart = () => {
+    const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
+    const timeLimit = 30 + (randomMol.c + randomMol.h + randomMol.n + randomMol.o) * 5;
+    startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
+  };
+
+  if (!challengeActive) {
+    return <ChallengeStartButton messages={messages} onStart={handleStart} />;
+  }
+
+  return <ActiveChallengePanel language={language} messages={messages} onStart={handleStart} />;
 }
