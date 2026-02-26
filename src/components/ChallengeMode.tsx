@@ -5,7 +5,6 @@ import {
   AlertCircle,
   Timer,
   Target,
-  Zap,
   ChevronDown,
 } from 'lucide-react';
 import { useStore } from '../store';
@@ -26,6 +25,10 @@ export interface MobileChallengeTriggerProps {
   isOpen: boolean;
   onToggle: () => void;
   timerArc: { remainingRatio: number } | null;
+}
+
+function ChallengeEntryIcon({ className, size = 18 }: { className?: string; size?: number }) {
+  return <Trophy size={size} className={className} />;
 }
 
 export function MobileChallengeTrigger({
@@ -94,7 +97,7 @@ export function MobileChallengeTrigger({
         aria-hidden="true"
       />
       <span className="relative z-10 flex h-full w-full items-center justify-center">
-        <Trophy size={18} />
+        <ChallengeEntryIcon />
       </span>
     </button>
   );
@@ -112,7 +115,7 @@ function ChallengeStartButton({ messages, onStart }: ChallengeStartButtonProps) 
       className="lab-fab lab-reveal group relative min-h-[44px] flex items-center justify-center gap-2 text-white px-5 py-3 rounded-2xl transition-all active:scale-95 w-full pointer-events-auto overflow-hidden"
     >
       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 motion-reduce:translate-y-0 transition-transform duration-300 ease-out" />
-      <Zap size={18} className="group-hover:scale-110 transition-transform" />
+      <ChallengeEntryIcon className="group-hover:scale-110 transition-transform" />
       <span className="font-bold text-sm relative z-10">{messages.challenge.start}</span>
     </button>
   );
