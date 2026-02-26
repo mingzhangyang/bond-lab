@@ -1,6 +1,9 @@
 import React, { useMemo, useState } from 'react';
 import { useStore, ELEMENTS, ElementType } from '../store';
 import { identifyMolecule } from '../identifier';
+import { calculateMolecularPolarity } from '../polarity';
+import { atomPositions } from '../physics';
+import { getMoleculeInfo } from '../moleculeInfo';
 import {
   Trash2,
   X,
@@ -37,6 +40,58 @@ export function UI() {
     () => (molecule ? localizeMoleculeName(language, molecule.name) : null),
     [language, molecule],
   );
+  const moleculeInfo = useMemo(
+    () => (molecule ? getMoleculeInfo(molecule.name) : null),
+    [molecule],
+  );
+  const polarityReport = useMemo(
+    () => calculateMolecularPolarity(atoms, bonds, atomPositions),
+    [atoms, bonds],
+  );
+
+  const polarityLabel = useMemo(() => {
+    const labels = {
+      en: { polar: 'Polar', nonpolar: 'Nonpolar', unknown: 'Unknown' },
+      es: { polar: 'Polar', nonpolar: 'No polar', unknown: 'Desconocido' },
+      zh: { polar: '极性', nonpolar: '非极性', unknown: '未知' },
+      fr: { polar: 'Polaire', nonpolar: 'Apolaire', unknown: 'Inconnu' },
+      ja: { polar: '極性', nonpolar: '無極性', unknown: '不明' },
+    } as const;
+    return labels[language][polarityReport.classification];
+  }, [language, polarityReport.classification]);
+
+  const polarityTitle = useMemo(() => {
+    const titles = {
+      en: 'Polarity',
+      es: 'Polaridad',
+      zh: '极性',
+      fr: 'Polarite',
+      ja: '極性',
+    } as const;
+    return titles[language];
+  }, [language]);
+
+  const structureTitle = useMemo(() => {
+    const titles = {
+      en: 'Structure',
+      es: 'Estructura',
+      zh: '结构式',
+      fr: 'Structure',
+      ja: '構造式',
+    } as const;
+    return titles[language];
+  }, [language]);
+
+  const factTitle = useMemo(() => {
+    const titles = {
+      en: 'Quick Fact',
+      es: 'Dato',
+      zh: '小知识',
+      fr: 'Info',
+      ja: '豆知识',
+    } as const;
+    return titles[language];
+  }, [language]);
 
   const panelClass = isDark
     ? 'bg-zinc-900/80 border-white/10 shadow-2xl'
@@ -208,6 +263,25 @@ export function UI() {
               </div>
               <div className={`font-bold text-xl md:text-3xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
               <div className="text-emerald-400 font-mono text-lg md:text-xl mt-1">{molecule.formula}</div>
+              {moleculeInfo && (
+                <>
+                  <div className={`mt-2 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
+                    {structureTitle}
+                  </div>
+                  <div className={`font-mono text-sm md:text-base ${primaryTextClass}`}>{moleculeInfo.structure}</div>
+                  <div className={`mt-2 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
+                    {factTitle}
+                  </div>
+                  <div className={`text-xs md:text-sm max-w-xl ${secondaryTextClass}`}>{moleculeInfo.fact}</div>
+                </>
+              )}
+              <div className={`mt-3 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
+                {polarityTitle}
+              </div>
+              <div className={`font-semibold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
+                {polarityLabel}
+              </div>
+              <div className={`text-[11px] md:text-xs max-w-xl mt-1 ${secondaryTextClass}`}>{polarityReport.reason}</div>
             </div>
           </div>
         )}
@@ -225,7 +299,7 @@ export function UI() {
           </div>
           {!controlsCollapsed && (
             <ul className={`text-xs space-y-1 ${secondaryTextClass}`}>
-              {messages.ui.controlsList.slice(0, 5).map((item) => (
+              {messages.ui.controlsList.slice(0, 6).map((item) => (
                 <li key={item}>• {item}</li>
               ))}
             </ul>

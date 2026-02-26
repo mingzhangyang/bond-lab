@@ -1,43 +1,317 @@
-import type { Atom, Bond } from './store.ts';
+import type { Atom, Bond, ElementType } from './store.ts';
 
-export const KNOWN_MOLECULES = [
-  { name: 'Water', formula: 'H₂O', c: 0, h: 2, n: 0, o: 1, s: 2, d: 0, t: 0 },
-  { name: 'Methane', formula: 'CH₄', c: 1, h: 4, n: 0, o: 0, s: 4, d: 0, t: 0 },
-  { name: 'Carbon Dioxide', formula: 'CO₂', c: 1, h: 0, n: 0, o: 2, s: 0, d: 2, t: 0 },
-  { name: 'Ammonia', formula: 'NH₃', c: 0, h: 3, n: 1, o: 0, s: 3, d: 0, t: 0 },
-  { name: 'Ethane', formula: 'C₂H₆', c: 2, h: 6, n: 0, o: 0, s: 7, d: 0, t: 0 },
-  { name: 'Ethene', formula: 'C₂H₄', c: 2, h: 4, n: 0, o: 0, s: 4, d: 1, t: 0 },
-  { name: 'Ethyne', formula: 'C₂H₂', c: 2, h: 2, n: 0, o: 0, s: 2, d: 0, t: 1 },
-  { name: 'Oxygen', formula: 'O₂', c: 0, h: 0, n: 0, o: 2, s: 0, d: 1, t: 0 },
-  { name: 'Nitrogen', formula: 'N₂', c: 0, h: 0, n: 2, o: 0, s: 0, d: 0, t: 1 },
-  { name: 'Hydrogen', formula: 'H₂', c: 0, h: 2, n: 0, o: 0, s: 1, d: 0, t: 0 },
-  { name: 'Methanol', formula: 'CH₃OH', c: 1, h: 4, n: 0, o: 1, s: 5, d: 0, t: 0 },
-  { name: 'Ethanol', formula: 'C₂H₅OH', c: 2, h: 6, n: 0, o: 1, s: 8, d: 0, t: 0 },
-  { name: 'Formaldehyde', formula: 'CH₂O', c: 1, h: 2, n: 0, o: 1, s: 2, d: 1, t: 0 },
-  { name: 'Hydrogen Cyanide', formula: 'HCN', c: 1, h: 1, n: 1, o: 0, s: 1, d: 0, t: 1 },
+interface MoleculeBondTemplate {
+  a: number;
+  b: number;
+  order: 1 | 2 | 3;
+}
+
+interface MoleculeTemplate {
+  name: string;
+  formula: string;
+  atoms: ElementType[];
+  bonds: MoleculeBondTemplate[];
+}
+
+interface KnownMolecule extends MoleculeTemplate {
+  c: number;
+  h: number;
+  n: number;
+  o: number;
+  s: number;
+  d: number;
+  t: number;
+}
+
+const MOLECULE_TEMPLATES: MoleculeTemplate[] = [
+  {
+    name: 'Water',
+    formula: 'H₂O',
+    atoms: ['O', 'H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 1 }, { a: 0, b: 2, order: 1 }],
+  },
+  {
+    name: 'Methane',
+    formula: 'CH₄',
+    atoms: ['C', 'H', 'H', 'H', 'H'],
+    bonds: [
+      { a: 0, b: 1, order: 1 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 0, b: 4, order: 1 },
+    ],
+  },
+  {
+    name: 'Carbon Dioxide',
+    formula: 'CO₂',
+    atoms: ['O', 'C', 'O'],
+    bonds: [{ a: 0, b: 1, order: 2 }, { a: 1, b: 2, order: 2 }],
+  },
+  {
+    name: 'Ammonia',
+    formula: 'NH₃',
+    atoms: ['N', 'H', 'H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 1 }, { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }],
+  },
+  {
+    name: 'Ethane',
+    formula: 'C₂H₆',
+    atoms: ['C', 'C', 'H', 'H', 'H', 'H', 'H', 'H'],
+    bonds: [
+      { a: 0, b: 1, order: 1 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 0, b: 4, order: 1 },
+      { a: 1, b: 5, order: 1 },
+      { a: 1, b: 6, order: 1 },
+      { a: 1, b: 7, order: 1 },
+    ],
+  },
+  {
+    name: 'Ethene',
+    formula: 'C₂H₄',
+    atoms: ['C', 'C', 'H', 'H', 'H', 'H'],
+    bonds: [
+      { a: 0, b: 1, order: 2 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 1, b: 4, order: 1 },
+      { a: 1, b: 5, order: 1 },
+    ],
+  },
+  {
+    name: 'Ethyne',
+    formula: 'C₂H₂',
+    atoms: ['C', 'C', 'H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 3 }, { a: 0, b: 2, order: 1 }, { a: 1, b: 3, order: 1 }],
+  },
+  {
+    name: 'Oxygen',
+    formula: 'O₂',
+    atoms: ['O', 'O'],
+    bonds: [{ a: 0, b: 1, order: 2 }],
+  },
+  {
+    name: 'Nitrogen',
+    formula: 'N₂',
+    atoms: ['N', 'N'],
+    bonds: [{ a: 0, b: 1, order: 3 }],
+  },
+  {
+    name: 'Hydrogen',
+    formula: 'H₂',
+    atoms: ['H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 1 }],
+  },
+  {
+    name: 'Methanol',
+    formula: 'CH₃OH',
+    atoms: ['C', 'O', 'H', 'H', 'H', 'H'],
+    bonds: [
+      { a: 0, b: 1, order: 1 },
+      { a: 0, b: 2, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 0, b: 4, order: 1 },
+      { a: 1, b: 5, order: 1 },
+    ],
+  },
+  {
+    name: 'Ethanol',
+    formula: 'C₂H₅OH',
+    atoms: ['C', 'C', 'O', 'H', 'H', 'H', 'H', 'H', 'H'],
+    bonds: [
+      { a: 0, b: 1, order: 1 },
+      { a: 0, b: 3, order: 1 },
+      { a: 0, b: 4, order: 1 },
+      { a: 0, b: 5, order: 1 },
+      { a: 1, b: 2, order: 1 },
+      { a: 1, b: 6, order: 1 },
+      { a: 1, b: 7, order: 1 },
+      { a: 2, b: 8, order: 1 },
+    ],
+  },
+  {
+    name: 'Formaldehyde',
+    formula: 'CH₂O',
+    atoms: ['C', 'O', 'H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 2 }, { a: 0, b: 2, order: 1 }, { a: 0, b: 3, order: 1 }],
+  },
+  {
+    name: 'Hydrogen Cyanide',
+    formula: 'HCN',
+    atoms: ['H', 'C', 'N'],
+    bonds: [{ a: 0, b: 1, order: 1 }, { a: 1, b: 2, order: 3 }],
+  },
 ];
+
+function getElementCounts(elements: ElementType[]): Record<ElementType, number> {
+  const counts: Record<ElementType, number> = { H: 0, C: 0, N: 0, O: 0 };
+  for (const element of elements) {
+    counts[element]++;
+  }
+  return counts;
+}
+
+function getBondOrderCounts(bonds: Array<{ order: number }>): { single: number, double: number, triple: number } {
+  let single = 0;
+  let double = 0;
+  let triple = 0;
+
+  for (const bond of bonds) {
+    if (bond.order === 1) single++;
+    if (bond.order === 2) double++;
+    if (bond.order === 3) triple++;
+  }
+
+  return { single, double, triple };
+}
+
+function toKnownMolecule(template: MoleculeTemplate): KnownMolecule {
+  const elementCounts = getElementCounts(template.atoms);
+  const bondCounts = getBondOrderCounts(template.bonds);
+
+  return {
+    ...template,
+    c: elementCounts.C,
+    h: elementCounts.H,
+    n: elementCounts.N,
+    o: elementCounts.O,
+    s: bondCounts.single,
+    d: bondCounts.double,
+    t: bondCounts.triple,
+  };
+}
+
+function buildAdjacencyMatrix(size: number, edges: Array<{ a: number, b: number, order: number }>): number[][] {
+  const matrix = Array.from({ length: size }, () => Array.from({ length: size }, () => 0));
+  for (const edge of edges) {
+    if (edge.a < 0 || edge.b < 0 || edge.a >= size || edge.b >= size || edge.a === edge.b) continue;
+    matrix[edge.a][edge.b] = Math.max(matrix[edge.a][edge.b], edge.order);
+    matrix[edge.b][edge.a] = Math.max(matrix[edge.b][edge.a], edge.order);
+  }
+  return matrix;
+}
+
+function getWeightedDegrees(matrix: number[][]): number[] {
+  return matrix.map((row) => row.reduce((sum, order) => sum + order, 0));
+}
+
+function matchesGraph(template: MoleculeTemplate, atoms: Atom[], bonds: Bond[]): boolean {
+  if (atoms.length !== template.atoms.length) return false;
+  if (bonds.length !== template.bonds.length) return false;
+
+  const inputElements = atoms.map((atom) => atom.element);
+  const templateCounts = getElementCounts(template.atoms);
+  const inputCounts = getElementCounts(inputElements);
+  if (
+    templateCounts.H !== inputCounts.H ||
+    templateCounts.C !== inputCounts.C ||
+    templateCounts.N !== inputCounts.N ||
+    templateCounts.O !== inputCounts.O
+  ) {
+    return false;
+  }
+
+  const templateBondCounts = getBondOrderCounts(template.bonds);
+  const inputBondCounts = getBondOrderCounts(bonds);
+  if (
+    templateBondCounts.single !== inputBondCounts.single ||
+    templateBondCounts.double !== inputBondCounts.double ||
+    templateBondCounts.triple !== inputBondCounts.triple
+  ) {
+    return false;
+  }
+
+  const idToIndex = new Map<string, number>();
+  atoms.forEach((atom, index) => {
+    idToIndex.set(atom.id, index);
+  });
+
+  const templateAdj = buildAdjacencyMatrix(template.atoms.length, template.bonds);
+  const inputEdges = bonds
+    .map((bond) => ({
+      a: idToIndex.get(bond.source) ?? -1,
+      b: idToIndex.get(bond.target) ?? -1,
+      order: bond.order,
+    }))
+    .filter((edge) => edge.a >= 0 && edge.b >= 0);
+  const inputAdj = buildAdjacencyMatrix(atoms.length, inputEdges);
+
+  const templateDegrees = getWeightedDegrees(templateAdj);
+  const inputDegrees = getWeightedDegrees(inputAdj);
+
+  const candidateInputIndexes = template.atoms.map((templateElement, templateIndex) => {
+    const degree = templateDegrees[templateIndex];
+    const candidates: number[] = [];
+
+    for (let inputIndex = 0; inputIndex < atoms.length; inputIndex++) {
+      if (atoms[inputIndex].element !== templateElement) continue;
+      if (inputDegrees[inputIndex] !== degree) continue;
+      candidates.push(inputIndex);
+    }
+
+    return candidates;
+  });
+
+  if (candidateInputIndexes.some((candidates) => candidates.length === 0)) {
+    return false;
+  }
+
+  const orderedTemplateIndexes = Array.from({ length: template.atoms.length }, (_, index) => index).sort((a, b) => {
+    if (candidateInputIndexes[a].length !== candidateInputIndexes[b].length) {
+      return candidateInputIndexes[a].length - candidateInputIndexes[b].length;
+    }
+    return templateDegrees[b] - templateDegrees[a];
+  });
+
+  const mappedInputByTemplate = Array.from({ length: template.atoms.length }, () => -1);
+  const usedInputIndexes = new Set<number>();
+
+  const search = (depth: number): boolean => {
+    if (depth === orderedTemplateIndexes.length) return true;
+
+    const templateIndex = orderedTemplateIndexes[depth];
+    for (const inputIndex of candidateInputIndexes[templateIndex]) {
+      if (usedInputIndexes.has(inputIndex)) continue;
+
+      let compatible = true;
+      for (let otherTemplateIndex = 0; otherTemplateIndex < mappedInputByTemplate.length; otherTemplateIndex++) {
+        const mappedInputIndex = mappedInputByTemplate[otherTemplateIndex];
+        if (mappedInputIndex === -1) continue;
+
+        if (templateAdj[templateIndex][otherTemplateIndex] !== inputAdj[inputIndex][mappedInputIndex]) {
+          compatible = false;
+          break;
+        }
+      }
+      if (!compatible) continue;
+
+      mappedInputByTemplate[templateIndex] = inputIndex;
+      usedInputIndexes.add(inputIndex);
+      if (search(depth + 1)) return true;
+      usedInputIndexes.delete(inputIndex);
+      mappedInputByTemplate[templateIndex] = -1;
+    }
+
+    return false;
+  };
+
+  return search(0);
+}
+
+export const KNOWN_MOLECULES: KnownMolecule[] = MOLECULE_TEMPLATES.map(toKnownMolecule);
 
 export function identifyMolecule(atoms: Atom[], bonds: Bond[]): { name: string, formula: string } | null {
   if (atoms.length === 0) return null;
 
-  const counts: Record<string, number> = { H: 0, C: 0, N: 0, O: 0 };
-  for (const a of atoms) counts[a.element]++;
-
-  const bondCounts = { single: 0, double: 0, triple: 0 };
-  for (const b of bonds) {
-    if (b.order === 1) bondCounts.single++;
-    if (b.order === 2) bondCounts.double++;
-    if (b.order === 3) bondCounts.triple++;
-  }
-
-  for (const mol of KNOWN_MOLECULES) {
-    if (counts.C === mol.c && counts.H === mol.h && counts.N === mol.n && counts.O === mol.o &&
-        bondCounts.single === mol.s && bondCounts.double === mol.d && bondCounts.triple === mol.t) {
-      return { name: mol.name, formula: mol.formula };
+  for (const molecule of KNOWN_MOLECULES) {
+    if (matchesGraph(molecule, atoms, bonds)) {
+      return { name: molecule.name, formula: molecule.formula };
     }
   }
 
-  // Generate generic formula
+  const counts = getElementCounts(atoms.map((atom) => atom.element));
+
   let formula = '';
   if (counts.C > 0) formula += `C${counts.C > 1 ? counts.C : ''}`;
   if (counts.H > 0) formula += `H${counts.H > 1 ? counts.H : ''}`;
@@ -45,6 +319,5 @@ export function identifyMolecule(atoms: Atom[], bonds: Bond[]): { name: string, 
   if (counts.O > 0) formula += `O${counts.O > 1 ? counts.O : ''}`;
 
   if (formula === '') return null;
-
   return { name: 'Unknown Molecule', formula };
 }

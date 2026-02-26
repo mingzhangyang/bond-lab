@@ -2,6 +2,7 @@ import React, { useMemo } from 'react';
 import { useStore } from '../store';
 import { calculateStability } from '../stability';
 import { getMessages, translateStabilityIssue } from '../i18n';
+import { atomPositions } from '../physics';
 
 export function StabilityDisplay() {
   const atoms = useStore((state) => state.atoms);
@@ -10,7 +11,10 @@ export function StabilityDisplay() {
   const language = useStore((state) => state.language);
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
-  const report = useMemo(() => calculateStability(atoms, bonds), [atoms, bonds]);
+  const report = useMemo(
+    () => calculateStability(atoms, bonds, { positions: atomPositions }),
+    [atoms, bonds],
+  );
 
   if (atoms.length === 0) return null;
 

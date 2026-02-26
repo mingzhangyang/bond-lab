@@ -12,15 +12,15 @@ import {
   toggleTheme as getNextTheme,
 } from './preferences.ts';
 import type { InteractionMode, Theme } from './preferences.ts';
+import {
+  ELEMENTS,
+  getBondChemistry,
+  type BondChemistry,
+  type ElementType,
+} from './chemistry.ts';
 
-export type ElementType = 'H' | 'C' | 'N' | 'O';
-
-export const ELEMENTS: Record<ElementType, { symbol: ElementType, name: string, color: string, vdwRadius: number, valence: number, maxBonds: number }> = {
-  H: { symbol: 'H', name: 'Hydrogen', color: '#FFFFFF', vdwRadius: 1.2, valence: 1, maxBonds: 1 },
-  C: { symbol: 'C', name: 'Carbon', color: '#444444', vdwRadius: 1.7, valence: 4, maxBonds: 4 },
-  N: { symbol: 'N', name: 'Nitrogen', color: '#2244FF', vdwRadius: 1.55, valence: 5, maxBonds: 3 },
-  O: { symbol: 'O', name: 'Oxygen', color: '#FF2222', vdwRadius: 1.52, valence: 6, maxBonds: 2 },
-};
+export { ELEMENTS };
+export type { ElementType };
 
 export interface Atom {
   id: string;
@@ -32,12 +32,16 @@ export interface Bond {
   source: string;
   target: string;
   order: number;
+  bondLength?: number;
+  bondEnergy?: number;
+  rotatable?: boolean;
 }
 
 interface GameState {
   atoms: Atom[];
   bonds: Bond[];
   draggedAtom: string | null;
+  rotatingBond: string | null;
   selectedAtom: string | null;
   theme: Theme;
   language: Language;
@@ -52,6 +56,7 @@ interface GameState {
   challengeStatus: 'idle' | 'playing' | 'won' | 'lost';
   
   setDraggedAtom: (id: string | null) => void;
+  setRotatingBond: (id: string | null) => void;
   setSelectedAtom: (id: string | null) => void;
   toggleTheme: () => void;
   setLanguage: (language: Language) => void;
@@ -108,6 +113,7 @@ export const useStore = create<GameState>((set, get) => ({
   atoms: [],
   bonds: [],
   draggedAtom: null,
+  rotatingBond: null,
   selectedAtom: null,
   theme: initialTheme,
   language: initialLanguage,
@@ -121,6 +127,7 @@ export const useStore = create<GameState>((set, get) => ({
   challengeStatus: 'idle',
   
   setDraggedAtom: (id) => set({ draggedAtom: id }),
+  setRotatingBond: (id) => set({ rotatingBond: id }),
   setSelectedAtom: (id) => set({ selectedAtom: id }),
   toggleTheme: () => set((state) => {
     const theme = getNextTheme(state.theme);
@@ -169,8 +176,24 @@ export const useStore = create<GameState>((set, get) => ({
     if (existing) {
       if (sourceBonds < ELEMENTS[sourceAtom.element].maxBonds && targetBonds < ELEMENTS[targetAtom.element].maxBonds) {
         if (existing.order < 3) {
+          const nextOrder = existing.order + 1;
+          const chemistry: BondChemistry = getBondChemistry(
+            sourceAtom.element,
+            targetAtom.element,
+            nextOrder,
+          );
           return {
-            bonds: state.bonds.map(b => b.id === existing.id ? { ...b, order: b.order + 1 } : b)
+            bonds: state.bonds.map((b) => (
+              b.id === existing.id
+                ? {
+                    ...b,
+                    order: nextOrder,
+                    bondLength: chemistry.bondLength,
+                    bondEnergy: chemistry.bondEnergy,
+                    rotatable: chemistry.rotatable,
+                  }
+                : b
+            ))
           };
         }
       }
@@ -178,22 +201,36 @@ export const useStore = create<GameState>((set, get) => ({
     }
     
     if (sourceBonds < ELEMENTS[sourceAtom.element].maxBonds && targetBonds < ELEMENTS[targetAtom.element].maxBonds) {
+      const chemistry = getBondChemistry(sourceAtom.element, targetAtom.element, 1);
       return {
-        bonds: [...state.bonds, { id: uuidv4(), source, target, order: 1 }]
+        bonds: [
+          ...state.bonds,
+          {
+            id: uuidv4(),
+            source,
+            target,
+            order: 1,
+            bondLength: chemistry.bondLength,
+            bondEnergy: chemistry.bondEnergy,
+            rotatable: chemistry.rotatable,
+          },
+        ]
       };
     }
     
     return state;
   }),
   removeBond: (id) => set((state) => ({
-    bonds: state.bonds.filter(b => b.id !== id)
+    bonds: state.bonds.filter(b => b.id !== id),
+    rotatingBond: state.rotatingBond === id ? null : state.rotatingBond,
   })),
-  clear: () => set({ atoms: [], bonds: [], selectedAtom: null }),
+  clear: () => set({ atoms: [], bonds: [], selectedAtom: null, rotatingBond: null }),
   
   startChallenge: (target, timeLimit) => set({
     atoms: [],
     bonds: [],
     selectedAtom: null,
+    rotatingBond: null,
     challengeActive: true,
     challengeTarget: target,
     challengeTimeLeft: timeLimit,
@@ -215,6 +252,7 @@ export const useStore = create<GameState>((set, get) => ({
   stopChallenge: () => set({
     challengeActive: false,
     challengeTarget: null,
-    challengeStatus: 'idle'
+    challengeStatus: 'idle',
+    rotatingBond: null
   })
 }));

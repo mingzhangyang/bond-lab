@@ -11,6 +11,7 @@ export function Scene() {
   const bonds = useStore(state => state.bonds);
   const theme = useStore(state => state.theme);
   const draggedAtom = useStore(state => state.draggedAtom);
+  const rotatingBond = useStore(state => state.rotatingBond);
   const isDark = theme === 'dark';
 
   return (
@@ -40,7 +41,7 @@ export function Scene() {
           makeDefault
           enablePan={false}
           enableZoom={true}
-          enabled={draggedAtom === null}
+          enabled={draggedAtom === null && rotatingBond === null}
         />
         <Environment preset={isDark ? 'city' : 'park'} />
         <ContactShadows position={[0, -4, 0]} opacity={isDark ? 0.4 : 0.22} scale={20} blur={2} far={10} />

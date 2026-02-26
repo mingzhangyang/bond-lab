@@ -1,4 +1,4 @@
-import { ELEMENTS } from './store.ts';
+import { ELEMENTS, normalizeBondChemistry } from './chemistry.ts';
 import type { Atom, Bond } from './store.ts';
 
 export interface StabilityReport {
@@ -7,32 +7,116 @@ export interface StabilityReport {
   issues: string[];
 }
 
-const BOND_ENERGIES: Record<string, Record<number, number>> = {
-  'H-H': { 1: 432 },
-  'C-H': { 1: 413 },
-  'C-C': { 1: 347, 2: 614, 3: 839 },
-  'C-N': { 1: 305, 2: 615, 3: 891 },
-  'C-O': { 1: 358, 2: 799, 3: 1072 },
-  'N-H': { 1: 391 },
-  'N-N': { 1: 160, 2: 418, 3: 941 },
-  'N-O': { 1: 201, 2: 607 },
-  'O-H': { 1: 467 },
-  'O-O': { 1: 146, 2: 495 },
-};
-
-function getBondEnergy(el1: string, el2: string, order: number): number {
-  const pair1 = `${el1}-${el2}`;
-  const pair2 = `${el2}-${el1}`;
-  
-  if (BOND_ENERGIES[pair1] && BOND_ENERGIES[pair1][order]) return BOND_ENERGIES[pair1][order];
-  if (BOND_ENERGIES[pair2] && BOND_ENERGIES[pair2][order]) return BOND_ENERGIES[pair2][order];
-  
-  // Fallback approximations
-  const base = 250;
-  return base * order;
+export interface Position3D {
+  x: number;
+  y: number;
+  z: number;
 }
 
-export function calculateStability(atoms: Atom[], bonds: Bond[]): StabilityReport {
+export interface StabilityOptions {
+  positions?: Record<string, Position3D | undefined>;
+  angleToleranceDeg?: number;
+}
+
+function getIdealBondAngle(element: Atom['element'], neighborCount: number): number | null {
+  if (neighborCount < 2) return null;
+  if (neighborCount === 2) {
+    if (element === 'O') return 104.5;
+    return 180;
+  }
+  if (neighborCount === 3) {
+    if (element === 'N') return 107;
+    return 120;
+  }
+  return 109.5;
+}
+
+function toDegrees(radians: number): number {
+  return radians * (180 / Math.PI);
+}
+
+function computeAngleDegrees(center: Position3D, p1: Position3D, p2: Position3D): number | null {
+  const v1x = p1.x - center.x;
+  const v1y = p1.y - center.y;
+  const v1z = p1.z - center.z;
+  const v2x = p2.x - center.x;
+  const v2y = p2.y - center.y;
+  const v2z = p2.z - center.z;
+
+  const mag1 = Math.sqrt(v1x * v1x + v1y * v1y + v1z * v1z);
+  const mag2 = Math.sqrt(v2x * v2x + v2y * v2y + v2z * v2z);
+  if (mag1 < 1e-6 || mag2 < 1e-6) return null;
+
+  const dot = v1x * v2x + v1y * v2y + v1z * v2z;
+  const normalizedDot = Math.max(-1, Math.min(1, dot / (mag1 * mag2)));
+  return toDegrees(Math.acos(normalizedDot));
+}
+
+function applyGeometryPenalty(
+  atoms: Atom[],
+  bonds: Bond[],
+  positions: Record<string, Position3D | undefined>,
+  angleToleranceDeg: number,
+): { scorePenalty: number, strainEnergy: number, issues: string[] } {
+  const neighborsByAtomId = new Map<string, string[]>();
+  for (const atom of atoms) {
+    neighborsByAtomId.set(atom.id, []);
+  }
+
+  for (const bond of bonds) {
+    const sourceNeighbors = neighborsByAtomId.get(bond.source);
+    const targetNeighbors = neighborsByAtomId.get(bond.target);
+    if (sourceNeighbors) sourceNeighbors.push(bond.target);
+    if (targetNeighbors) targetNeighbors.push(bond.source);
+  }
+
+  let totalScorePenalty = 0;
+  let totalStrainEnergy = 0;
+  const issues: string[] = [];
+
+  for (const atom of atoms) {
+    const neighbors = neighborsByAtomId.get(atom.id) ?? [];
+    const idealAngle = getIdealBondAngle(atom.element, neighbors.length);
+    if (idealAngle === null) continue;
+
+    const center = positions[atom.id];
+    if (!center) continue;
+
+    const deviations: number[] = [];
+    for (let i = 0; i < neighbors.length; i++) {
+      for (let j = i + 1; j < neighbors.length; j++) {
+        const p1 = positions[neighbors[i]];
+        const p2 = positions[neighbors[j]];
+        if (!p1 || !p2) continue;
+        const angle = computeAngleDegrees(center, p1, p2);
+        if (angle === null) continue;
+        deviations.push(Math.abs(angle - idealAngle));
+      }
+    }
+
+    if (deviations.length === 0) continue;
+
+    const avgDeviation = deviations.reduce((sum, value) => sum + value, 0) / deviations.length;
+    const excessDeviation = Math.max(0, avgDeviation - angleToleranceDeg);
+    if (excessDeviation <= 0) continue;
+
+    const scorePenalty = Math.min(30, excessDeviation * 0.6);
+    const strainEnergy = excessDeviation * 12;
+    totalScorePenalty += scorePenalty;
+    totalStrainEnergy += strainEnergy;
+    issues.push(
+      `Geometry strain around ${atom.element} (avg angle deviation ${avgDeviation.toFixed(1)}° from ideal ${idealAngle.toFixed(1)}°).`,
+    );
+  }
+
+  return {
+    scorePenalty: totalScorePenalty,
+    strainEnergy: totalStrainEnergy,
+    issues,
+  };
+}
+
+export function calculateStability(atoms: Atom[], bonds: Bond[], options: StabilityOptions = {}): StabilityReport {
   if (atoms.length === 0) return { score: 100, energy: 0, issues: [] };
 
   let score = 100;
@@ -46,7 +130,7 @@ export function calculateStability(atoms: Atom[], bonds: Bond[]): StabilityRepor
     const el1 = atomById.get(bond.source)?.element;
     const el2 = atomById.get(bond.target)?.element;
     if (el1 && el2) {
-      totalBondEnergy += getBondEnergy(el1, el2, bond.order);
+      totalBondEnergy += normalizeBondChemistry(bond, el1, el2).bondEnergy;
     }
   }
 
@@ -78,6 +162,18 @@ export function calculateStability(atoms: Atom[], bonds: Bond[]): StabilityRepor
       strainEnergy += 150; // penalty for unsatisfied valency (radicals/ions)
       issues.push(`${atom.element} has unsatisfied valency (${count}/${maxBonds} bonds).`);
     }
+  }
+
+  if (options.positions) {
+    const geometryPenalty = applyGeometryPenalty(
+      atoms,
+      bonds,
+      options.positions,
+      options.angleToleranceDeg ?? 8,
+    );
+    score -= geometryPenalty.scorePenalty;
+    strainEnergy += geometryPenalty.strainEnergy;
+    issues.push(...geometryPenalty.issues);
   }
 
   score = Math.max(0, Math.min(100, Math.round(score)));

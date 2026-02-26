@@ -99,6 +99,7 @@ export function PhysicsEngine() {
   const atoms = useStore((state) => state.atoms);
   const bonds = useStore((state) => state.bonds);
   const draggedAtom = useStore((state) => state.draggedAtom);
+  const rotatingBond = useStore((state) => state.rotatingBond);
   const forcesRef = useRef<Record<string, THREE.Vector3>>({});
   const adjacencyRef = useRef<Record<string, string[]>>({});
   const scratchRef = useRef({
@@ -142,6 +143,10 @@ export function PhysicsEngine() {
   }, [atoms]);
 
   useFrame((_, delta) => {
+    if (rotatingBond !== null) {
+      return;
+    }
+
     const dt = Math.min(delta, 0.05);
     const forces = forcesRef.current;
     const adjacency = adjacencyRef.current;

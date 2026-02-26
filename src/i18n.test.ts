@@ -6,6 +6,7 @@ test('getMessages returns English defaults', () => {
   const en = getMessages('en');
   assert.equal(en.ui.addElement, 'Add Element');
   assert.equal(en.challenge.title, 'Challenge');
+  assert.ok(en.ui.controlsList.includes('Hold Shift + drag a single bond to rotate'));
 });
 
 test('getMessages returns Spanish copy', () => {
@@ -18,6 +19,7 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
   const zh = getMessages('zh');
   assert.equal(zh.ui.addElement, '添加元素');
   assert.equal(zh.challenge.title, '挑战');
+  assert.ok(zh.ui.controlsList.includes('按住 Shift 并拖动单键可旋转'));
 
   const fr = getMessages('fr');
   assert.equal(fr.ui.addElement, 'Ajouter un element');
@@ -26,6 +28,7 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
   const ja = getMessages('ja');
   assert.equal(ja.ui.addElement, '元素を追加');
   assert.equal(ja.challenge.title, 'チャレンジ');
+  assert.ok(ja.ui.controlsList.includes('Shiftを押しながら単結合をドラッグして回転'));
 });
 
 test('localizeMoleculeName translates known names and falls back for unknown ones', () => {
