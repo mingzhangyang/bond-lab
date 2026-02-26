@@ -15,7 +15,7 @@ function ChallengeStartButton({ messages, onStart }: ChallengeStartButtonProps) 
   return (
     <button
       onClick={onStart}
-      className="group relative min-h-[44px] flex items-center justify-center gap-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white px-5 py-3 rounded-2xl shadow-lg shadow-indigo-500/25 transition-all active:scale-95 w-full md:w-auto pointer-events-auto overflow-hidden"
+      className="lab-fab lab-reveal group relative min-h-[44px] flex items-center justify-center gap-2 text-white px-5 py-3 rounded-2xl transition-all active:scale-95 w-full md:w-auto pointer-events-auto overflow-hidden"
     >
       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 motion-reduce:translate-y-0 transition-transform duration-300 ease-out" />
       <Zap size={18} className="group-hover:scale-110 transition-transform" />
@@ -65,20 +65,21 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
   if (progress < 50) progressColor = 'bg-yellow-500';
   if (progress < 20) progressColor = 'bg-red-500';
 
-  const panelClass = isDark
-    ? 'bg-zinc-900/95 border-indigo-500/30 shadow-indigo-500/20'
-    : 'bg-white/95 border-indigo-200 shadow-indigo-200/70';
+  const panelClass = 'lab-panel lab-panel-glow';
   const primaryTextClass = isDark ? 'text-white' : 'text-zinc-900';
   const secondaryTextClass = isDark ? 'text-zinc-400' : 'text-zinc-600';
   const iconButtonClass = isDark
-    ? 'text-zinc-500 hover:text-white bg-white/5 hover:bg-white/10'
-    : 'text-zinc-500 hover:text-zinc-900 bg-zinc-100 hover:bg-zinc-200';
+    ? 'lab-tile text-zinc-300 hover:text-white border'
+    : 'lab-tile text-zinc-600 hover:text-zinc-900 border';
   const localizedTargetName = challengeTarget
     ? localizeMoleculeName(language, challengeTarget.name)
     : null;
 
   return (
-    <div className={`fixed top-4 left-1/2 -translate-x-1/2 md:static md:translate-x-0 w-[calc(100%-2rem)] md:w-72 backdrop-blur-xl p-6 rounded-3xl border shadow-2xl pointer-events-auto z-40 overflow-hidden flex flex-col ${panelClass}`}>
+    <div
+      className={`lab-reveal fixed left-1/2 -translate-x-1/2 md:static md:translate-x-0 w-[calc(100%-2rem)] md:w-72 p-5 md:p-6 rounded-3xl border pointer-events-auto z-40 overflow-hidden flex flex-col ${panelClass}`}
+      style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
+    >
       {challengeStatus === 'playing' && (
         <div className={`absolute top-0 left-0 w-full h-1.5 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
           <div
@@ -89,14 +90,14 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
       )}
 
       <div className="flex justify-between items-start mb-6">
-        <div className="flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest">
+        <div className="info-display flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest">
           <Target size={16} />
           <span>{messages.challenge.target}</span>
         </div>
         <button
           onClick={stopChallenge}
           aria-label={messages.challenge.close}
-          className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center ${iconButtonClass}`}
+          className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
         >
           <X size={16} />
         </button>
@@ -104,8 +105,8 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
 
       {challengeStatus === 'playing' && challengeTarget && (
         <div className="flex flex-col items-center text-center">
-          <div className={`font-black text-3xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
-          <div className="text-indigo-300 font-mono text-xl bg-indigo-500/10 px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+          <div className={`info-display font-black text-3xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
+          <div className="lab-accent-pill font-mono text-xl px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
             {challengeTarget.formula}
           </div>
 
@@ -122,13 +123,13 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
             <div className="absolute inset-0 bg-yellow-400/20 blur-xl rounded-full" />
             <Trophy className="w-16 h-16 text-yellow-400 relative z-10 mb-4" />
           </div>
-          <div className={`font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.wonHeadline}</div>
+          <div className={`info-display font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.wonHeadline}</div>
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.wonMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
           <button
             onClick={onStart}
-            className="w-full min-h-[44px] bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95"
+            className="lab-fab w-full min-h-[48px] text-white py-3 rounded-xl font-bold transition-all active:scale-95 touch-manipulation"
           >
             {messages.challenge.next}
           </button>
@@ -141,14 +142,14 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
             <div className="absolute inset-0 bg-red-500/20 blur-xl rounded-full" />
             <AlertCircle className="w-16 h-16 text-red-500 relative z-10 mb-4" />
           </div>
-          <div className={`font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.lostHeadline}</div>
+          <div className={`info-display font-black text-2xl mb-1 ${primaryTextClass}`}>{messages.challenge.lostHeadline}</div>
           <div className={`text-sm mb-6 ${secondaryTextClass}`}>
             {messages.challenge.lostMessagePrefix} <span className={primaryTextClass}>{localizedTargetName}</span>.
           </div>
           <button
             onClick={onStart}
-            className={`w-full min-h-[44px] py-3 rounded-xl font-bold transition-all shadow-lg active:scale-95 ${
-              isDark ? 'bg-zinc-700 hover:bg-zinc-600 text-white' : 'bg-zinc-200 hover:bg-zinc-300 text-zinc-900'
+            className={`lab-tile w-full min-h-[48px] py-3 rounded-xl font-bold transition-all border active:scale-95 touch-manipulation ${
+              isDark ? 'text-white' : 'text-zinc-900'
             }`}
           >
             {messages.challenge.retry}

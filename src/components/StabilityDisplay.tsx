@@ -21,17 +21,15 @@ export function StabilityDisplay() {
   let color = 'text-emerald-400';
   if (report.score < 80) color = 'text-yellow-400';
   if (report.score < 50) color = 'text-red-400';
-  const panelClass = isDark
-    ? 'bg-zinc-900/80 border-white/10 shadow-2xl'
-    : 'bg-white/90 border-zinc-200 shadow-xl shadow-zinc-300/50';
+  const panelClass = 'lab-panel lab-panel-glow';
   const headingTextClass = isDark ? 'text-zinc-400' : 'text-zinc-500';
   const secondaryTextClass = isDark ? 'text-zinc-400' : 'text-zinc-600';
   const translatedIssues = report.issues.map((issue) => translateStabilityIssue(language, issue));
 
   return (
-    <div className={`backdrop-blur-md p-4 rounded-2xl border pointer-events-auto w-full ${panelClass}`}>
+    <div className={`lab-reveal p-4 rounded-2xl border pointer-events-auto w-full ${panelClass}`} style={{ animationDelay: '120ms' }}>
       <div className="flex justify-between items-end mb-2">
-        <h2 className={`font-bold text-sm uppercase tracking-wider ${headingTextClass}`}>{messages.stability.title}</h2>
+        <h2 className={`info-display font-bold text-sm uppercase tracking-wider ${headingTextClass}`}>{messages.stability.title}</h2>
         <div className={`text-xs font-mono font-bold ${report.energy > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
           {report.energy > 0 ? '+' : ''}{report.energy} kJ/mol
         </div>

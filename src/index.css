@@ -1,5 +1,218 @@
 @import "tailwindcss";
 
+:root {
+  --info-font-display: 'Space Grotesk', 'Avenir Next', 'Segoe UI', 'Noto Sans', sans-serif;
+  --info-font-body: 'Manrope', 'SF Pro Text', 'Segoe UI', 'Noto Sans', sans-serif;
+}
+
+.info-page-root {
+  background: var(--info-page-bg);
+  color: var(--info-text);
+  font-family: var(--info-font-body);
+}
+
+.info-display {
+  font-family: var(--info-font-display);
+  letter-spacing: -0.018em;
+}
+
+.info-panel {
+  background: var(--info-panel-bg);
+  border-color: var(--info-border);
+  box-shadow: 0 28px 70px var(--info-shadow);
+}
+
+.info-card {
+  background: var(--info-card-bg);
+  border-color: var(--info-border);
+  transition: transform 220ms ease, border-color 220ms ease, background-color 220ms ease;
+}
+
+.info-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--info-border-strong);
+}
+
+.info-accent-pill {
+  background: var(--info-pill-bg);
+  color: var(--info-pill-text);
+}
+
+.info-callout {
+  background: var(--info-callout-bg);
+  border-color: var(--info-callout-border);
+}
+
+.info-reveal {
+  opacity: 0;
+  animation: infoRise 460ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.info-orb {
+  animation: infoFloat 10s ease-in-out infinite;
+}
+
+@keyframes infoRise {
+  0% {
+    opacity: 0;
+    transform: translateY(14px) scale(0.992);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes infoFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-18px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .info-reveal,
+  .info-orb {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .info-card {
+    transition: none;
+  }
+}
+
+.lab-ui-root {
+  color: var(--lab-text-primary);
+}
+
+.lab-panel {
+  background: var(--lab-panel-bg);
+  border-color: var(--lab-border);
+  box-shadow: 0 24px 56px var(--lab-shadow);
+}
+
+.lab-soft-panel {
+  background: var(--lab-soft-bg);
+  border-color: var(--lab-border);
+}
+
+.lab-panel-glow {
+  position: relative;
+  overflow: hidden;
+}
+
+.lab-panel-glow::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(135deg, rgba(129, 140, 248, 0.08), transparent 45%);
+}
+
+.lab-tile {
+  background: var(--lab-tile-bg);
+  border-color: transparent;
+  transition: background-color 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+
+.lab-tile:hover {
+  background: var(--lab-tile-hover);
+  border-color: var(--lab-border-strong);
+  transform: translateY(-1px);
+}
+
+.lab-ghost {
+  transition: background-color 180ms ease, color 180ms ease;
+}
+
+.lab-ghost:hover {
+  background: var(--lab-ghost-hover);
+}
+
+.lab-accent-pill {
+  background: var(--lab-pill-bg);
+  color: var(--lab-pill-text);
+}
+
+.lab-fab {
+  background: var(--lab-fab-bg);
+  box-shadow: 0 14px 30px var(--lab-fab-shadow);
+  transition: transform 180ms ease, filter 180ms ease;
+}
+
+.lab-fab:hover {
+  filter: brightness(1.06);
+}
+
+.lab-mobile-drawer {
+  max-height: min(82dvh, 44rem);
+  padding-bottom: calc(1.1rem + env(safe-area-inset-bottom));
+}
+
+.lab-mobile-scroll {
+  overscroll-behavior: contain;
+}
+
+.lab-drawer-overlay {
+  animation: labFadeIn 180ms ease-out forwards;
+}
+
+.lab-reveal {
+  opacity: 0;
+  animation: labRise 380ms cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+}
+
+.lab-orb {
+  animation: labFloat 12s ease-in-out infinite;
+}
+
+@keyframes labRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes labFloat {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes labFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-reveal,
+  .lab-orb,
+  .lab-drawer-overlay {
+    animation: none !important;
+    opacity: 1;
+  }
+
+  .lab-tile,
+  .lab-ghost,
+  .lab-fab {
+    transition: none;
+  }
+}
+
 .stealth-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: transparent transparent;
