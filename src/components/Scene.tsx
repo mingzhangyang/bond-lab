@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { useStore } from '../store';
@@ -13,6 +13,24 @@ export function Scene() {
   const draggedAtom = useStore(state => state.draggedAtom);
   const rotatingBond = useStore(state => state.rotatingBond);
   const isDark = theme === 'dark';
+  const [showDeferredEffects, setShowDeferredEffects] = useState(false);
+
+  useEffect(() => {
+    const enableEffects = () => setShowDeferredEffects(true);
+
+    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
+      const idleId = window.requestIdleCallback(enableEffects, { timeout: 250 });
+      return () => {
+        window.cancelIdleCallback(idleId);
+      };
+    }
+
+    const timeoutTarget = typeof window !== 'undefined' ? window : globalThis;
+    const timeoutId = timeoutTarget.setTimeout(enableEffects, 120);
+    return () => {
+      timeoutTarget.clearTimeout(timeoutId);
+    };
+  }, []);
 
   return (
     <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
@@ -43,8 +61,18 @@ export function Scene() {
           enableZoom={true}
           enabled={draggedAtom === null && rotatingBond === null}
         />
-        <Environment preset={isDark ? 'city' : 'park'} />
-        <ContactShadows position={[0, -4, 0]} opacity={isDark ? 0.4 : 0.22} scale={20} blur={2} far={10} />
+        {showDeferredEffects ? (
+          <>
+            <Environment preset={isDark ? 'city' : 'park'} />
+            <ContactShadows
+              position={[0, -4, 0]}
+              opacity={isDark ? 0.4 : 0.22}
+              scale={20}
+              blur={2}
+              far={10}
+            />
+          </>
+        ) : null}
       </Canvas>
     </div>
   );

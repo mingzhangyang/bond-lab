@@ -3,16 +3,45 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { useEffect, useMemo, useState } from 'react';
-import { Scene } from './components/Scene';
-import { UI } from './components/UI';
-import { InstructionsPage } from './components/InstructionsPage';
-import { PrivacyPage } from './components/PrivacyPage';
+import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { useStore } from './store';
 import { getMessages } from './i18n';
 import { getSeo } from './seo';
 import { getRouteFromPath } from './routes';
 import type { AppRoute } from './routes';
+import { getAppShellTheme } from './appShell';
+
+const LabPage = lazy(async () => {
+  const module = await import('./components/LabPage');
+  return { default: module.LabPage };
+});
+
+const InstructionsPage = lazy(async () => {
+  const module = await import('./components/InstructionsPage');
+  return { default: module.InstructionsPage };
+});
+
+const PrivacyPage = lazy(async () => {
+  const module = await import('./components/PrivacyPage');
+  return { default: module.PrivacyPage };
+});
+
+function RouteFallback() {
+  const theme = useStore((state) => state.theme);
+  const shellTheme = getAppShellTheme(theme);
+
+  return (
+    <main
+      className="app-shell app-route-fallback h-screen w-screen"
+      style={{
+        backgroundColor: shellTheme.background,
+        color: shellTheme.text,
+      }}
+    >
+      <div className="app-route-loader" aria-hidden="true" />
+    </main>
+  );
+}
 
 export default function App() {
   const theme = useStore((state) => state.theme);
@@ -23,8 +52,11 @@ export default function App() {
   });
   const messages = useMemo(() => getMessages(language), [language]);
   const seo = useMemo(() => getSeo(language), [language]);
-  const isDark = theme === 'dark';
-  const footerTextClass = isDark ? 'text-zinc-500' : 'text-zinc-600';
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    document.documentElement.style.colorScheme = theme;
+  }, [theme]);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -80,39 +112,24 @@ export default function App() {
   }, [language, messages.appTitle, messages.ui.instructionsTitle, messages.ui.privacyTitle, route, seo]);
 
   if (route === 'privacy') {
-    return <PrivacyPage />;
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <PrivacyPage />
+      </Suspense>
+    );
   }
 
   if (route === 'instructions') {
-    return <InstructionsPage />;
+    return (
+      <Suspense fallback={<RouteFallback />}>
+        <InstructionsPage />
+      </Suspense>
+    );
   }
 
   return (
-    <main className={`w-screen h-screen overflow-hidden relative font-sans ${isDark ? 'bg-black' : 'bg-slate-100'}`}>
-      <Scene />
-      <UI />
-      <footer
-        className={`pointer-events-none fixed inset-x-0 bottom-3 z-30 text-center text-[11px] uppercase tracking-[0.16em] ${footerTextClass}`}
-      >
-        © {new Date().getFullYear()} {messages.appTitle}
-      </footer>
-      <section className="sr-only" aria-label="BondLab SEO content">
-        <h1>{seo.content.heading}</h1>
-        <p>{seo.content.intro}</p>
-        <h2>{seo.content.featureHeading}</h2>
-        <ul>
-          {seo.content.features.map((feature) => (
-            <li key={feature}>{feature}</li>
-          ))}
-        </ul>
-        <h2>{seo.content.faqHeading}</h2>
-        {seo.content.faqs.map((faq) => (
-          <article key={faq.question}>
-            <h3>{faq.question}</h3>
-            <p>{faq.answer}</p>
-          </article>
-        ))}
-      </section>
-    </main>
+    <Suspense fallback={<RouteFallback />}>
+      <LabPage />
+    </Suspense>
   );
 }

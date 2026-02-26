@@ -3,6 +3,60 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      :root {
+        background: #18181b;
+        color-scheme: dark;
+      }
+
+      html,
+      body,
+      #root {
+        min-height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: #18181b;
+        color: #f4f4f5;
+      }
+
+      :root[data-theme='light'] {
+        background: #e2e8f0;
+        color-scheme: light;
+      }
+
+      :root[data-theme='light'] body {
+        background: #e2e8f0;
+        color: #0f172a;
+      }
+
+      :root[data-theme='dark'] body {
+        background: #18181b;
+        color: #f4f4f5;
+      }
+    </style>
+    <script>
+      (() => {
+        const storedTheme = (() => {
+          try {
+            return window.localStorage.getItem('bondlab-theme');
+          } catch {
+            return null;
+          }
+        })();
+        const prefersDark = typeof window.matchMedia === 'function'
+          && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = storedTheme === 'light' || storedTheme === 'dark'
+          ? storedTheme
+          : prefersDark
+            ? 'dark'
+            : 'light';
+
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.style.colorScheme = theme;
+      })();
+    </script>
     <title>BondLab | Interactive Molecule Builder</title>
     <meta
       name="description"
