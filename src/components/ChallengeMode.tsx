@@ -1,8 +1,18 @@
-import React, { useEffect, useMemo } from 'react';
-import { X, Trophy, AlertCircle, Timer, Target, Zap } from 'lucide-react';
+import React, { useEffect, useMemo, useState } from 'react';
+import {
+  X,
+  Trophy,
+  AlertCircle,
+  Timer,
+  Target,
+  Zap,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { useStore } from '../store';
 import { KNOWN_MOLECULES, identifyMolecule } from '../identifier';
 import { getMessages, localizeMoleculeName, type Language } from '../i18n';
+import { getProgressColorClass, shouldExpandMobileChallenge } from '../challengeLayout';
 
 type Messages = ReturnType<typeof getMessages>;
 
@@ -15,7 +25,7 @@ function ChallengeStartButton({ messages, onStart }: ChallengeStartButtonProps) 
   return (
     <button
       onClick={onStart}
-      className="lab-fab lab-reveal group relative min-h-[44px] flex items-center justify-center gap-2 text-white px-5 py-3 rounded-2xl transition-all active:scale-95 w-full md:w-auto pointer-events-auto overflow-hidden"
+      className="lab-fab lab-reveal group relative min-h-[44px] flex items-center justify-center gap-2 text-white px-5 py-3 rounded-2xl transition-all active:scale-95 w-full pointer-events-auto overflow-hidden"
     >
       <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 motion-reduce:translate-y-0 transition-transform duration-300 ease-out" />
       <Zap size={18} className="group-hover:scale-110 transition-transform" />
@@ -42,6 +52,7 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
   const bonds = useStore((state) => state.bonds);
   const theme = useStore((state) => state.theme);
   const isDark = theme === 'dark';
+  const [isMobileExpanded, setIsMobileExpanded] = useState(() => shouldExpandMobileChallenge(challengeStatus));
 
   useEffect(() => {
     if (challengeStatus !== 'playing') return;
@@ -60,10 +71,12 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
     }
   }, [atoms, bonds, challengeStatus, challengeTarget, winChallenge]);
 
+  useEffect(() => {
+    setIsMobileExpanded(shouldExpandMobileChallenge(challengeStatus));
+  }, [challengeStatus, challengeTarget?.name]);
+
   const progress = challengeTotalTime ? (challengeTimeLeft / challengeTotalTime) * 100 : 0;
-  let progressColor = 'bg-emerald-500';
-  if (progress < 50) progressColor = 'bg-yellow-500';
-  if (progress < 20) progressColor = 'bg-red-500';
+  const progressColorClass = getProgressColorClass(progress);
 
   const panelClass = 'lab-panel lab-panel-glow';
   const primaryTextClass = isDark ? 'text-white' : 'text-zinc-900';
@@ -74,45 +87,84 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
   const localizedTargetName = challengeTarget
     ? localizeMoleculeName(language, challengeTarget.name)
     : null;
+  const isCompactMobile = challengeStatus === 'playing' && !isMobileExpanded;
+  const toggleLabel = isMobileExpanded ? 'Collapse challenge details' : 'Expand challenge details';
 
   return (
     <div
-      className={`lab-reveal fixed left-1/2 -translate-x-1/2 md:static md:translate-x-0 w-[calc(100%-2rem)] md:w-72 p-5 md:p-6 rounded-3xl border pointer-events-auto z-40 overflow-hidden flex flex-col ${panelClass}`}
-      style={{ top: 'calc(env(safe-area-inset-top) + 0.75rem)' }}
+      className={`lab-reveal fixed inset-x-3 bottom-[calc(4.75rem+env(safe-area-inset-bottom))] md:static md:inset-auto md:bottom-auto w-auto md:w-full p-4 md:p-6 rounded-3xl border pointer-events-auto z-[45] overflow-hidden flex flex-col ${panelClass}`}
     >
       {challengeStatus === 'playing' && (
         <div className={`absolute top-0 left-0 w-full h-1.5 ${isDark ? 'bg-zinc-800' : 'bg-zinc-200'}`}>
           <div
-            className={`h-full ${progressColor} transition-all duration-1000 ease-linear motion-reduce:transition-none`}
+            className={`h-full ${progressColorClass} transition-all duration-1000 ease-linear motion-reduce:transition-none`}
             style={{ width: `${progress}%` }}
           />
         </div>
       )}
 
-      <div className="flex justify-between items-start mb-6">
-        <div className="info-display flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest">
-          <Target size={16} />
+      <div className={`flex justify-between items-start gap-2 ${isCompactMobile ? 'mb-3' : 'mb-6'}`}>
+        <div className="info-display flex items-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-widest min-w-0">
+          <Target size={16} className="shrink-0" />
           <span>{messages.challenge.target}</span>
         </div>
-        <button
-          onClick={stopChallenge}
-          aria-label={messages.challenge.close}
-          className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
-        >
-          <X size={16} />
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          {challengeStatus === 'playing' && isCompactMobile && (
+            <div
+              className={`lab-accent-pill font-mono text-sm px-3 py-1 rounded-full border border-indigo-500/20 ${
+                challengeTimeLeft <= 10 ? 'text-red-500' : ''
+              }`}
+            >
+              {challengeTimeLeft}
+              {messages.challenge.secondsShort}
+            </div>
+          )}
+          {challengeStatus === 'playing' && (
+            <button
+              onClick={() => setIsMobileExpanded((expanded) => !expanded)}
+              aria-label={toggleLabel}
+              title={toggleLabel}
+              className={`md:hidden h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
+            >
+              {isMobileExpanded ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+            </button>
+          )}
+          <button
+            onClick={stopChallenge}
+            aria-label={messages.challenge.close}
+            className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center touch-manipulation ${iconButtonClass}`}
+          >
+            <X size={16} />
+          </button>
+        </div>
       </div>
 
-      {challengeStatus === 'playing' && challengeTarget && (
+      {isCompactMobile && challengeTarget && (
+        <div className="md:hidden">
+          <div className={`info-display font-black text-lg tracking-tight truncate ${primaryTextClass}`}>{localizedTargetName}</div>
+          <div className="lab-accent-pill inline-flex font-mono text-base px-3 py-1 rounded-lg border border-indigo-500/20 mt-1 shadow-inner">
+            {challengeTarget.formula}
+          </div>
+        </div>
+      )}
+
+      {challengeStatus === 'playing' && challengeTarget && !isCompactMobile && (
         <div className="flex flex-col items-center text-center">
-          <div className={`info-display font-black text-3xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
-          <div className="lab-accent-pill font-mono text-xl px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
+          <div className={`info-display font-black text-2xl md:text-3xl tracking-tight mb-1 ${primaryTextClass}`}>{localizedTargetName}</div>
+          <div className="lab-accent-pill font-mono text-lg md:text-xl px-4 py-1 rounded-lg border border-indigo-500/20 mb-6 shadow-inner">
             {challengeTarget.formula}
           </div>
 
-          <div className={`flex items-center gap-2 text-4xl font-black ${challengeTimeLeft <= 10 ? 'text-red-500 motion-safe:animate-pulse' : primaryTextClass}`}>
-            <Timer size={32} className={challengeTimeLeft <= 10 ? 'motion-safe:animate-bounce' : ''} />
-            <span className="tabular-nums">{challengeTimeLeft}{messages.challenge.secondsShort}</span>
+          <div
+            className={`flex items-center gap-2 text-3xl md:text-4xl font-black ${
+              challengeTimeLeft <= 10 ? 'text-red-500 motion-safe:animate-pulse' : primaryTextClass
+            }`}
+          >
+            <Timer size={28} className={challengeTimeLeft <= 10 ? 'motion-safe:animate-bounce' : ''} />
+            <span className="tabular-nums">
+              {challengeTimeLeft}
+              {messages.challenge.secondsShort}
+            </span>
           </div>
         </div>
       )}
