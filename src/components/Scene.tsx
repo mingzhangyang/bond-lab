@@ -9,17 +9,19 @@ import { PhysicsEngine } from '../physics';
 export function Scene() {
   const atoms = useStore(state => state.atoms);
   const bonds = useStore(state => state.bonds);
+  const theme = useStore(state => state.theme);
+  const isDark = theme === 'dark';
 
   return (
-    <div className="w-full h-full bg-zinc-900">
+    <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 45 }}
         onPointerMissed={() => useStore.getState().setSelectedAtom(null)}
       >
-        <color attach="background" args={['#18181b']} />
-        <ambientLight intensity={0.5} />
-        <directionalLight position={[10, 10, 5]} intensity={1} castShadow />
-        <directionalLight position={[-10, -10, -5]} intensity={0.5} />
+        <color attach="background" args={[isDark ? '#18181b' : '#e2e8f0']} />
+        <ambientLight intensity={isDark ? 0.5 : 0.8} />
+        <directionalLight position={[10, 10, 5]} intensity={isDark ? 1 : 0.8} castShadow />
+        <directionalLight position={[-10, -10, -5]} intensity={isDark ? 0.5 : 0.35} />
         
         <PhysicsEngine />
         
@@ -33,8 +35,8 @@ export function Scene() {
         </group>
 
         <OrbitControls makeDefault enablePan={false} enableZoom={true} />
-        <Environment preset="city" />
-        <ContactShadows position={[0, -4, 0]} opacity={0.4} scale={20} blur={2} far={10} />
+        <Environment preset={isDark ? 'city' : 'park'} />
+        <ContactShadows position={[0, -4, 0]} opacity={isDark ? 0.4 : 0.22} scale={20} blur={2} far={10} />
       </Canvas>
     </div>
   );

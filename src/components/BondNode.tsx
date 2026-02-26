@@ -9,6 +9,7 @@ export function BondNode({ bond }: { bond: Bond }) {
   const [hovered, setHovered] = useState(false);
   const removeBond = useStore(state => state.removeBond);
   const addBond = useStore(state => state.addBond);
+  const interactionMode = useStore(state => state.interactionMode);
   
   useFrame(() => {
     if (!meshRef.current) return;
@@ -38,9 +39,14 @@ export function BondNode({ bond }: { bond: Bond }) {
       ref={meshRef}
       onClick={(e) => {
         e.stopPropagation();
+        if (interactionMode === 'delete') {
+          removeBond(bond.id);
+          return;
+        }
         addBond(bond.source, bond.target); // this upgrades the bond
       }}
       onContextMenu={(e) => {
+        e.nativeEvent.preventDefault();
         e.stopPropagation();
         removeBond(bond.id);
       }}
@@ -50,7 +56,12 @@ export function BondNode({ bond }: { bond: Bond }) {
       {offsets.map((offset, i) => (
         <mesh key={i} position={[offset, 0, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 1, 16]} />
-          <meshStandardMaterial color={hovered ? "#aaaaaa" : "#888888"} roughness={0.4} metalness={0.2} emissive={hovered ? "#222" : "#000"} />
+          <meshStandardMaterial
+            color={hovered ? (interactionMode === 'delete' ? '#ef4444' : '#aaaaaa') : '#888888'}
+            roughness={0.4}
+            metalness={0.2}
+            emissive={hovered ? (interactionMode === 'delete' ? '#330000' : '#222') : '#000'}
+          />
         </mesh>
       ))}
     </group>

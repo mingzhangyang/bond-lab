@@ -13,6 +13,8 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
   const selectedAtom = useStore(state => state.selectedAtom);
   const setSelectedAtom = useStore(state => state.setSelectedAtom);
   const addBond = useStore(state => state.addBond);
+  const removeAtom = useStore(state => state.removeAtom);
+  const interactionMode = useStore(state => state.interactionMode);
   const [hovered, setHovered] = useState(false);
   const { camera, size, raycaster } = useThree();
 
@@ -46,6 +48,7 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
 
     const handlePointerUp = () => {
       setDraggedAtom(null);
+      if (useStore.getState().interactionMode !== 'build') return;
       
       const p1 = atomPositions[id];
       if (!p1) return;
@@ -83,10 +86,17 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
       onPointerDown={(e) => {
         e.stopPropagation();
-        setDraggedAtom(id);
+        if (interactionMode === 'build') {
+          setDraggedAtom(id);
+        }
       }}
       onClick={(e) => {
         e.stopPropagation();
+        if (interactionMode === 'delete') {
+          removeAtom(id);
+          setSelectedAtom(null);
+          return;
+        }
         if (selectedAtom === null) {
           setSelectedAtom(id);
         } else if (selectedAtom === id) {
@@ -97,8 +107,9 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
         }
       }}
       onContextMenu={(e) => {
+        e.nativeEvent.preventDefault();
         e.stopPropagation();
-        useStore.getState().removeAtom(id);
+        removeAtom(id);
       }}
     >
       <sphereGeometry args={[data.vdwRadius * 0.4, 32, 32]} />
@@ -106,7 +117,7 @@ export function AtomNode({ id, element }: { id: string, element: ElementType }) 
         color={data.color} 
         roughness={0.3} 
         metalness={0.1} 
-        emissive={isSelected ? '#666' : (hovered ? '#333' : '#000')} 
+        emissive={isSelected ? '#666' : (hovered ? (interactionMode === 'delete' ? '#660000' : '#333') : '#000')} 
       />
       <Html center position={[0, 0, data.vdwRadius * 0.4 + 0.2]} style={{ pointerEvents: 'none' }}>
         <div className="text-white font-bold text-sm drop-shadow-md select-none" style={{ textShadow: '0px 0px 2px black, 0px 0px 4px black' }}>

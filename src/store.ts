@@ -1,5 +1,15 @@
 import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
+import type { Language } from './i18n.ts';
+import {
+  LANGUAGE_STORAGE_KEY,
+  THEME_STORAGE_KEY,
+  nextLanguage,
+  resolveInitialLanguage,
+  resolveInitialTheme,
+  toggleTheme as getNextTheme,
+} from './preferences.ts';
+import type { InteractionMode, Theme } from './preferences.ts';
 
 export type ElementType = 'H' | 'C' | 'N' | 'O';
 
@@ -27,6 +37,9 @@ interface GameState {
   bonds: Bond[];
   draggedAtom: string | null;
   selectedAtom: string | null;
+  theme: Theme;
+  language: Language;
+  interactionMode: InteractionMode;
   
   // Challenge Mode
   challengeActive: boolean;
@@ -37,6 +50,10 @@ interface GameState {
   
   setDraggedAtom: (id: string | null) => void;
   setSelectedAtom: (id: string | null) => void;
+  toggleTheme: () => void;
+  setLanguage: (language: Language) => void;
+  cycleLanguage: () => void;
+  setInteractionMode: (mode: InteractionMode) => void;
   addAtom: (element: ElementType) => string;
   removeAtom: (id: string) => void;
   addBond: (source: string, target: string) => void;
@@ -49,11 +66,45 @@ interface GameState {
   stopChallenge: () => void;
 }
 
+function getStoredValue(key: string): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function setStoredValue(key: string, value: string): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(key, value);
+  } catch {
+    // No-op when storage is unavailable.
+  }
+}
+
+function getPrefersDarkScheme(): boolean {
+  if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') {
+    return true;
+  }
+  return window.matchMedia('(prefers-color-scheme: dark)').matches;
+}
+
+const initialTheme = resolveInitialTheme(
+  getStoredValue(THEME_STORAGE_KEY),
+  getPrefersDarkScheme(),
+);
+const initialLanguage = resolveInitialLanguage(getStoredValue(LANGUAGE_STORAGE_KEY));
+
 export const useStore = create<GameState>((set, get) => ({
   atoms: [],
   bonds: [],
   draggedAtom: null,
   selectedAtom: null,
+  theme: initialTheme,
+  language: initialLanguage,
+  interactionMode: 'build',
   
   challengeActive: false,
   challengeTarget: null,
@@ -63,6 +114,21 @@ export const useStore = create<GameState>((set, get) => ({
   
   setDraggedAtom: (id) => set({ draggedAtom: id }),
   setSelectedAtom: (id) => set({ selectedAtom: id }),
+  toggleTheme: () => set((state) => {
+    const theme = getNextTheme(state.theme);
+    setStoredValue(THEME_STORAGE_KEY, theme);
+    return { theme };
+  }),
+  setLanguage: (language) => set(() => {
+    setStoredValue(LANGUAGE_STORAGE_KEY, language);
+    return { language };
+  }),
+  cycleLanguage: () => set((state) => {
+    const language = nextLanguage(state.language);
+    setStoredValue(LANGUAGE_STORAGE_KEY, language);
+    return { language };
+  }),
+  setInteractionMode: (interactionMode) => set({ interactionMode }),
   addAtom: (element) => {
     const id = uuidv4();
     set((state) => ({
