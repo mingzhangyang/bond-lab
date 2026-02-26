@@ -15,7 +15,6 @@ export interface Messages {
     buildMode: string;
     deleteMode: string;
     removeHint: string;
-    showAtomLabels: string;
     themeToggle: string;
     languageToggle: string;
     collapse: string;
@@ -63,7 +62,6 @@ const EN_MESSAGES: Messages = {
     buildMode: 'Build',
     deleteMode: 'Delete',
     removeHint: 'Switch to Delete mode to remove atoms and bonds.',
-    showAtomLabels: 'Show atom labels',
     themeToggle: 'Toggle color theme',
     languageToggle: 'Switch language',
     collapse: 'Collapse',
@@ -119,7 +117,6 @@ const ES_MESSAGES: Messages = {
     buildMode: 'Construir',
     deleteMode: 'Eliminar',
     removeHint: 'Cambia al modo Eliminar para quitar atomos y enlaces.',
-    showAtomLabels: 'Mostrar simbolos de atomos',
     themeToggle: 'Cambiar tema de color',
     languageToggle: 'Cambiar idioma',
     collapse: 'Colapsar',
@@ -175,7 +172,6 @@ const ZH_MESSAGES: Messages = {
     buildMode: '构建',
     deleteMode: '删除',
     removeHint: '切换到删除模式可移除原子和键。',
-    showAtomLabels: '显示原子符号',
     themeToggle: '切换主题',
     languageToggle: '切换语言',
     collapse: '收起',
@@ -231,7 +227,6 @@ const FR_MESSAGES: Messages = {
     buildMode: 'Construire',
     deleteMode: 'Supprimer',
     removeHint: 'Passez en mode Supprimer pour retirer atomes et liaisons.',
-    showAtomLabels: 'Afficher etiquettes atomiques',
     themeToggle: 'Changer le theme',
     languageToggle: 'Changer la langue',
     collapse: 'Reduire',
@@ -287,7 +282,6 @@ const JA_MESSAGES: Messages = {
     buildMode: '作成',
     deleteMode: '削除',
     removeHint: '原子と結合を削除するには削除モードに切り替えてください。',
-    showAtomLabels: '原子記号を表示',
     themeToggle: 'テーマ切替',
     languageToggle: '言語切替',
     collapse: '折りたたむ',

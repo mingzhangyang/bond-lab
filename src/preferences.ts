@@ -5,7 +5,6 @@ export type InteractionMode = 'build' | 'delete';
 
 export const THEME_STORAGE_KEY = 'bondlab-theme';
 export const LANGUAGE_STORAGE_KEY = 'bondlab-language';
-export const SHOW_ATOM_LABELS_STORAGE_KEY = 'bondlab-show-atom-labels';
 export const CONTROLS_COLLAPSED_STORAGE_KEY = 'bondlab-controls-collapsed';
 
 const SUPPORTED_THEMES: Theme[] = ['dark', 'light'];
@@ -55,10 +54,6 @@ function resolveInitialBooleanPreference(
   if (storedValue === 'true') return true;
   if (storedValue === 'false') return false;
   return fallback;
-}
-
-export function resolveInitialShowAtomLabels(storedValue: string | null): boolean {
-  return resolveInitialBooleanPreference(storedValue, true);
 }
 
 export function resolveInitialControlsCollapsed(storedValue: string | null): boolean {

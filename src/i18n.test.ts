@@ -5,14 +5,12 @@ import { getMessages, localizeMoleculeName, translateStabilityIssue } from './i1
 test('getMessages returns English defaults', () => {
   const en = getMessages('en');
   assert.equal(en.ui.addElement, 'Add Element');
-  assert.equal(en.ui.showAtomLabels, 'Show atom labels');
   assert.equal(en.challenge.title, 'Challenge');
 });
 
 test('getMessages returns Spanish copy', () => {
   const es = getMessages('es');
   assert.equal(es.ui.addElement, 'Agregar elemento');
-  assert.equal(es.ui.showAtomLabels, 'Mostrar simbolos de atomos');
   assert.equal(es.challenge.title, 'Desafio');
 });
 

@@ -4,12 +4,10 @@ import type { Language } from './i18n.ts';
 import {
   CONTROLS_COLLAPSED_STORAGE_KEY,
   LANGUAGE_STORAGE_KEY,
-  SHOW_ATOM_LABELS_STORAGE_KEY,
   THEME_STORAGE_KEY,
   nextLanguage,
   resolveInitialControlsCollapsed,
   resolveInitialLanguage,
-  resolveInitialShowAtomLabels,
   resolveInitialTheme,
   toggleTheme as getNextTheme,
 } from './preferences.ts';
@@ -44,7 +42,6 @@ interface GameState {
   theme: Theme;
   language: Language;
   interactionMode: InteractionMode;
-  showAtomLabels: boolean;
   controlsCollapsed: boolean;
   
   // Challenge Mode
@@ -60,7 +57,6 @@ interface GameState {
   setLanguage: (language: Language) => void;
   cycleLanguage: () => void;
   setInteractionMode: (mode: InteractionMode) => void;
-  toggleShowAtomLabels: () => void;
   toggleControlsCollapsed: () => void;
   addAtom: (element: ElementType) => string;
   removeAtom: (id: string) => void;
@@ -104,9 +100,6 @@ const initialTheme = resolveInitialTheme(
   getPrefersDarkScheme(),
 );
 const initialLanguage = resolveInitialLanguage(getStoredValue(LANGUAGE_STORAGE_KEY));
-const initialShowAtomLabels = resolveInitialShowAtomLabels(
-  getStoredValue(SHOW_ATOM_LABELS_STORAGE_KEY),
-);
 const initialControlsCollapsed = resolveInitialControlsCollapsed(
   getStoredValue(CONTROLS_COLLAPSED_STORAGE_KEY),
 );
@@ -119,7 +112,6 @@ export const useStore = create<GameState>((set, get) => ({
   theme: initialTheme,
   language: initialLanguage,
   interactionMode: 'build',
-  showAtomLabels: initialShowAtomLabels,
   controlsCollapsed: initialControlsCollapsed,
   
   challengeActive: false,
@@ -145,11 +137,6 @@ export const useStore = create<GameState>((set, get) => ({
     return { language };
   }),
   setInteractionMode: (interactionMode) => set({ interactionMode }),
-  toggleShowAtomLabels: () => set((state) => {
-    const showAtomLabels = !state.showAtomLabels;
-    setStoredValue(SHOW_ATOM_LABELS_STORAGE_KEY, String(showAtomLabels));
-    return { showAtomLabels };
-  }),
   toggleControlsCollapsed: () => set((state) => {
     const controlsCollapsed = !state.controlsCollapsed;
     setStoredValue(CONTROLS_COLLAPSED_STORAGE_KEY, String(controlsCollapsed));

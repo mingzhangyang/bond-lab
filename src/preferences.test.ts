@@ -4,7 +4,6 @@ import {
   resolveInitialControlsCollapsed,
   nextLanguage,
   resolveInitialLanguage,
-  resolveInitialShowAtomLabels,
   resolveInitialTheme,
   toggleTheme,
 } from './preferences.ts';
@@ -39,13 +38,6 @@ test('resolveInitialLanguage returns a supported language', () => {
   assert.equal(resolveInitialLanguage('ja'), 'ja');
   assert.equal(resolveInitialLanguage('invalid'), 'en');
   assert.equal(resolveInitialLanguage(null), 'en');
-});
-
-test('resolveInitialShowAtomLabels defaults to true and honors stored values', () => {
-  assert.equal(resolveInitialShowAtomLabels('true'), true);
-  assert.equal(resolveInitialShowAtomLabels('false'), false);
-  assert.equal(resolveInitialShowAtomLabels('invalid'), true);
-  assert.equal(resolveInitialShowAtomLabels(null), true);
 });
 
 test('resolveInitialControlsCollapsed defaults to false and honors stored values', () => {

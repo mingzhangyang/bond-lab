@@ -8,8 +8,6 @@ import {
   Sun,
   Globe,
   Moon,
-  Eye,
-  EyeOff,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
@@ -28,8 +26,6 @@ export function UI() {
   const cycleLanguage = useStore((state) => state.cycleLanguage);
   const interactionMode = useStore((state) => state.interactionMode);
   const setInteractionMode = useStore((state) => state.setInteractionMode);
-  const showAtomLabels = useStore((state) => state.showAtomLabels);
-  const toggleShowAtomLabels = useStore((state) => state.toggleShowAtomLabels);
   const controlsCollapsed = useStore((state) => state.controlsCollapsed);
   const toggleControlsCollapsed = useStore((state) => state.toggleControlsCollapsed);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -133,16 +129,6 @@ export function UI() {
               </button>
             </div>
             <p className={`mt-3 text-xs ${secondaryTextClass}`}>{messages.ui.removeHint}</p>
-            <button
-              onClick={toggleShowAtomLabels}
-              aria-pressed={showAtomLabels}
-              className={`mt-3 w-full min-h-[44px] rounded-xl text-sm font-semibold transition-colors flex items-center justify-between px-3 ${
-                showAtomLabels ? activeModeClass : inactiveModeClass
-              }`}
-            >
-              <span>{messages.ui.showAtomLabels}</span>
-              {showAtomLabels ? <Eye size={16} /> : <EyeOff size={16} />}
-            </button>
           </div>
 
           {/* Desktop Elements Panel */}
