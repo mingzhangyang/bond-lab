@@ -1,20 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useStore } from '../store';
-import { calculateStability, StabilityReport } from '../stability';
+import { calculateStability } from '../stability';
 
 export function StabilityDisplay() {
-  const atoms = useStore(state => state.atoms);
-  const bonds = useStore(state => state.bonds);
-  const [report, setReport] = useState<StabilityReport | null>(null);
+  const atoms = useStore((state) => state.atoms);
+  const bonds = useStore((state) => state.bonds);
+  const report = useMemo(() => calculateStability(atoms, bonds), [atoms, bonds]);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setReport(calculateStability(atoms, bonds));
-    }, 500);
-    return () => clearInterval(interval);
-  }, [atoms, bonds]);
-
-  if (!report || atoms.length === 0) return null;
+  if (atoms.length === 0) return null;
 
   let color = 'text-emerald-400';
   if (report.score < 80) color = 'text-yellow-400';

@@ -4,11 +4,17 @@ import { KNOWN_MOLECULES, identifyMolecule } from '../identifier';
 import { X, Trophy, AlertCircle, Timer, Target, Zap } from 'lucide-react';
 
 export function ChallengeMode() {
-  const { 
-    challengeActive, challengeTarget, challengeTimeLeft, challengeTotalTime, challengeStatus,
-    startChallenge, tickChallenge, stopChallenge, winChallenge,
-    atoms, bonds
-  } = useStore();
+  const challengeActive = useStore((state) => state.challengeActive);
+  const challengeTarget = useStore((state) => state.challengeTarget);
+  const challengeTimeLeft = useStore((state) => state.challengeTimeLeft);
+  const challengeTotalTime = useStore((state) => state.challengeTotalTime);
+  const challengeStatus = useStore((state) => state.challengeStatus);
+  const startChallenge = useStore((state) => state.startChallenge);
+  const tickChallenge = useStore((state) => state.tickChallenge);
+  const stopChallenge = useStore((state) => state.stopChallenge);
+  const winChallenge = useStore((state) => state.winChallenge);
+  const atoms = useStore((state) => state.atoms);
+  const bonds = useStore((state) => state.bonds);
 
   // Timer
   useEffect(() => {

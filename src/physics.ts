@@ -13,6 +13,8 @@ const K_BOND = 25.0;
 const K_VSEPR = 10.0;
 const K_REPULSION = 5.0;
 const DAMPING = 0.8;
+const MIN_DIST_SQ = 0.01;
+const MIN_DIST = 0.001;
 
 export function PhysicsEngine() {
   const atoms = useStore(state => state.atoms);
@@ -60,10 +62,12 @@ export function PhysicsEngine() {
         if (!p1 || !p2) continue;
 
         const diff = new THREE.Vector3().subVectors(p1, p2);
-        const distSq = diff.lengthSq();
-        if (distSq < 0.01) diff.set(Math.random(), Math.random(), Math.random()).normalize();
-        
-        const dist = Math.sqrt(distSq) || 0.1;
+        let distSq = diff.lengthSq();
+        if (distSq < MIN_DIST_SQ) {
+          diff.set(Math.random(), Math.random(), Math.random()).normalize();
+          distSq = MIN_DIST_SQ;
+        }
+
         const forceMag = K_REPULSION / distSq;
         const force = diff.normalize().multiplyScalar(forceMag);
         
@@ -86,6 +90,7 @@ export function PhysicsEngine() {
 
       const diff = new THREE.Vector3().subVectors(p2, p1);
       const dist = diff.length();
+      if (dist < MIN_DIST) continue;
       
       const forceMag = K_BOND * (dist - IDEAL_BOND_LENGTH);
       const force = diff.normalize().multiplyScalar(forceMag);
@@ -231,6 +236,7 @@ export function PhysicsEngine() {
       for (const lp of lps) {
         const diff = new THREE.Vector3().subVectors(pC, lp);
         const dist = diff.length();
+        if (dist < MIN_DIST) continue;
         const forceMag = K_BOND * (dist - LONE_PAIR_DIST);
         const force = diff.normalize().multiplyScalar(forceMag);
         lp.add(force.clone().multiplyScalar(dt));

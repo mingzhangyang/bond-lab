@@ -1,6 +1,5 @@
-import * as THREE from 'three';
-import { Atom, Bond, ELEMENTS } from './store';
-import { atomPositions } from './physics';
+import { ELEMENTS } from './store.ts';
+import type { Atom, Bond } from './store.ts';
 
 export interface StabilityReport {
   score: number;
@@ -40,23 +39,30 @@ export function calculateStability(atoms: Atom[], bonds: Bond[]): StabilityRepor
   let totalBondEnergy = 0;
   let strainEnergy = 0;
   const issues: string[] = [];
+  const atomById = new Map(atoms.map((atom) => [atom.id, atom]));
 
   // Calculate base bond energies
   for (const bond of bonds) {
-    const el1 = atoms.find(a => a.id === bond.source)?.element;
-    const el2 = atoms.find(a => a.id === bond.target)?.element;
+    const el1 = atomById.get(bond.source)?.element;
+    const el2 = atomById.get(bond.target)?.element;
     if (el1 && el2) {
       totalBondEnergy += getBondEnergy(el1, el2, bond.order);
     }
   }
 
-  // 1. Valency / Octet Rule
+  // Valency / Octet Rule (topology only, engine-agnostic)
   const bondCounts: Record<string, number> = {};
-  for (const atom of atoms) bondCounts[atom.id] = 0;
+  for (const atom of atoms) {
+    bondCounts[atom.id] = 0;
+  }
 
   for (const bond of bonds) {
-    bondCounts[bond.source] += bond.order;
-    bondCounts[bond.target] += bond.order;
+    if (bondCounts[bond.source] !== undefined) {
+      bondCounts[bond.source] += bond.order;
+    }
+    if (bondCounts[bond.target] !== undefined) {
+      bondCounts[bond.target] += bond.order;
+    }
   }
 
   for (const atom of atoms) {
@@ -71,63 +77,6 @@ export function calculateStability(atoms: Atom[], bonds: Bond[]): StabilityRepor
       score -= 10;
       strainEnergy += 150; // penalty for unsatisfied valency (radicals/ions)
       issues.push(`${atom.element} has unsatisfied valency (${count}/${maxBonds} bonds).`);
-    }
-  }
-
-  // 2. Bond Angles
-  // For each atom, find its neighbors
-  const adjacency: Record<string, string[]> = {};
-  for (const atom of atoms) adjacency[atom.id] = [];
-  for (const bond of bonds) {
-    adjacency[bond.source].push(bond.target);
-    adjacency[bond.target].push(bond.source);
-  }
-
-  for (const atom of atoms) {
-    const neighbors = adjacency[atom.id];
-    const pC = atomPositions[atom.id];
-    if (!pC || neighbors.length < 2) continue;
-    
-    let numLonePairs = 0;
-    if (atom.element === 'N') numLonePairs = 1;
-    if (atom.element === 'O') numLonePairs = 2;
-
-    const numDomains = neighbors.length + numLonePairs;
-    
-    let idealAngle = Math.PI; // 180
-    if (numDomains === 3) {
-      if (numLonePairs === 1) idealAngle = 116 * Math.PI / 180;
-      else idealAngle = 120 * Math.PI / 180;
-    }
-    else if (numDomains >= 4) {
-      if (numLonePairs === 1) idealAngle = 107 * Math.PI / 180;
-      else if (numLonePairs === 2) idealAngle = 104.5 * Math.PI / 180;
-      else idealAngle = 109.47 * Math.PI / 180;
-    }
-
-    // Check angles between all pairs of bonded neighbors
-    for (let i = 0; i < neighbors.length; i++) {
-      for (let j = i + 1; j < neighbors.length; j++) {
-        const p1 = atomPositions[neighbors[i]];
-        const p2 = atomPositions[neighbors[j]];
-        if (!p1 || !p2) continue;
-
-        const v1 = new THREE.Vector3().subVectors(p1, pC).normalize();
-        const v2 = new THREE.Vector3().subVectors(p2, pC).normalize();
-        
-        const dot = Math.max(-1, Math.min(1, v1.dot(v2)));
-        const angle = Math.acos(dot);
-        
-        const angleDiff = Math.abs(angle - idealAngle);
-        const angleDiffDeg = angleDiff * 180 / Math.PI;
-
-        if (angleDiffDeg > 15) { // 15 degrees tolerance
-          const penalty = Math.min(20, Math.floor(angleDiffDeg / 2));
-          score -= penalty;
-          strainEnergy += penalty * 15; // 15 kJ/mol per score penalty point
-          issues.push(`Strained bond angle around ${atom.element} (off by ${Math.round(angleDiffDeg)}°).`);
-        }
-      }
     }
   }
 

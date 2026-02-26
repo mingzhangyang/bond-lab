@@ -1,4 +1,4 @@
-import { Atom, Bond } from './store';
+import type { Atom, Bond } from './store.ts';
 
 export const KNOWN_MOLECULES = [
   { name: 'Water', formula: 'H₂O', c: 0, h: 2, n: 0, o: 1, s: 2, d: 0, t: 0 },
