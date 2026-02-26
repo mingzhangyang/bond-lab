@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import {
   X,
   Trophy,
@@ -9,82 +9,92 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { useStore } from '../store';
-import { KNOWN_MOLECULES, identifyMolecule } from '../identifier';
+import { identifyMolecule } from '../identifier';
 import { getMessages, localizeMoleculeName, type Language } from '../i18n';
 import {
-  getChallengeTimerArc,
   getProgressColorClass,
-  shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
 
 type Messages = ReturnType<typeof getMessages>;
 
-const TIMER_RING_RADIUS = 22;
+export const MOBILE_CHALLENGE_TRIGGER_RADIUS = 22;
 const TIMER_RING_VIEWBOX = 56;
 
-interface MobileChallengeTriggerProps {
+export interface MobileChallengeTriggerProps {
   messages: Messages;
   isDark: boolean;
   isOpen: boolean;
   onToggle: () => void;
-  timerArc: ReturnType<typeof getChallengeTimerArc> | null;
+  timerArc: { remainingRatio: number } | null;
 }
 
-function MobileChallengeTrigger({
+export function MobileChallengeTrigger({
   messages,
   isDark,
   isOpen,
   onToggle,
   timerArc,
 }: MobileChallengeTriggerProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const buttonToneClass = isDark
     ? 'text-zinc-100 border-white/20 bg-zinc-900/80'
     : 'text-zinc-800 border-zinc-300/90 bg-white/88';
-  const ringTrackClass = isDark ? 'text-white/25' : 'text-zinc-500/35';
-  const ringActiveClass = timerArc
-    ? (timerArc.remainingRatio <= 0.2 ? 'text-red-500' : 'text-indigo-400')
-    : (isDark ? 'text-indigo-300' : 'text-indigo-600');
+  const ringTrackColor = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(113, 113, 122, 0.35)';
+  const ringActiveColor = timerArc
+    ? (timerArc.remainingRatio <= 0.2 ? '#ef4444' : '#818cf8')
+    : (isDark ? '#a5b4fc' : '#4f46e5');
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const dpr = (typeof window !== 'undefined' && window.devicePixelRatio) ? window.devicePixelRatio : 1;
+    canvas.width = Math.round(TIMER_RING_VIEWBOX * dpr);
+    canvas.height = Math.round(TIMER_RING_VIEWBOX * dpr);
+    canvas.style.width = `${TIMER_RING_VIEWBOX}px`;
+    canvas.style.height = `${TIMER_RING_VIEWBOX}px`;
+
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, TIMER_RING_VIEWBOX, TIMER_RING_VIEWBOX);
+    ctx.lineWidth = 3;
+
+    const center = TIMER_RING_VIEWBOX / 2;
+    const startAngle = -Math.PI / 2;
+
+    ctx.strokeStyle = ringTrackColor;
+    ctx.beginPath();
+    ctx.arc(center, center, MOBILE_CHALLENGE_TRIGGER_RADIUS, 0, Math.PI * 2);
+    ctx.stroke();
+
+    if (timerArc) {
+      const endAngle = startAngle + (Math.PI * 2 * timerArc.remainingRatio);
+      ctx.strokeStyle = ringActiveColor;
+      ctx.lineCap = 'round';
+      ctx.beginPath();
+      ctx.arc(center, center, MOBILE_CHALLENGE_TRIGGER_RADIUS, startAngle, endAngle, false);
+      ctx.stroke();
+    }
+  }, [isDark, ringActiveColor, ringTrackColor, timerArc]);
 
   return (
     <button
       onClick={onToggle}
       aria-label={isOpen ? messages.ui.close : messages.challenge.title}
       aria-expanded={isOpen}
-      className={`md:hidden fixed left-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[56] relative h-14 w-14 rounded-full border shadow-xl backdrop-blur-md pointer-events-auto transition-transform active:scale-95 touch-manipulation ${buttonToneClass}`}
+      className={`h-14 w-14 rounded-full border shadow-xl backdrop-blur-md pointer-events-auto transition-transform active:scale-95 touch-manipulation ${buttonToneClass}`}
     >
-      <svg
-        viewBox={`0 0 ${TIMER_RING_VIEWBOX} ${TIMER_RING_VIEWBOX}`}
-        className={`pointer-events-none absolute inset-0 h-full w-full -rotate-90 ${ringActiveClass}`}
+      <canvas
+        ref={canvasRef}
+        width={TIMER_RING_VIEWBOX}
+        height={TIMER_RING_VIEWBOX}
+        className="pointer-events-none absolute inset-0 h-full w-full"
         aria-hidden="true"
-      >
-        <circle
-          cx={TIMER_RING_VIEWBOX / 2}
-          cy={TIMER_RING_VIEWBOX / 2}
-          r={TIMER_RING_RADIUS}
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="3"
-          className={ringTrackClass}
-        />
-        {timerArc && (
-          <circle
-            cx={TIMER_RING_VIEWBOX / 2}
-            cy={TIMER_RING_VIEWBOX / 2}
-            r={TIMER_RING_RADIUS}
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="3"
-            strokeLinecap="round"
-            style={{
-              strokeDasharray: timerArc.strokeDasharray,
-              strokeDashoffset: timerArc.strokeDashoffset,
-            }}
-            className="transition-[stroke-dashoffset] duration-1000 ease-linear motion-reduce:transition-none"
-          />
-        )}
-      </svg>
+      />
       <span className="relative z-10 flex h-full w-full items-center justify-center">
-        {timerArc ? <Target size={18} /> : <Trophy size={18} />}
+        <Trophy size={18} />
       </span>
     </button>
   );
@@ -156,9 +166,6 @@ function ActiveChallengePanel({
 
   const progress = challengeTotalTime ? (challengeTimeLeft / challengeTotalTime) * 100 : 0;
   const progressColorClass = getProgressColorClass(progress);
-  const timerArc = challengeStatus === 'playing'
-    ? getChallengeTimerArc(challengeTimeLeft, challengeTotalTime, TIMER_RING_RADIUS)
-    : null;
 
   const panelClass = 'lab-panel lab-panel-glow';
   const primaryTextClass = isDark ? 'text-white' : 'text-zinc-900';
@@ -174,14 +181,6 @@ function ActiveChallengePanel({
   if (isDrawerLayout) {
     return (
       <>
-        <MobileChallengeTrigger
-          messages={messages}
-          isDark={isDark}
-          isOpen={isMobileDrawerOpen}
-          onToggle={() => setIsMobileDrawerOpen(!isMobileDrawerOpen)}
-          timerArc={timerArc}
-        />
-
         {isMobileDrawerOpen && (
           <button
             className="md:hidden fixed inset-0 bg-black/45 backdrop-blur-sm pointer-events-auto z-[53]"
@@ -404,101 +403,33 @@ function ActiveChallengePanel({
   );
 }
 
-export function ChallengeMode() {
+interface ChallengeModeProps {
+  isDrawerLayout: boolean;
+  isMobileDrawerOpen: boolean;
+  setIsMobileDrawerOpen: (isOpen: boolean) => void;
+  onStart: () => void;
+}
+
+export function ChallengeMode({
+  isDrawerLayout,
+  isMobileDrawerOpen,
+  setIsMobileDrawerOpen,
+  onStart,
+}: ChallengeModeProps) {
   const challengeActive = useStore((state) => state.challengeActive);
-  const challengeStatus = useStore((state) => state.challengeStatus);
-  const startChallenge = useStore((state) => state.startChallenge);
   const language = useStore((state) => state.language);
-  const theme = useStore((state) => state.theme);
 
   const messages = useMemo(() => getMessages(language), [language]);
-  const isDark = theme === 'dark';
-  const [isNarrowViewport, setIsNarrowViewport] = useState(() => (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(max-width: 1023px)').matches
-  ));
-  const [isCoarsePointer, setIsCoarsePointer] = useState(() => (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(hover: none), (pointer: coarse)').matches
-  ));
-  const [hasTouchInput, setHasTouchInput] = useState(() => (
-    typeof window !== 'undefined'
-    && (
-      ('ontouchstart' in window)
-      || ((window.navigator?.maxTouchPoints ?? 0) > 0)
-    )
-  ));
-  const [isMobileDrawerOpen, setIsMobileDrawerOpen] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const narrowMedia = window.matchMedia('(max-width: 1023px)');
-    const coarseMedia = window.matchMedia('(hover: none), (pointer: coarse)');
-    const updateLayout = () => {
-      setIsNarrowViewport(narrowMedia.matches);
-      setIsCoarsePointer(coarseMedia.matches);
-      setHasTouchInput(('ontouchstart' in window) || ((window.navigator?.maxTouchPoints ?? 0) > 0));
-    };
-    updateLayout();
-    narrowMedia.addEventListener('change', updateLayout);
-    coarseMedia.addEventListener('change', updateLayout);
-    return () => {
-      narrowMedia.removeEventListener('change', updateLayout);
-      coarseMedia.removeEventListener('change', updateLayout);
-    };
-  }, []);
-
-  const isDrawerLayout = shouldUseMobileChallengeDrawer(isNarrowViewport, isCoarsePointer, hasTouchInput);
-
-  useEffect(() => {
-    if (!isDrawerLayout) {
-      setIsMobileDrawerOpen(false);
-      return;
-    }
-    if (challengeActive) {
-      setIsMobileDrawerOpen(true);
-    }
-  }, [isDrawerLayout, challengeActive]);
-
-  useEffect(() => {
-    if (!isDrawerLayout || !challengeActive) return;
-    if (challengeStatus !== 'playing') {
-      setIsMobileDrawerOpen(true);
-    }
-  }, [isDrawerLayout, challengeActive, challengeStatus]);
-
-  const handleStart = () => {
-    const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
-    const timeLimit = 30 + randomMol.atomCount * 5;
-    startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
-    if (isDrawerLayout) {
-      setIsMobileDrawerOpen(true);
-    }
-  };
 
   if (!challengeActive) {
-    if (isDrawerLayout) {
-      return (
-        <MobileChallengeTrigger
-          messages={messages}
-          isDark={isDark}
-          isOpen={false}
-          onToggle={handleStart}
-          timerArc={null}
-        />
-      );
-    }
-
-    return <ChallengeStartButton messages={messages} onStart={handleStart} />;
+    return isDrawerLayout ? null : <ChallengeStartButton messages={messages} onStart={onStart} />;
   }
 
   return (
     <ActiveChallengePanel
       language={language}
       messages={messages}
-      onStart={handleStart}
+      onStart={onStart}
       isDrawerLayout={isDrawerLayout}
       isMobileDrawerOpen={isMobileDrawerOpen}
       setIsMobileDrawerOpen={setIsMobileDrawerOpen}

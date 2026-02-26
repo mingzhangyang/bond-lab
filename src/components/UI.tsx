@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useStore, ELEMENTS, ELEMENT_DISPLAY_ORDER } from '../store';
-import { identifyMolecule } from '../identifier';
+import { identifyMolecule, KNOWN_MOLECULES } from '../identifier';
 import { calculateMolecularPolarity } from '../polarity';
 import { atomPositions } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
@@ -20,11 +20,19 @@ import {
   ChevronLeft,
 } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
-import { ChallengeMode } from './ChallengeMode';
+import {
+  ChallengeMode,
+  MobileChallengeTrigger,
+  MOBILE_CHALLENGE_TRIGGER_RADIUS,
+} from './ChallengeMode';
 import { getMessages, localizeMoleculeName, type Language } from '../i18n';
 import { getPathForRoute } from '../routes';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
+import {
+  getChallengeTimerArc,
+  shouldUseMobileChallengeDrawer,
+} from '../challengeLayout';
 
 const LANGUAGE_OPTIONS: Array<{ code: Language; label: string }> = [
   { code: 'en', label: 'English' },
@@ -45,10 +53,38 @@ export function UI() {
   const setLanguage = useStore((state) => state.setLanguage);
   const interactionMode = useStore((state) => state.interactionMode);
   const setInteractionMode = useStore((state) => state.setInteractionMode);
+  const challengeActive = useStore((state) => state.challengeActive);
+  const challengeStatus = useStore((state) => state.challengeStatus);
+  const challengeTimeLeft = useStore((state) => state.challengeTimeLeft);
+  const challengeTotalTime = useStore((state) => state.challengeTotalTime);
+  const startChallenge = useStore((state) => state.startChallenge);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
   const [isLanguageSubmenuOpen, setIsLanguageSubmenuOpen] = useState(false);
   const [isElementsPanelOpen, setIsElementsPanelOpen] = useState(true);
+  const [isDesktopViewport, setIsDesktopViewport] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(min-width: 768px)').matches
+  ));
+  const [isNarrowViewport, setIsNarrowViewport] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(max-width: 1023px)').matches
+  ));
+  const [isCoarsePointer, setIsCoarsePointer] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(hover: none), (pointer: coarse)').matches
+  ));
+  const [hasTouchInput, setHasTouchInput] = useState(() => (
+    typeof window !== 'undefined'
+    && (
+      ('ontouchstart' in window)
+      || ((window.navigator?.maxTouchPoints ?? 0) > 0)
+    )
+  ));
+  const [isMobileChallengeOpen, setIsMobileChallengeOpen] = useState(false);
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
@@ -144,6 +180,58 @@ export function UI() {
       : 'lab-fab bg-red-500 text-white hover:bg-red-600')
     : 'lab-fab text-white';
   const themeVars = getLabThemeVars(theme);
+  const isDrawerLayout = shouldUseMobileChallengeDrawer(isNarrowViewport, isCoarsePointer, hasTouchInput);
+  const mobileChallengeTimerArc = challengeStatus === 'playing'
+    ? getChallengeTimerArc(challengeTimeLeft, challengeTotalTime, MOBILE_CHALLENGE_TRIGGER_RADIUS)
+    : null;
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const desktopMedia = window.matchMedia('(min-width: 768px)');
+    const narrowMedia = window.matchMedia('(max-width: 1023px)');
+    const coarseMedia = window.matchMedia('(hover: none), (pointer: coarse)');
+    const updateViewport = () => {
+      setIsDesktopViewport(desktopMedia.matches);
+      setIsNarrowViewport(narrowMedia.matches);
+      setIsCoarsePointer(coarseMedia.matches);
+      setHasTouchInput(('ontouchstart' in window) || ((window.navigator?.maxTouchPoints ?? 0) > 0));
+    };
+    updateViewport();
+    desktopMedia.addEventListener('change', updateViewport);
+    narrowMedia.addEventListener('change', updateViewport);
+    coarseMedia.addEventListener('change', updateViewport);
+    return () => {
+      desktopMedia.removeEventListener('change', updateViewport);
+      narrowMedia.removeEventListener('change', updateViewport);
+      coarseMedia.removeEventListener('change', updateViewport);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isDrawerLayout) {
+      setIsMobileChallengeOpen(false);
+      return;
+    }
+    if (challengeActive) {
+      setIsMobileChallengeOpen(true);
+    }
+  }, [challengeActive, isDrawerLayout]);
+
+  useEffect(() => {
+    if (!isDrawerLayout || !challengeActive) return;
+    if (challengeStatus !== 'playing') {
+      setIsMobileChallengeOpen(true);
+    }
+  }, [challengeActive, challengeStatus, isDrawerLayout]);
+
+  const handleStartChallenge = () => {
+    const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
+    const timeLimit = 30 + randomMol.atomCount * 5;
+    startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
+    if (isDrawerLayout) {
+      setIsMobileChallengeOpen(true);
+    }
+  };
 
   return (
     <div
@@ -378,16 +466,32 @@ export function UI() {
             </div>
           </div>
 
-          <div className="pointer-events-auto w-80">
-            <ChallengeMode />
-          </div>
+          {isDesktopViewport && (
+            <div className="pointer-events-auto w-80">
+              <ChallengeMode
+                isDrawerLayout={false}
+                isMobileDrawerOpen={false}
+                setIsMobileDrawerOpen={() => {}}
+                onStart={handleStartChallenge}
+              />
+            </div>
+          )}
         </div>
       </div>
 
       {/* Mobile Challenge */}
-      <div className="pointer-events-auto md:hidden">
-        <ChallengeMode />
-      </div>
+      {!isDesktopViewport && (
+        <>
+          <div className="pointer-events-auto md:hidden">
+            <ChallengeMode
+              isDrawerLayout={isDrawerLayout}
+              isMobileDrawerOpen={isMobileChallengeOpen}
+              setIsMobileDrawerOpen={setIsMobileChallengeOpen}
+              onStart={handleStartChallenge}
+            />
+          </div>
+        </>
+      )}
 
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-4 w-full mt-auto">
@@ -490,14 +594,43 @@ export function UI() {
         </div>
       </div>
 
-      <button
-        onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
-        aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-        title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-        className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass}`}
-      >
-        {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
-      </button>
+      {!isDesktopViewport && (
+        <div className="md:hidden fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex items-end justify-between px-4 pointer-events-none">
+          <div className="min-w-14 pointer-events-auto flex justify-start">
+            {isDrawerLayout && (
+              <MobileChallengeTrigger
+                messages={messages}
+                isDark={isDark}
+                isOpen={challengeActive && isMobileChallengeOpen}
+                onToggle={challengeActive
+                  ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
+                  : handleStartChallenge}
+                timerArc={mobileChallengeTimerArc}
+              />
+            )}
+          </div>
+
+          <button
+            onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
+            aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+            title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+            className={`w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass}`}
+          >
+            {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
+          </button>
+        </div>
+      )}
+
+      {isDesktopViewport && (
+        <button
+          onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
+          aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+          title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+          className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass}`}
+        >
+          {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
+        </button>
+      )}
     </div>
   );
 }
