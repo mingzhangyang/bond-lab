@@ -69,6 +69,7 @@ export function Scene() {
               opacity={isDark ? 0.4 : 0.22}
               scale={20}
               blur={2}
+              near={0.1}
               far={10}
             />
           </>
