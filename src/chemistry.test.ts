@@ -11,6 +11,10 @@ test('ELEMENTS exposes chemistry metadata required for advanced calculations', (
   assert.equal(ELEMENTS.C.covalentRadius, 0.76);
   assert.equal(ELEMENTS.O.electronegativity, 3.44);
   assert.equal(ELEMENTS.N.maxBonds, 3);
+  assert.equal(ELEMENTS.S.maxBonds, 6);
+  assert.equal(ELEMENTS.P.valence, 5);
+  assert.equal(ELEMENTS.F.maxBonds, 1);
+  assert.equal(ELEMENTS.Cl.maxBonds, 1);
 });
 
 test('getBondChemistry sets rotatable by bond order', () => {
@@ -47,4 +51,12 @@ test('fallback chemistry handles missing element context for migration safety', 
   assert.equal(fallback.rotatable, false);
   assert.ok(fallback.bondLength > 0);
   assert.ok(fallback.bondEnergy > 0);
+});
+
+test('getBondChemistry uses configured values for common halogen bonds', () => {
+  const hcl = getBondChemistry('H', 'Cl', 1);
+
+  assert.equal(hcl.rotatable, true);
+  assert.equal(hcl.bondLength, 1.27);
+  assert.equal(hcl.bondEnergy, 431);
 });

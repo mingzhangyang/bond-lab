@@ -17,6 +17,25 @@ test('calculateStability penalizes unsatisfied valency', () => {
   assert.ok(result.issues.some((issue) => issue.includes('unsatisfied valency')));
 });
 
+test('calculateStability applies larger penalty for larger valency deficit', () => {
+  const atoms: Atom[] = [
+    { id: 'c3', element: 'C' },
+    { id: 'h1', element: 'H' },
+    { id: 'h2', element: 'H' },
+    { id: 'h3', element: 'H' },
+  ];
+  const bonds: Bond[] = [
+    { id: 'b1', source: 'c3', target: 'h1', order: 1 },
+    { id: 'b2', source: 'c3', target: 'h2', order: 1 },
+    { id: 'b3', source: 'c3', target: 'h3', order: 1 },
+  ];
+
+  const severe = calculateStability([{ id: 'c0', element: 'C' }], []);
+  const mild = calculateStability(atoms, bonds);
+
+  assert.ok(severe.score < mild.score);
+});
+
 test('calculateStability penalizes exceeded valency', () => {
   const atoms: Atom[] = [
     { id: 'h1', element: 'H' },

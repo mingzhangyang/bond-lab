@@ -11,12 +11,64 @@ interface AtomLike {
 }
 
 interface BondLike {
+  id?: string;
+  order?: number;
+  rotatable?: boolean;
   source: string;
   target: string;
 }
 
 export function isBondRotatable(bond: Pick<Bond, 'order' | 'rotatable'>): boolean {
   return bond.rotatable ?? bond.order === 1;
+}
+
+function isSameUndirectedBond(
+  a: Pick<BondLike, 'id' | 'source' | 'target'>,
+  b: Pick<BondLike, 'id' | 'source' | 'target'>,
+): boolean {
+  if (a.id && b.id && a.id === b.id) return true;
+  return (
+    (a.source === b.source && a.target === b.target) ||
+    (a.source === b.target && a.target === b.source)
+  );
+}
+
+export function isBondInCycle(
+  bond: Pick<BondLike, 'id' | 'source' | 'target'>,
+  bonds: Array<Pick<BondLike, 'id' | 'source' | 'target'>>,
+): boolean {
+  const adjacency = new Map<string, string[]>();
+  for (const edge of bonds) {
+    if (isSameUndirectedBond(edge, bond)) continue;
+    if (!adjacency.has(edge.source)) adjacency.set(edge.source, []);
+    if (!adjacency.has(edge.target)) adjacency.set(edge.target, []);
+    adjacency.get(edge.source)!.push(edge.target);
+    adjacency.get(edge.target)!.push(edge.source);
+  }
+
+  const target = bond.target;
+  const queue: string[] = [bond.source];
+  const visited = new Set<string>();
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    if (visited.has(current)) continue;
+    if (current === target) return true;
+    visited.add(current);
+
+    for (const neighbor of adjacency.get(current) ?? []) {
+      if (!visited.has(neighbor)) queue.push(neighbor);
+    }
+  }
+
+  return false;
+}
+
+export function canRotateBond(
+  bond: Pick<Bond, 'id' | 'source' | 'target' | 'order' | 'rotatable'>,
+  bonds: Array<Pick<BondLike, 'id' | 'source' | 'target'>>,
+): boolean {
+  if (!isBondRotatable(bond)) return false;
+  return !isBondInCycle(bond, bonds);
 }
 
 export function getRotationGroupAtomIds(

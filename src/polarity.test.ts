@@ -55,3 +55,16 @@ test('calculateMolecularPolarity returns unknown when geometry data is missing',
   const result = calculateMolecularPolarity(atoms, bonds);
   assert.equal(result.classification, 'unknown');
 });
+
+test('calculateMolecularPolarity infers diatomic polarity without geometry', () => {
+  const atoms: Atom[] = [
+    { id: 'h1', element: 'H' },
+    { id: 'f1', element: 'F' },
+  ];
+  const bonds: Bond[] = [{ id: 'b1', source: 'h1', target: 'f1', order: 1 }];
+
+  const result = calculateMolecularPolarity(atoms, bonds);
+
+  assert.equal(result.classification, 'polar');
+  assert.ok(result.reason.includes('Electronegativity difference'));
+});

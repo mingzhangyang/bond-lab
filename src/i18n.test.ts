@@ -34,9 +34,13 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
 test('localizeMoleculeName translates known names and falls back for unknown ones', () => {
   assert.equal(localizeMoleculeName('es', 'Water'), 'Agua');
   assert.equal(localizeMoleculeName('es', 'Unknown Molecule'), 'Molecula desconocida');
+  assert.equal(localizeMoleculeName('es', 'Sulfur Dioxide'), 'Dioxido de azufre');
   assert.equal(localizeMoleculeName('zh', 'Water'), '水');
+  assert.equal(localizeMoleculeName('zh', 'Phosphorus Trichloride'), '三氯化磷');
   assert.equal(localizeMoleculeName('fr', 'Water'), 'Eau');
+  assert.equal(localizeMoleculeName('fr', 'Hydrogen Chloride'), 'Chlorure d hydrogene');
   assert.equal(localizeMoleculeName('ja', 'Water'), '水');
+  assert.equal(localizeMoleculeName('ja', 'Hydrogen Sulfide'), '硫化水素');
   assert.equal(localizeMoleculeName('es', 'Custom Name'), 'Custom Name');
 });
 

@@ -24,7 +24,7 @@ export function calculateMolecularPolarity(
   bonds: Bond[],
   positions?: Record<string, Position3D | undefined>,
 ): PolarityReport {
-  if (!positions || atoms.length === 0 || bonds.length === 0) {
+  if (atoms.length === 0 || bonds.length === 0) {
     return {
       classification: 'unknown',
       netDipole: 0,
@@ -33,11 +33,40 @@ export function calculateMolecularPolarity(
   }
 
   const atomById = new Map(atoms.map((atom) => [atom.id, atom]));
+
+  if (!positions) {
+    if (atoms.length === 2 && bonds.length === 1) {
+      const bond = bonds[0];
+      const sourceAtom = atomById.get(bond.source);
+      const targetAtom = atomById.get(bond.target);
+      if (sourceAtom && targetAtom) {
+        const sourceEN = ELEMENTS[sourceAtom.element].electronegativity;
+        const targetEN = ELEMENTS[targetAtom.element].electronegativity;
+        const diff = Math.abs(sourceEN - targetEN);
+        if (diff >= 0.35) {
+          return {
+            classification: 'polar',
+            netDipole: diff,
+            reason: `Electronegativity difference (${diff.toFixed(2)}) indicates a polar diatomic bond.`,
+          };
+        }
+      }
+    }
+
+    return {
+      classification: 'unknown',
+      netDipole: 0,
+      reason: 'Insufficient geometry data to evaluate molecular polarity.',
+    };
+  }
+
   let sumX = 0;
   let sumY = 0;
   let sumZ = 0;
   let componentCount = 0;
   let totalBondDipole = 0;
+  let strongestBondDiff = 0;
+  let strongestBondPair = '';
 
   for (const bond of bonds) {
     const sourceAtom = atomById.get(bond.source);
@@ -49,6 +78,10 @@ export function calculateMolecularPolarity(
     const sourceEN = ELEMENTS[sourceAtom.element].electronegativity;
     const targetEN = ELEMENTS[targetAtom.element].electronegativity;
     const diff = Math.abs(sourceEN - targetEN);
+    if (diff > strongestBondDiff) {
+      strongestBondDiff = diff;
+      strongestBondPair = `${sourceAtom.element}-${targetAtom.element}`;
+    }
     if (diff < 1e-9) continue;
 
     const dirX = targetPos.x - sourcePos.x;
@@ -84,16 +117,22 @@ export function calculateMolecularPolarity(
   const nonpolarThreshold = Math.max(0.12, averageBondDipole * 0.2);
 
   if (netDipole <= nonpolarThreshold) {
+    const strongest = strongestBondPair
+      ? ` Strongest bond polarity: ${strongestBondPair} (ΔEN ${strongestBondDiff.toFixed(2)}).`
+      : '';
     return {
       classification: 'nonpolar',
       netDipole,
-      reason: 'Bond dipoles largely cancel due to molecular geometry symmetry.',
+      reason: `Bond dipoles largely cancel due to molecular geometry symmetry.${strongest}`,
     };
   }
 
+  const strongest = strongestBondPair
+    ? ` Strongest bond polarity: ${strongestBondPair} (ΔEN ${strongestBondDiff.toFixed(2)}).`
+    : '';
   return {
     classification: 'polar',
     netDipole,
-    reason: 'Bond dipoles do not cancel, leaving a net molecular dipole.',
+    reason: `Bond dipoles do not cancel, leaving a net molecular dipole.${strongest}`,
   };
 }

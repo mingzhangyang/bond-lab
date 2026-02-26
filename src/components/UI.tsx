@@ -11,12 +11,14 @@ import {
   Sun,
   Globe,
   Moon,
+  Shield,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import { ChallengeMode } from './ChallengeMode';
 import { getMessages, localizeMoleculeName } from '../i18n';
+import { Privacy } from './Privacy';
 
 export function UI() {
   const atoms = useStore((state) => state.atoms);
@@ -32,6 +34,7 @@ export function UI() {
   const controlsCollapsed = useStore((state) => state.controlsCollapsed);
   const toggleControlsCollapsed = useStore((state) => state.toggleControlsCollapsed);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
@@ -154,6 +157,13 @@ export function UI() {
                 <Globe size={18} />
                 <span className="text-xs font-bold hidden sm:inline">{language.toUpperCase()}</span>
                 <span className="text-xs font-bold sm:hidden">{language.toUpperCase()}</span>
+              </button>
+              <button
+                className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${ghostButtonClass}`}
+                aria-label={messages.ui.privacy}
+                onClick={() => setIsPrivacyOpen(true)}
+              >
+                <Shield size={18} />
               </button>
             </div>
           </div>
@@ -368,6 +378,14 @@ export function UI() {
           </div>
           
           <div className={`mt-6 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
+            <button
+              onClick={() => { setIsPrivacyOpen(true); setIsDrawerOpen(false); }}
+              className={`w-full min-h-[44px] mb-2 p-3 rounded-xl transition-colors text-sm font-bold ${
+                isDark ? 'bg-white/10 hover:bg-white/15 text-zinc-100' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
+              }`}
+            >
+              {messages.ui.privacy}
+            </button>
             <button 
               onClick={() => { clear(); setIsDrawerOpen(false); }}
               className={`w-full min-h-[44px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold ${dangerButtonClass}`}
@@ -377,6 +395,14 @@ export function UI() {
           </div>
         </div>
       </div>
+      <Privacy
+        isOpen={isPrivacyOpen}
+        onClose={() => setIsPrivacyOpen(false)}
+        isDark={isDark}
+        title={messages.ui.privacyTitle}
+        versionLabel={messages.ui.privacyVersion}
+        closeLabel={messages.ui.close}
+      />
     </div>
   );
 }

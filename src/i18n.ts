@@ -20,6 +20,9 @@ export interface Messages {
     collapse: string;
     expand: string;
     close: string;
+    privacy: string;
+    privacyTitle: string;
+    privacyVersion: string;
     mobileTipsTitle: string;
     controlsList: string[];
   };
@@ -44,6 +47,10 @@ export interface Messages {
     C: string;
     N: string;
     O: string;
+    S: string;
+    P: string;
+    F: string;
+    Cl: string;
   };
 }
 
@@ -67,6 +74,9 @@ const EN_MESSAGES: Messages = {
     collapse: 'Collapse',
     expand: 'Expand',
     close: 'Close',
+    privacy: 'Privacy',
+    privacyTitle: 'Privacy Policy',
+    privacyVersion: 'Version',
     mobileTipsTitle: 'Quick tips',
     controlsList: [
       'Tap an element to add it',
@@ -100,6 +110,10 @@ const EN_MESSAGES: Messages = {
     C: 'Carbon',
     N: 'Nitrogen',
     O: 'Oxygen',
+    S: 'Sulfur',
+    P: 'Phosphorus',
+    F: 'Fluorine',
+    Cl: 'Chlorine',
   },
 };
 
@@ -123,6 +137,9 @@ const ES_MESSAGES: Messages = {
     collapse: 'Colapsar',
     expand: 'Expandir',
     close: 'Cerrar',
+    privacy: 'Privacidad',
+    privacyTitle: 'Politica de privacidad',
+    privacyVersion: 'Version',
     mobileTipsTitle: 'Consejos rapidos',
     controlsList: [
       'Toca un elemento para agregarlo',
@@ -156,6 +173,10 @@ const ES_MESSAGES: Messages = {
     C: 'Carbono',
     N: 'Nitrogeno',
     O: 'Oxigeno',
+    S: 'Azufre',
+    P: 'Fosforo',
+    F: 'Fluor',
+    Cl: 'Cloro',
   },
 };
 
@@ -179,6 +200,9 @@ const ZH_MESSAGES: Messages = {
     collapse: '收起',
     expand: '展开',
     close: '关闭',
+    privacy: '隐私',
+    privacyTitle: '隐私政策',
+    privacyVersion: '版本',
     mobileTipsTitle: '快速提示',
     controlsList: [
       '点击元素以添加原子',
@@ -212,6 +236,10 @@ const ZH_MESSAGES: Messages = {
     C: '碳',
     N: '氮',
     O: '氧',
+    S: '硫',
+    P: '磷',
+    F: '氟',
+    Cl: '氯',
   },
 };
 
@@ -235,6 +263,9 @@ const FR_MESSAGES: Messages = {
     collapse: 'Reduire',
     expand: 'Etendre',
     close: 'Fermer',
+    privacy: 'Confidentialite',
+    privacyTitle: 'Politique de confidentialite',
+    privacyVersion: 'Version',
     mobileTipsTitle: 'Conseils rapides',
     controlsList: [
       'Touchez un element pour l ajouter',
@@ -268,6 +299,10 @@ const FR_MESSAGES: Messages = {
     C: 'Carbone',
     N: 'Azote',
     O: 'Oxygene',
+    S: 'Soufre',
+    P: 'Phosphore',
+    F: 'Fluor',
+    Cl: 'Chlore',
   },
 };
 
@@ -291,6 +326,9 @@ const JA_MESSAGES: Messages = {
     collapse: '折りたたむ',
     expand: '展開',
     close: '閉じる',
+    privacy: 'プライバシー',
+    privacyTitle: 'プライバシーポリシー',
+    privacyVersion: '版',
     mobileTipsTitle: 'クイックヒント',
     controlsList: [
       '元素をタップして追加',
@@ -324,6 +362,10 @@ const JA_MESSAGES: Messages = {
     C: '炭素',
     N: '窒素',
     O: '酸素',
+    S: '硫黄',
+    P: 'リン',
+    F: 'フッ素',
+    Cl: '塩素',
   },
 };
 
@@ -352,6 +394,13 @@ const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
     Ethanol: 'Etanol',
     Formaldehyde: 'Formaldehido',
     'Hydrogen Cyanide': 'Cianuro de hidrogeno',
+    'Hydrogen Fluoride': 'Fluoruro de hidrogeno',
+    'Hydrogen Chloride': 'Cloruro de hidrogeno',
+    'Hydrogen Sulfide': 'Sulfuro de hidrogeno',
+    'Sulfur Dioxide': 'Dioxido de azufre',
+    Phosphine: 'Fosfina',
+    'Phosphorus Trichloride': 'Tricloruro de fosforo',
+    'Carbon Tetrachloride': 'Tetracloruro de carbono',
     'Unknown Molecule': 'Molecula desconocida',
   },
   zh: {
@@ -369,6 +418,13 @@ const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
     Ethanol: '乙醇',
     Formaldehyde: '甲醛',
     'Hydrogen Cyanide': '氰化氢',
+    'Hydrogen Fluoride': '氟化氢',
+    'Hydrogen Chloride': '氯化氢',
+    'Hydrogen Sulfide': '硫化氢',
+    'Sulfur Dioxide': '二氧化硫',
+    Phosphine: '膦',
+    'Phosphorus Trichloride': '三氯化磷',
+    'Carbon Tetrachloride': '四氯化碳',
     'Unknown Molecule': '未知分子',
   },
   fr: {
@@ -386,6 +442,13 @@ const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
     Ethanol: 'Ethanol',
     Formaldehyde: 'Formaldehyde',
     'Hydrogen Cyanide': "Cyanure d hydrogene",
+    'Hydrogen Fluoride': 'Fluorure d hydrogene',
+    'Hydrogen Chloride': 'Chlorure d hydrogene',
+    'Hydrogen Sulfide': 'Sulfure d hydrogene',
+    'Sulfur Dioxide': 'Dioxyde de soufre',
+    Phosphine: 'Phosphine',
+    'Phosphorus Trichloride': 'Trichlorure de phosphore',
+    'Carbon Tetrachloride': 'Tetrachlorure de carbone',
     'Unknown Molecule': 'Molecule inconnue',
   },
   ja: {
@@ -403,6 +466,13 @@ const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
     Ethanol: 'エタノール',
     Formaldehyde: 'ホルムアルデヒド',
     'Hydrogen Cyanide': 'シアン化水素',
+    'Hydrogen Fluoride': 'フッ化水素',
+    'Hydrogen Chloride': '塩化水素',
+    'Hydrogen Sulfide': '硫化水素',
+    'Sulfur Dioxide': '二酸化硫黄',
+    Phosphine: 'ホスフィン',
+    'Phosphorus Trichloride': '三塩化リン',
+    'Carbon Tetrachloride': '四塩化炭素',
     'Unknown Molecule': '不明な分子',
   },
 };

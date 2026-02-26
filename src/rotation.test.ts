@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  canRotateBond,
   getRotationGroupAtomIds,
   isBondRotatable,
   rotateAtomPositionsAroundAxis,
@@ -25,6 +26,26 @@ test('getRotationGroupAtomIds returns the rotating side of a bond graph', () => 
 
   const rotating = getRotationGroupAtomIds(atoms, bonds, 'a', 'b').sort();
   assert.deepEqual(rotating, ['b', 'c', 'd']);
+});
+
+test('canRotateBond blocks rotation for ring bonds', () => {
+  const ringBonds = [
+    { id: 'ab', source: 'a', target: 'b', order: 1 },
+    { id: 'bc', source: 'b', target: 'c', order: 1 },
+    { id: 'ca', source: 'c', target: 'a', order: 1 },
+  ];
+
+  assert.equal(canRotateBond(ringBonds[0], ringBonds), false);
+});
+
+test('canRotateBond allows acyclic single bonds and blocks multiple bonds', () => {
+  const chainBonds = [
+    { id: 'ab', source: 'a', target: 'b', order: 1 },
+    { id: 'bc', source: 'b', target: 'c', order: 2 },
+  ];
+
+  assert.equal(canRotateBond(chainBonds[0], chainBonds), true);
+  assert.equal(canRotateBond(chainBonds[1], chainBonds), false);
 });
 
 test('rotatePointAroundAxis rotates coordinates correctly for simple axis', () => {

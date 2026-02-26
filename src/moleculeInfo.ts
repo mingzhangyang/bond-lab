@@ -60,6 +60,34 @@ const MOLECULE_INFO: Record<string, MoleculeInfo> = {
     structure: 'H-C≡N',
     fact: 'Hydrogen cyanide is linear and strongly polar due to the C≡N bond.',
   },
+  'Hydrogen Fluoride': {
+    structure: 'H-F',
+    fact: 'Hydrogen fluoride is highly polar because fluorine strongly attracts electrons.',
+  },
+  'Hydrogen Chloride': {
+    structure: 'H-Cl',
+    fact: 'Hydrogen chloride forms hydrochloric acid when dissolved in water.',
+  },
+  'Hydrogen Sulfide': {
+    structure: 'H-S-H',
+    fact: 'Hydrogen sulfide is bent and polar, with weaker hydrogen bonding than water.',
+  },
+  'Sulfur Dioxide': {
+    structure: 'O=S=O',
+    fact: 'Sulfur dioxide is bent and polar despite having two S=O double bonds.',
+  },
+  Phosphine: {
+    structure: 'H-P(H)2',
+    fact: 'Phosphine is trigonal pyramidal and much less basic than ammonia.',
+  },
+  'Phosphorus Trichloride': {
+    structure: 'Cl-P(Cl)2',
+    fact: 'Phosphorus trichloride is a reactive precursor used to make many organophosphorus compounds.',
+  },
+  'Carbon Tetrachloride': {
+    structure: 'Cl-C(Cl)3',
+    fact: 'Carbon tetrachloride is tetrahedral and nonpolar because C-Cl dipoles cancel.',
+  },
 };
 
 export function getMoleculeInfo(name: string): MoleculeInfo | null {

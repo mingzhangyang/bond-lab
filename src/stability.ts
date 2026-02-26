@@ -154,12 +154,14 @@ export function calculateStability(atoms: Atom[], bonds: Bond[], options: Stabil
     const maxBonds = ELEMENTS[atom.element].maxBonds;
     
     if (count > maxBonds) {
-      score -= 30;
-      strainEnergy += 500; // massive energy penalty for illegal valency
+      const excess = count - maxBonds;
+      score -= 30 + Math.max(0, excess - 1) * 12;
+      strainEnergy += 500 + excess * 180; // stronger penalty for larger overfill
       issues.push(`${atom.element} has exceeded its maximum valency (${count}/${maxBonds} bonds).`);
     } else if (count < maxBonds) {
-      score -= 10;
-      strainEnergy += 150; // penalty for unsatisfied valency (radicals/ions)
+      const deficit = maxBonds - count;
+      score -= Math.min(24, deficit * 6);
+      strainEnergy += deficit * 110;
       issues.push(`${atom.element} has unsatisfied valency (${count}/${maxBonds} bonds).`);
     }
   }

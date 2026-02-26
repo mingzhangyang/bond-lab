@@ -167,7 +167,7 @@ export function ChallengeMode() {
 
   const handleStart = () => {
     const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
-    const timeLimit = 30 + (randomMol.c + randomMol.h + randomMol.n + randomMol.o) * 5;
+    const timeLimit = 30 + randomMol.atomCount * 5;
     startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
   };
 

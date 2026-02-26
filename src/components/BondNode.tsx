@@ -4,8 +4,8 @@ import * as THREE from 'three';
 import { type Bond, useStore } from '../store';
 import { atomPositions, setBondGroupRef } from '../physics';
 import {
+  canRotateBond,
   getRotationGroupAtomIds,
-  isBondRotatable,
   rotateAtomPositionsAroundAxis,
 } from '../rotation';
 
@@ -42,7 +42,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
   const setRotatingBond = useStore((state) => state.setRotatingBond);
   const { gl } = useThree();
   const isRotating = rotatingBondId === bond.id;
-  const bondRotatable = useMemo(() => isBondRotatable(bond), [bond]);
+  const bondRotatable = useMemo(() => canRotateBond(bond, bonds), [bond, bonds]);
 
   useEffect(() => {
     if (!groupRef.current) return;
