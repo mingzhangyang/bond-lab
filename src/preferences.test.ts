@@ -1,16 +1,21 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
-  resolveInitialControlsCollapsed,
   nextLanguage,
   resolveInitialLanguage,
   resolveInitialTheme,
+  toggleInteractionMode,
   toggleTheme,
 } from './preferences.ts';
 
 test('toggleTheme swaps between dark and light', () => {
   assert.equal(toggleTheme('dark'), 'light');
   assert.equal(toggleTheme('light'), 'dark');
+});
+
+test('toggleInteractionMode swaps between build and delete', () => {
+  assert.equal(toggleInteractionMode('build'), 'delete');
+  assert.equal(toggleInteractionMode('delete'), 'build');
 });
 
 test('nextLanguage cycles through supported options', () => {
@@ -38,11 +43,4 @@ test('resolveInitialLanguage returns a supported language', () => {
   assert.equal(resolveInitialLanguage('ja'), 'ja');
   assert.equal(resolveInitialLanguage('invalid'), 'en');
   assert.equal(resolveInitialLanguage(null), 'en');
-});
-
-test('resolveInitialControlsCollapsed defaults to false and honors stored values', () => {
-  assert.equal(resolveInitialControlsCollapsed('true'), true);
-  assert.equal(resolveInitialControlsCollapsed('false'), false);
-  assert.equal(resolveInitialControlsCollapsed('invalid'), false);
-  assert.equal(resolveInitialControlsCollapsed(null), false);
 });

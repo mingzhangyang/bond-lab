@@ -5,7 +5,6 @@ export type InteractionMode = 'build' | 'delete';
 
 export const THEME_STORAGE_KEY = 'bondlab-theme';
 export const LANGUAGE_STORAGE_KEY = 'bondlab-language';
-export const CONTROLS_COLLAPSED_STORAGE_KEY = 'bondlab-controls-collapsed';
 
 const SUPPORTED_THEMES: Theme[] = ['dark', 'light'];
 const SUPPORTED_LANGUAGES: Language[] = ['en', 'es', 'zh', 'fr', 'ja'];
@@ -20,6 +19,10 @@ function isLanguage(value: string | null): value is Language {
 
 export function toggleTheme(theme: Theme): Theme {
   return theme === 'dark' ? 'light' : 'dark';
+}
+
+export function toggleInteractionMode(mode: InteractionMode): InteractionMode {
+  return mode === 'build' ? 'delete' : 'build';
 }
 
 export function nextLanguage(language: Language): Language {
@@ -45,17 +48,4 @@ export function resolveInitialLanguage(storedLanguage: string | null): Language 
     return storedLanguage;
   }
   return 'en';
-}
-
-function resolveInitialBooleanPreference(
-  storedValue: string | null,
-  fallback: boolean,
-): boolean {
-  if (storedValue === 'true') return true;
-  if (storedValue === 'false') return false;
-  return fallback;
-}
-
-export function resolveInitialControlsCollapsed(storedValue: string | null): boolean {
-  return resolveInitialBooleanPreference(storedValue, false);
 }

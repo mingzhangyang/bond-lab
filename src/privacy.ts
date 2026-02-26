@@ -16,7 +16,7 @@ export const PRIVACY_POLICY: PrivacyPolicy = {
   localStorageUsage: [
     'Theme preference is stored locally so the app remembers light or dark mode.',
     'Language selection is stored locally to keep your preferred locale.',
-    'UI preferences such as control panel collapse state are stored locally for convenience.',
+    'No account identity data is stored in local storage by default.',
   ],
   externalServices: [
     'By default, BondLab works without sending molecule data to external APIs.',

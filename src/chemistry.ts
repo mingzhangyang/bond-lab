@@ -1,4 +1,37 @@
-export type ElementType = 'H' | 'C' | 'N' | 'O' | 'S' | 'P' | 'F' | 'Cl';
+export type ElementType =
+  | 'H'
+  | 'C'
+  | 'N'
+  | 'O'
+  | 'S'
+  | 'P'
+  | 'F'
+  | 'Cl'
+  | 'Fe'
+  | 'Mg'
+  | 'Cu'
+  | 'Al'
+  | 'Ca'
+  | 'Na'
+  | 'K';
+
+export const ELEMENT_DISPLAY_ORDER: ElementType[] = [
+  'H',
+  'C',
+  'N',
+  'O',
+  'F',
+  'Na',
+  'Mg',
+  'Al',
+  'P',
+  'S',
+  'Cl',
+  'K',
+  'Ca',
+  'Fe',
+  'Cu',
+];
 
 export interface ElementData {
   symbol: ElementType;
@@ -116,6 +149,76 @@ export const ELEMENTS: Record<ElementType, ElementData> = {
     valence: 7,
     maxBonds: 1,
     electronegativity: 3.16,
+  },
+  Fe: {
+    symbol: 'Fe',
+    name: 'Iron',
+    color: '#9B3D2F',
+    vdwRadius: 2.0,
+    covalentRadius: 1.24,
+    valence: 2,
+    maxBonds: 6,
+    electronegativity: 1.83,
+  },
+  Mg: {
+    symbol: 'Mg',
+    name: 'Magnesium',
+    color: '#7A8DA1',
+    vdwRadius: 1.73,
+    covalentRadius: 1.41,
+    valence: 2,
+    maxBonds: 2,
+    electronegativity: 1.31,
+  },
+  Cu: {
+    symbol: 'Cu',
+    name: 'Copper',
+    color: '#B0662A',
+    vdwRadius: 1.4,
+    covalentRadius: 1.32,
+    valence: 2,
+    maxBonds: 4,
+    electronegativity: 1.9,
+  },
+  Al: {
+    symbol: 'Al',
+    name: 'Aluminum',
+    color: '#8D9DAA',
+    vdwRadius: 1.84,
+    covalentRadius: 1.21,
+    valence: 3,
+    maxBonds: 3,
+    electronegativity: 1.61,
+  },
+  Ca: {
+    symbol: 'Ca',
+    name: 'Calcium',
+    color: '#5D8BF4',
+    vdwRadius: 2.31,
+    covalentRadius: 1.76,
+    valence: 2,
+    maxBonds: 2,
+    electronegativity: 1.0,
+  },
+  Na: {
+    symbol: 'Na',
+    name: 'Sodium',
+    color: '#5E8BFF',
+    vdwRadius: 2.27,
+    covalentRadius: 1.66,
+    valence: 1,
+    maxBonds: 1,
+    electronegativity: 0.93,
+  },
+  K: {
+    symbol: 'K',
+    name: 'Potassium',
+    color: '#7E6AC6',
+    vdwRadius: 2.75,
+    covalentRadius: 2.03,
+    valence: 1,
+    maxBonds: 1,
+    electronegativity: 0.82,
   },
 };
 

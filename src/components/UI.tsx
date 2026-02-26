@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react';
-import { useStore, ELEMENTS, ElementType } from '../store';
+import { useStore, ELEMENTS, ELEMENT_DISPLAY_ORDER } from '../store';
 import { identifyMolecule } from '../identifier';
 import { calculateMolecularPolarity } from '../polarity';
 import { atomPositions } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
 import {
+  Atom,
+  BookOpenText,
   Trash2,
   X,
   Plus,
@@ -12,13 +14,15 @@ import {
   Globe,
   Moon,
   Shield,
-  ChevronDown,
-  ChevronUp,
+  Menu,
+  ChevronRight,
+  ChevronLeft,
 } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import { ChallengeMode } from './ChallengeMode';
 import { getMessages, localizeMoleculeName } from '../i18n';
-import { Privacy } from './Privacy';
+import { getPathForRoute } from '../routes';
+import { toggleInteractionMode } from '../preferences';
 
 export function UI() {
   const atoms = useStore((state) => state.atoms);
@@ -31,10 +35,9 @@ export function UI() {
   const cycleLanguage = useStore((state) => state.cycleLanguage);
   const interactionMode = useStore((state) => state.interactionMode);
   const setInteractionMode = useStore((state) => state.setInteractionMode);
-  const controlsCollapsed = useStore((state) => state.controlsCollapsed);
-  const toggleControlsCollapsed = useStore((state) => state.toggleControlsCollapsed);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
+  const [isElementsPanelOpen, setIsElementsPanelOpen] = useState(true);
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
@@ -105,15 +108,20 @@ export function UI() {
   const ghostButtonClass = isDark
     ? 'text-zinc-400 hover:text-white hover:bg-white/10'
     : 'text-zinc-600 hover:text-zinc-900 hover:bg-zinc-100';
-  const activeModeClass = isDark
-    ? 'bg-indigo-500 text-white'
-    : 'bg-indigo-100 text-indigo-700';
   const inactiveModeClass = isDark
     ? 'bg-white/5 text-zinc-300 hover:bg-white/10'
     : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200';
   const dangerButtonClass = isDark
     ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400'
     : 'bg-red-100 hover:bg-red-200 text-red-700';
+  const settingsItemClass = isDark
+    ? 'text-zinc-200 hover:bg-white/10'
+    : 'text-zinc-700 hover:bg-zinc-100';
+  const interactionBubbleClass = interactionMode === 'delete'
+    ? (isDark
+      ? 'bg-red-500 text-white hover:bg-red-600 shadow-red-900/40'
+      : 'bg-red-500 text-white hover:bg-red-600 shadow-red-500/40')
+    : 'bg-indigo-500 text-white hover:bg-indigo-600 shadow-indigo-600/40';
 
   return (
     <div
@@ -126,7 +134,7 @@ export function UI() {
           
           {/* Logo & Settings */}
           <div
-            className={`flex items-center justify-between backdrop-blur-md p-3 md:p-4 rounded-2xl border pointer-events-auto w-full ${panelClass}`}
+            className={`flex items-center justify-between backdrop-blur-md p-3 md:p-4 rounded-2xl border-0 pointer-events-auto w-full ${panelClass}`}
           >
             <div className="flex items-center gap-3">
               <img
@@ -141,96 +149,79 @@ export function UI() {
               </span>
             </div>
             
-            <div className="flex items-center gap-1">
-              <button 
-                className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${ghostButtonClass}`}
-                aria-label={messages.ui.themeToggle}
-                onClick={toggleTheme}
-              >
-                {isDark ? <Sun size={18} /> : <Moon size={18} />}
-              </button>
-              <button 
-                className={`min-h-[44px] px-2 rounded-xl transition-colors flex items-center gap-1 ${ghostButtonClass}`}
-                aria-label={messages.ui.languageToggle}
-                onClick={cycleLanguage}
-              >
-                <Globe size={18} />
-                <span className="text-xs font-bold hidden sm:inline">{language.toUpperCase()}</span>
-                <span className="text-xs font-bold sm:hidden">{language.toUpperCase()}</span>
-              </button>
+            <div className="relative">
               <button
                 className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${ghostButtonClass}`}
-                aria-label={messages.ui.privacy}
-                onClick={() => setIsPrivacyOpen(true)}
+                aria-label={messages.ui.menu}
+                aria-expanded={isSettingsMenuOpen}
+                aria-haspopup="menu"
+                onClick={() => setIsSettingsMenuOpen((open) => !open)}
               >
-                <Shield size={18} />
+                <Menu size={18} />
               </button>
-            </div>
-          </div>
-
-          <div
-            className={`backdrop-blur-md p-3 rounded-2xl border pointer-events-auto ${panelClass}`}
-          >
-            <h2 className={`font-bold text-xs mb-3 tracking-wider uppercase ${headingTextClass}`}>
-              {messages.ui.interactionMode}
-            </h2>
-            <div className="grid grid-cols-2 gap-2">
-              <button
-                onClick={() => setInteractionMode('build')}
-                aria-pressed={interactionMode === 'build'}
-                className={`min-h-[44px] rounded-xl text-sm font-semibold transition-colors ${
-                  interactionMode === 'build' ? activeModeClass : inactiveModeClass
-                }`}
-              >
-                {messages.ui.buildMode}
-              </button>
-              <button
-                onClick={() => setInteractionMode('delete')}
-                aria-pressed={interactionMode === 'delete'}
-                className={`min-h-[44px] rounded-xl text-sm font-semibold transition-colors ${
-                  interactionMode === 'delete' ? activeModeClass : inactiveModeClass
-                }`}
-              >
-                {messages.ui.deleteMode}
-              </button>
-            </div>
-            <p className={`mt-3 text-xs ${secondaryTextClass}`}>{messages.ui.removeHint}</p>
-          </div>
-
-          {/* Desktop Elements Panel */}
-          <div className={`hidden md:flex flex-col backdrop-blur-md p-4 rounded-2xl border pointer-events-auto ${panelClass}`}>
-            <h1 className={`font-bold text-sm mb-4 tracking-wider uppercase ${headingTextClass}`}>{messages.ui.elements}</h1>
-            <div className="flex flex-col gap-3">
-              {(Object.keys(ELEMENTS) as ElementType[]).map(el => {
-                const data = ELEMENTS[el];
-                return (
+              {isSettingsMenuOpen && (
+                <>
                   <button
-                    key={el}
-                    onClick={() => addAtom(el)}
-                    className={`flex items-center gap-3 p-2 rounded-xl transition-colors ${inactiveModeClass}`}
+                    className="fixed inset-0 z-50 cursor-default"
+                    aria-label={messages.ui.close}
+                    onClick={() => setIsSettingsMenuOpen(false)}
+                  />
+                  <div
+                    className={`absolute right-0 top-full mt-2 w-52 rounded-xl border p-2 shadow-xl z-[60] ${
+                      isDark ? 'bg-zinc-900 border-white/10' : 'bg-white border-zinc-200'
+                    }`}
+                    role="menu"
                   >
-                    <div 
-                      className="w-8 h-8 rounded-full shadow-inner flex items-center justify-center text-xs font-bold shrink-0"
-                      style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
+                    <button
+                      className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                      role="menuitem"
+                      onClick={() => {
+                        toggleTheme();
+                        setIsSettingsMenuOpen(false);
+                      }}
                     >
-                      {data.symbol}
-                    </div>
-                    <div className="text-left">
-                      <div className={`font-medium text-sm ${primaryTextClass}`}>{messages.elements[el]}</div>
-                      <div className={`text-xs ${secondaryTextClass}`}>{messages.ui.valence}: {data.valence}</div>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            
-            <div className={`mt-6 pt-4 border-t flex gap-2 ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
-              <button 
-                onClick={clear}
-                className={`flex-1 min-h-[44px] flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-sm font-medium ${dangerButtonClass}`}
-              >
-                <Trash2 size={16} /> {messages.ui.clear}
-              </button>
+                      {isDark ? <Sun size={16} /> : <Moon size={16} />}
+                      <span>{messages.ui.themeToggle}</span>
+                    </button>
+                    <button
+                      className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between ${settingsItemClass}`}
+                      role="menuitem"
+                      onClick={() => {
+                        cycleLanguage();
+                        setIsSettingsMenuOpen(false);
+                      }}
+                    >
+                      <span className="flex items-center gap-2">
+                        <Globe size={16} />
+                        {messages.ui.languageToggle}
+                      </span>
+                      <span className="text-xs font-bold">{language.toUpperCase()}</span>
+                    </button>
+                    <a
+                      href={getPathForRoute('instructions')}
+                      className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                      role="menuitem"
+                      onClick={() => {
+                        setIsSettingsMenuOpen(false);
+                      }}
+                    >
+                      <BookOpenText size={16} />
+                      <span>{messages.ui.instructions}</span>
+                    </a>
+                    <a
+                      href={getPathForRoute('privacy')}
+                      className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                      role="menuitem"
+                      onClick={() => {
+                        setIsSettingsMenuOpen(false);
+                      }}
+                    >
+                      <Shield size={16} />
+                      <span>{messages.ui.privacy}</span>
+                    </a>
+                  </div>
+                </>
+              )}
             </div>
           </div>
 
@@ -240,27 +231,75 @@ export function UI() {
         </div>
 
         {/* Top Right */}
-        <div className="flex flex-col gap-4 items-end">
-          <div className={`hidden md:block backdrop-blur-md p-4 rounded-2xl border w-64 pointer-events-auto ${panelClass}`}>
-            <div className="flex items-center justify-between mb-2">
-              <h2 className={`font-bold text-sm uppercase tracking-wider ${headingTextClass}`}>{messages.ui.controls}</h2>
-              <button
-                onClick={toggleControlsCollapsed}
-                aria-label={controlsCollapsed ? messages.ui.expand : messages.ui.collapse}
-                className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
-              >
-                {controlsCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-              </button>
-            </div>
-            {!controlsCollapsed && (
-              <ul className={`text-sm space-y-2 ${secondaryTextClass}`}>
-                {messages.ui.controlsList.map((item) => (
-                  <li key={item}>• {item}</li>
-                ))}
-              </ul>
-            )}
-          </div>
+        <div className="flex flex-col gap-4 items-end pointer-events-auto">
           <ChallengeMode />
+        </div>
+      </div>
+
+      {!isElementsPanelOpen && (
+        <button
+          onClick={() => setIsElementsPanelOpen(true)}
+          aria-label={messages.ui.elements}
+          className={`hidden md:flex fixed left-0 top-1/2 -translate-y-1/2 z-40 min-h-[56px] px-3 rounded-r-xl border border-l-0 backdrop-blur-md items-center gap-2 pointer-events-auto transition-colors ${
+            isDark
+              ? 'bg-zinc-900/90 border-white/10 text-zinc-200 hover:bg-zinc-900'
+              : 'bg-white/95 border-zinc-200 text-zinc-700 hover:bg-zinc-50'
+          }`}
+        >
+          <ChevronRight size={16} />
+          <span className="text-xs font-semibold uppercase tracking-wide">{messages.ui.elements}</span>
+        </button>
+      )}
+
+      <div
+        className={`hidden md:flex fixed left-6 top-1/2 -translate-y-1/2 w-80 h-[70vh] max-h-[640px] rounded-2xl border backdrop-blur-md p-4 pointer-events-auto z-40 transition-transform duration-300 ${
+          isElementsPanelOpen
+            ? 'translate-x-0'
+            : '-translate-x-[calc(100%+2rem)] pointer-events-none'
+        } ${panelClass}`}
+      >
+        <div className="flex flex-col h-full w-full">
+          <div className="flex items-center justify-between mb-4">
+            <h1 className={`font-bold text-sm tracking-wider uppercase ${headingTextClass}`}>{messages.ui.elements}</h1>
+            <button
+              onClick={() => setIsElementsPanelOpen(false)}
+              aria-label={messages.ui.collapse}
+              className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
+            >
+              <ChevronLeft size={16} />
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 flex-1 stealth-scrollbar">
+            {ELEMENT_DISPLAY_ORDER.map(el => {
+              const data = ELEMENTS[el];
+              return (
+                <button
+                  key={el}
+                  onClick={() => addAtom(el)}
+                  className={`flex flex-col items-center gap-2 p-3 rounded-xl text-center transition-colors ${inactiveModeClass}`}
+                >
+                  <div
+                    className="w-10 h-10 rounded-full shadow-inner flex items-center justify-center text-sm font-bold shrink-0"
+                    style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
+                  >
+                    {data.symbol}
+                  </div>
+                  <div className={`font-medium text-xs leading-tight ${primaryTextClass}`}>{messages.elements[el]}</div>
+                  <div className={`text-[11px] ${secondaryTextClass}`}>{messages.ui.valence}: {data.valence}</div>
+                </button>
+              );
+            })}
+          </div>
+
+          <div className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
+            <button
+              onClick={clear}
+              className={`w-full min-h-[44px] flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-sm font-medium ${dangerButtonClass}`}
+            >
+              <Trash2 size={16} /> {messages.ui.clear}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -296,26 +335,6 @@ export function UI() {
             </div>
           </div>
         )}
-
-        <div className={`md:hidden w-full max-w-md backdrop-blur-md p-3 rounded-2xl border pointer-events-auto ${panelClass}`}>
-          <div className="flex items-center justify-between mb-2">
-            <h2 className={`font-bold text-xs tracking-wider uppercase ${headingTextClass}`}>{messages.ui.mobileTipsTitle}</h2>
-            <button
-              onClick={toggleControlsCollapsed}
-              aria-label={controlsCollapsed ? messages.ui.expand : messages.ui.collapse}
-              className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
-            >
-              {controlsCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
-            </button>
-          </div>
-          {!controlsCollapsed && (
-            <ul className={`text-xs space-y-1 ${secondaryTextClass}`}>
-              {messages.ui.controlsList.slice(0, 6).map((item) => (
-                <li key={item}>• {item}</li>
-              ))}
-            </ul>
-          )}
-        </div>
 
         {/* Mobile FAB */}
         <div className="md:hidden w-full flex justify-center pointer-events-auto pb-4">
@@ -355,7 +374,7 @@ export function UI() {
           </div>
           
           <div className="grid grid-cols-4 gap-4">
-            {(Object.keys(ELEMENTS) as ElementType[]).map(el => {
+            {ELEMENT_DISPLAY_ORDER.map(el => {
               const data = ELEMENTS[el];
               return (
                 <button
@@ -378,14 +397,6 @@ export function UI() {
           </div>
           
           <div className={`mt-6 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
-            <button
-              onClick={() => { setIsPrivacyOpen(true); setIsDrawerOpen(false); }}
-              className={`w-full min-h-[44px] mb-2 p-3 rounded-xl transition-colors text-sm font-bold ${
-                isDark ? 'bg-white/10 hover:bg-white/15 text-zinc-100' : 'bg-zinc-100 hover:bg-zinc-200 text-zinc-900'
-              }`}
-            >
-              {messages.ui.privacy}
-            </button>
             <button 
               onClick={() => { clear(); setIsDrawerOpen(false); }}
               className={`w-full min-h-[44px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold ${dangerButtonClass}`}
@@ -395,14 +406,15 @@ export function UI() {
           </div>
         </div>
       </div>
-      <Privacy
-        isOpen={isPrivacyOpen}
-        onClose={() => setIsPrivacyOpen(false)}
-        isDark={isDark}
-        title={messages.ui.privacyTitle}
-        versionLabel={messages.ui.privacyVersion}
-        closeLabel={messages.ui.close}
-      />
+
+      <button
+        onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
+        aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+        title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+        className={`fixed right-4 bottom-6 md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center ${interactionBubbleClass}`}
+      >
+        {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
+      </button>
     </div>
   );
 }

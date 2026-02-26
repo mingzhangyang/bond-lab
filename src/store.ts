@@ -2,11 +2,9 @@ import { create } from 'zustand';
 import { v4 as uuidv4 } from 'uuid';
 import type { Language } from './i18n.ts';
 import {
-  CONTROLS_COLLAPSED_STORAGE_KEY,
   LANGUAGE_STORAGE_KEY,
   THEME_STORAGE_KEY,
   nextLanguage,
-  resolveInitialControlsCollapsed,
   resolveInitialLanguage,
   resolveInitialTheme,
   toggleTheme as getNextTheme,
@@ -14,12 +12,13 @@ import {
 import type { InteractionMode, Theme } from './preferences.ts';
 import {
   ELEMENTS,
+  ELEMENT_DISPLAY_ORDER,
   getBondChemistry,
   type BondChemistry,
   type ElementType,
 } from './chemistry.ts';
 
-export { ELEMENTS };
+export { ELEMENTS, ELEMENT_DISPLAY_ORDER };
 export type { ElementType };
 
 export interface Atom {
@@ -46,7 +45,6 @@ interface GameState {
   theme: Theme;
   language: Language;
   interactionMode: InteractionMode;
-  controlsCollapsed: boolean;
   
   // Challenge Mode
   challengeActive: boolean;
@@ -62,7 +60,6 @@ interface GameState {
   setLanguage: (language: Language) => void;
   cycleLanguage: () => void;
   setInteractionMode: (mode: InteractionMode) => void;
-  toggleControlsCollapsed: () => void;
   addAtom: (element: ElementType) => string;
   removeAtom: (id: string) => void;
   addBond: (source: string, target: string) => void;
@@ -105,9 +102,6 @@ const initialTheme = resolveInitialTheme(
   getPrefersDarkScheme(),
 );
 const initialLanguage = resolveInitialLanguage(getStoredValue(LANGUAGE_STORAGE_KEY));
-const initialControlsCollapsed = resolveInitialControlsCollapsed(
-  getStoredValue(CONTROLS_COLLAPSED_STORAGE_KEY),
-);
 
 export const useStore = create<GameState>((set, get) => ({
   atoms: [],
@@ -118,7 +112,6 @@ export const useStore = create<GameState>((set, get) => ({
   theme: initialTheme,
   language: initialLanguage,
   interactionMode: 'build',
-  controlsCollapsed: initialControlsCollapsed,
   
   challengeActive: false,
   challengeTarget: null,
@@ -144,11 +137,6 @@ export const useStore = create<GameState>((set, get) => ({
     return { language };
   }),
   setInteractionMode: (interactionMode) => set({ interactionMode }),
-  toggleControlsCollapsed: () => set((state) => {
-    const controlsCollapsed = !state.controlsCollapsed;
-    setStoredValue(CONTROLS_COLLAPSED_STORAGE_KEY, String(controlsCollapsed));
-    return { controlsCollapsed };
-  }),
   addAtom: (element) => {
     const id = uuidv4();
     set((state) => ({

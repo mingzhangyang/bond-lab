@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
   ELEMENTS,
+  ELEMENT_DISPLAY_ORDER,
   getBondChemistry,
   getFallbackBondChemistry,
   normalizeBondChemistry,
@@ -15,6 +16,34 @@ test('ELEMENTS exposes chemistry metadata required for advanced calculations', (
   assert.equal(ELEMENTS.P.valence, 5);
   assert.equal(ELEMENTS.F.maxBonds, 1);
   assert.equal(ELEMENTS.Cl.maxBonds, 1);
+  assert.equal(ELEMENTS.Fe.symbol, 'Fe');
+  assert.equal(ELEMENTS.Mg.symbol, 'Mg');
+  assert.equal(ELEMENTS.Cu.symbol, 'Cu');
+  assert.equal(ELEMENTS.Al.symbol, 'Al');
+  assert.equal(ELEMENTS.Ca.symbol, 'Ca');
+  assert.equal(ELEMENTS.Na.symbol, 'Na');
+  assert.equal(ELEMENTS.K.symbol, 'K');
+});
+
+test('ELEMENT_DISPLAY_ORDER follows periodic-table ordering for selectable elements', () => {
+  assert.deepEqual(ELEMENT_DISPLAY_ORDER, [
+    'H',
+    'C',
+    'N',
+    'O',
+    'F',
+    'Na',
+    'Mg',
+    'Al',
+    'P',
+    'S',
+    'Cl',
+    'K',
+    'Ca',
+    'Fe',
+    'Cu',
+  ]);
+  assert.deepEqual([...ELEMENT_DISPLAY_ORDER].sort(), Object.keys(ELEMENTS).sort());
 });
 
 test('getBondChemistry sets rotatable by bond order', () => {

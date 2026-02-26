@@ -25,8 +25,8 @@ interface KnownMolecule extends MoleculeTemplate {
   bondOrderCounts: BondOrderCounts;
 }
 
-const ELEMENT_TYPES: ElementType[] = ['H', 'C', 'N', 'O', 'S', 'P', 'F', 'Cl'];
-const UNKNOWN_FORMULA_ORDER: ElementType[] = ['C', 'H', 'N', 'O', 'S', 'P', 'F', 'Cl'];
+const ELEMENT_TYPES: ElementType[] = ['H', 'C', 'N', 'O', 'S', 'P', 'F', 'Cl', 'Fe', 'Mg', 'Cu', 'Al', 'Ca', 'Na', 'K'];
+const UNKNOWN_FORMULA_ORDER: ElementType[] = ['C', 'H', 'Fe', 'Mg', 'Cu', 'Al', 'Ca', 'Na', 'K', 'N', 'O', 'S', 'P', 'F', 'Cl'];
 
 const MOLECULE_TEMPLATES: MoleculeTemplate[] = [
   {

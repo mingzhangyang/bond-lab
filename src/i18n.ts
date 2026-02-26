@@ -1,10 +1,15 @@
+import type { ElementType } from './chemistry.ts';
+
 export type Language = 'en' | 'es' | 'zh' | 'fr' | 'ja';
 
 export interface Messages {
   appTitle: string;
   ui: {
     elements: string;
+    menu: string;
     controls: string;
+    instructions: string;
+    instructionsTitle: string;
     addElement: string;
     selectElement: string;
     clear: string;
@@ -20,6 +25,7 @@ export interface Messages {
     collapse: string;
     expand: string;
     close: string;
+    backToLab: string;
     privacy: string;
     privacyTitle: string;
     privacyVersion: string;
@@ -42,23 +48,17 @@ export interface Messages {
   stability: {
     title: string;
   };
-  elements: {
-    H: string;
-    C: string;
-    N: string;
-    O: string;
-    S: string;
-    P: string;
-    F: string;
-    Cl: string;
-  };
+  elements: Record<ElementType, string>;
 }
 
 const EN_MESSAGES: Messages = {
   appTitle: 'BondLab',
   ui: {
     elements: 'Elements',
+    menu: 'Menu',
     controls: 'Controls',
+    instructions: 'Instructions',
+    instructionsTitle: 'Instructions',
     addElement: 'Add Element',
     selectElement: 'Select Element',
     clear: 'Clear',
@@ -74,6 +74,7 @@ const EN_MESSAGES: Messages = {
     collapse: 'Collapse',
     expand: 'Expand',
     close: 'Close',
+    backToLab: 'Back to Lab',
     privacy: 'Privacy',
     privacyTitle: 'Privacy Policy',
     privacyVersion: 'Version',
@@ -114,6 +115,13 @@ const EN_MESSAGES: Messages = {
     P: 'Phosphorus',
     F: 'Fluorine',
     Cl: 'Chlorine',
+    Fe: 'Iron',
+    Mg: 'Magnesium',
+    Cu: 'Copper',
+    Al: 'Aluminum',
+    Ca: 'Calcium',
+    Na: 'Sodium',
+    K: 'Potassium',
   },
 };
 
@@ -121,7 +129,10 @@ const ES_MESSAGES: Messages = {
   appTitle: 'BondLab',
   ui: {
     elements: 'Elementos',
+    menu: 'Menu',
     controls: 'Controles',
+    instructions: 'Instrucciones',
+    instructionsTitle: 'Instrucciones',
     addElement: 'Agregar elemento',
     selectElement: 'Seleccionar elemento',
     clear: 'Limpiar',
@@ -137,6 +148,7 @@ const ES_MESSAGES: Messages = {
     collapse: 'Colapsar',
     expand: 'Expandir',
     close: 'Cerrar',
+    backToLab: 'Volver al laboratorio',
     privacy: 'Privacidad',
     privacyTitle: 'Politica de privacidad',
     privacyVersion: 'Version',
@@ -177,6 +189,13 @@ const ES_MESSAGES: Messages = {
     P: 'Fosforo',
     F: 'Fluor',
     Cl: 'Cloro',
+    Fe: 'Hierro',
+    Mg: 'Magnesio',
+    Cu: 'Cobre',
+    Al: 'Aluminio',
+    Ca: 'Calcio',
+    Na: 'Sodio',
+    K: 'Potasio',
   },
 };
 
@@ -184,7 +203,10 @@ const ZH_MESSAGES: Messages = {
   appTitle: 'BondLab',
   ui: {
     elements: '元素',
+    menu: '菜单',
     controls: '操作指南',
+    instructions: '说明',
+    instructionsTitle: '操作说明',
     addElement: '添加元素',
     selectElement: '选择元素',
     clear: '清空',
@@ -200,6 +222,7 @@ const ZH_MESSAGES: Messages = {
     collapse: '收起',
     expand: '展开',
     close: '关闭',
+    backToLab: '返回实验室',
     privacy: '隐私',
     privacyTitle: '隐私政策',
     privacyVersion: '版本',
@@ -240,6 +263,13 @@ const ZH_MESSAGES: Messages = {
     P: '磷',
     F: '氟',
     Cl: '氯',
+    Fe: '铁',
+    Mg: '镁',
+    Cu: '铜',
+    Al: '铝',
+    Ca: '钙',
+    Na: '钠',
+    K: '钾',
   },
 };
 
@@ -247,7 +277,10 @@ const FR_MESSAGES: Messages = {
   appTitle: 'BondLab',
   ui: {
     elements: 'Elements',
+    menu: 'Menu',
     controls: 'Controles',
+    instructions: 'Instructions',
+    instructionsTitle: 'Instructions',
     addElement: 'Ajouter un element',
     selectElement: 'Selectionner un element',
     clear: 'Effacer',
@@ -263,6 +296,7 @@ const FR_MESSAGES: Messages = {
     collapse: 'Reduire',
     expand: 'Etendre',
     close: 'Fermer',
+    backToLab: 'Retour au labo',
     privacy: 'Confidentialite',
     privacyTitle: 'Politique de confidentialite',
     privacyVersion: 'Version',
@@ -303,6 +337,13 @@ const FR_MESSAGES: Messages = {
     P: 'Phosphore',
     F: 'Fluor',
     Cl: 'Chlore',
+    Fe: 'Fer',
+    Mg: 'Magnesium',
+    Cu: 'Cuivre',
+    Al: 'Aluminium',
+    Ca: 'Calcium',
+    Na: 'Sodium',
+    K: 'Potassium',
   },
 };
 
@@ -310,7 +351,10 @@ const JA_MESSAGES: Messages = {
   appTitle: 'BondLab',
   ui: {
     elements: '元素',
+    menu: 'メニュー',
     controls: '操作',
+    instructions: '説明',
+    instructionsTitle: '操作説明',
     addElement: '元素を追加',
     selectElement: '元素を選択',
     clear: 'クリア',
@@ -326,6 +370,7 @@ const JA_MESSAGES: Messages = {
     collapse: '折りたたむ',
     expand: '展開',
     close: '閉じる',
+    backToLab: 'ラボに戻る',
     privacy: 'プライバシー',
     privacyTitle: 'プライバシーポリシー',
     privacyVersion: '版',
@@ -366,6 +411,13 @@ const JA_MESSAGES: Messages = {
     P: 'リン',
     F: 'フッ素',
     Cl: '塩素',
+    Fe: '鉄',
+    Mg: 'マグネシウム',
+    Cu: '銅',
+    Al: 'アルミニウム',
+    Ca: 'カルシウム',
+    Na: 'ナトリウム',
+    K: 'カリウム',
   },
 };
 
@@ -487,7 +539,7 @@ export function localizeMoleculeName(language: Language, moleculeName: string): 
 
 export function translateStabilityIssue(language: Language, issue: string): string {
   const exceededMatch = issue.match(
-    /^([A-Z]) has exceeded its maximum valency \((\d+)\/(\d+) bonds\)\.$/,
+    /^([A-Z][a-z]?) has exceeded its maximum valency \((\d+)\/(\d+) bonds\)\.$/,
   );
   if (exceededMatch) {
     const [, element, current, max] = exceededMatch;
@@ -507,7 +559,7 @@ export function translateStabilityIssue(language: Language, issue: string): stri
   }
 
   const unsatisfiedMatch = issue.match(
-    /^([A-Z]) has unsatisfied valency \((\d+)\/(\d+) bonds\)\.$/,
+    /^([A-Z][a-z]?) has unsatisfied valency \((\d+)\/(\d+) bonds\)\.$/,
   );
   if (unsatisfiedMatch) {
     const [, element, current, max] = unsatisfiedMatch;

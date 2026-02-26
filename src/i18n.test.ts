@@ -4,9 +4,18 @@ import { getMessages, localizeMoleculeName, translateStabilityIssue } from './i1
 
 test('getMessages returns English defaults', () => {
   const en = getMessages('en');
+  assert.equal(en.ui.menu, 'Menu');
+  assert.equal(en.ui.instructions, 'Instructions');
   assert.equal(en.ui.addElement, 'Add Element');
   assert.equal(en.challenge.title, 'Challenge');
   assert.ok(en.ui.controlsList.includes('Hold Shift + drag a single bond to rotate'));
+  assert.equal(en.elements.Fe, 'Iron');
+  assert.equal(en.elements.Mg, 'Magnesium');
+  assert.equal(en.elements.Cu, 'Copper');
+  assert.equal(en.elements.Al, 'Aluminum');
+  assert.equal(en.elements.Ca, 'Calcium');
+  assert.equal(en.elements.Na, 'Sodium');
+  assert.equal(en.elements.K, 'Potassium');
 });
 
 test('getMessages returns Spanish copy', () => {
@@ -17,6 +26,7 @@ test('getMessages returns Spanish copy', () => {
 
 test('getMessages returns Chinese, French, and Japanese copy', () => {
   const zh = getMessages('zh');
+  assert.equal(zh.ui.instructionsTitle, '操作说明');
   assert.equal(zh.ui.addElement, '添加元素');
   assert.equal(zh.challenge.title, '挑战');
   assert.ok(zh.ui.controlsList.includes('按住 Shift 并拖动单键可旋转'));
@@ -47,6 +57,7 @@ test('localizeMoleculeName translates known names and falls back for unknown one
 test('translateStabilityIssue localizes valency issue strings', () => {
   const exceeded = 'O has exceeded its maximum valency (3/2 bonds).';
   const unsatisfied = 'C has unsatisfied valency (2/4 bonds).';
+  const metalExceeded = 'Fe has exceeded its maximum valency (5/2 bonds).';
 
   assert.equal(
     translateStabilityIssue('es', exceeded),
@@ -55,5 +66,9 @@ test('translateStabilityIssue localizes valency issue strings', () => {
   assert.equal(
     translateStabilityIssue('es', unsatisfied),
     'C tiene valencia insatisfecha (2/4 enlaces).',
+  );
+  assert.equal(
+    translateStabilityIssue('es', metalExceeded),
+    'Fe excedio su valencia maxima (5/2 enlaces).',
   );
 });

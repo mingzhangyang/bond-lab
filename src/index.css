@@ -1,1 +1,29 @@
 @import "tailwindcss";
+
+.stealth-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+.stealth-scrollbar:hover {
+  scrollbar-color: rgba(113, 113, 122, 0.28) transparent;
+}
+
+.stealth-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.stealth-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.stealth-scrollbar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+.stealth-scrollbar:hover::-webkit-scrollbar-thumb {
+  background-color: rgba(113, 113, 122, 0.28);
+}

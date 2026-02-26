@@ -123,6 +123,68 @@ test('identifyMolecule formula builder supports two-letter element symbols', () 
   assert.deepEqual(identifyMolecule(atoms, bonds), { name: 'Unknown Molecule', formula: 'CCl' });
 });
 
+test('identifyMolecule formula builder supports newly added metal elements', () => {
+  const ironOxideAtoms: Atom[] = [
+    { id: 'fe1', element: 'Fe' },
+    { id: 'fe2', element: 'Fe' },
+    { id: 'o1', element: 'O' },
+    { id: 'o2', element: 'O' },
+    { id: 'o3', element: 'O' },
+  ];
+  const ironOxideBonds: Bond[] = [
+    { id: 'b1', source: 'fe1', target: 'o1', order: 1 },
+    { id: 'b2', source: 'fe1', target: 'o2', order: 1 },
+    { id: 'b3', source: 'fe2', target: 'o2', order: 1 },
+    { id: 'b4', source: 'fe2', target: 'o3', order: 1 },
+  ];
+
+  const calciumChlorideAtoms: Atom[] = [
+    { id: 'ca1', element: 'Ca' },
+    { id: 'cl1', element: 'Cl' },
+    { id: 'cl2', element: 'Cl' },
+  ];
+  const calciumChlorideBonds: Bond[] = [
+    { id: 'b5', source: 'ca1', target: 'cl1', order: 1 },
+    { id: 'b6', source: 'ca1', target: 'cl2', order: 1 },
+  ];
+
+  assert.deepEqual(identifyMolecule(ironOxideAtoms, ironOxideBonds), {
+    name: 'Unknown Molecule',
+    formula: 'Fe2O3',
+  });
+  assert.deepEqual(identifyMolecule(calciumChlorideAtoms, calciumChlorideBonds), {
+    name: 'Unknown Molecule',
+    formula: 'CaCl2',
+  });
+
+  const sodiumChlorideAtoms: Atom[] = [
+    { id: 'na1', element: 'Na' },
+    { id: 'cl3', element: 'Cl' },
+  ];
+  const sodiumChlorideBonds: Bond[] = [
+    { id: 'b7', source: 'na1', target: 'cl3', order: 1 },
+  ];
+
+  const potassiumOxideAtoms: Atom[] = [
+    { id: 'k1', element: 'K' },
+    { id: 'k2', element: 'K' },
+    { id: 'o4', element: 'O' },
+  ];
+  const potassiumOxideBonds: Bond[] = [
+    { id: 'b8', source: 'k1', target: 'o4', order: 1 },
+    { id: 'b9', source: 'k2', target: 'o4', order: 1 },
+  ];
+
+  assert.deepEqual(identifyMolecule(sodiumChlorideAtoms, sodiumChlorideBonds), {
+    name: 'Unknown Molecule',
+    formula: 'NaCl',
+  });
+  assert.deepEqual(identifyMolecule(potassiumOxideAtoms, potassiumOxideBonds), {
+    name: 'Unknown Molecule',
+    formula: 'K2O',
+  });
+});
+
 test('identifyMolecule does not misidentify ethanol isomer topology', () => {
   const atoms: Atom[] = [
     { id: 'c1', element: 'C' },

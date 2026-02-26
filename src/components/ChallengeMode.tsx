@@ -96,7 +96,7 @@ function ActiveChallengePanel({ language, messages, onStart }: ActiveChallengePa
         <button
           onClick={stopChallenge}
           aria-label={messages.challenge.close}
-          className={`min-h-[44px] min-w-[44px] transition-colors p-1.5 rounded-full ${iconButtonClass}`}
+          className={`h-11 w-11 rounded-full transition-colors inline-flex items-center justify-center ${iconButtonClass}`}
         >
           <X size={16} />
         </button>
