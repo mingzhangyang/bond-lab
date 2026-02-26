@@ -82,10 +82,27 @@ Raise quality through repeated structured reviews.
 - High-severity issues are resolved before release.
 - Final checklist is complete: `npm run test`, `npm run lint`, `npm run build`, plus manual verification of core interactions.
 
+## 6. Fine Tune Mobile Browser UI/UX
+
+### Goal
+Improve usability, clarity, and touch interaction quality on mobile browsers.
+
+### Planned Scope
+- Refine layout spacing and hierarchy for small screens in `src/components/UI.tsx` and related CSS.
+- Improve tap target sizes and interaction affordances for core controls (atom add/remove, bond actions, challenge controls).
+- Tune typography and panel behavior to reduce overlap/clipping in portrait mode.
+- Verify interaction flow and readability across common mobile viewport sizes.
+
+### Definition of Done
+- Core flows are comfortable to use on mobile: add/remove atoms, create/upgrade/remove bonds, and challenge mode.
+- No major overlap, clipping, or off-screen control issues on tested mobile breakpoints.
+- Manual QA checklist includes mobile browser validation for both portrait and landscape.
+
 ## Execution Order
 
 1. Add more atom types.
 2. Extend molecule library and challenge mode.
 3. Deliver privacy page.
 4. Ship chemistry enhancements in iterative slices.
-5. Run multiple review rounds before release.
+5. Fine tune mobile browser UI/UX.
+6. Run multiple review rounds before release.
