@@ -24,6 +24,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const addBond = useStore((state) => state.addBond);
   const removeAtom = useStore((state) => state.removeAtom);
   const interactionMode = useStore((state) => state.interactionMode);
+  const showAtomLabels = useStore((state) => state.showAtomLabels);
   const [hovered, setHovered] = useState(false);
   const { camera, size, raycaster } = useThree();
 
@@ -129,17 +130,19 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
         metalness={0.1}
         emissive={isSelected ? '#666' : (hovered ? (interactionMode === 'delete' ? '#660000' : '#333') : '#000')}
       />
-      <Text
-        position={[0, 0, data.vdwRadius * 0.4 + 0.2]}
-        fontSize={0.32}
-        color="#ffffff"
-        anchorX="center"
-        anchorY="middle"
-        outlineColor="#000000"
-        outlineWidth={0.04}
-      >
-        {data.symbol}
-      </Text>
+      {showAtomLabels && (
+        <Text
+          position={[0, 0, data.vdwRadius * 0.4 + 0.2]}
+          fontSize={0.32}
+          color="#ffffff"
+          anchorX="center"
+          anchorY="middle"
+          outlineColor="#000000"
+          outlineWidth={0.04}
+        >
+          {data.symbol}
+        </Text>
+      )}
     </mesh>
   );
 }

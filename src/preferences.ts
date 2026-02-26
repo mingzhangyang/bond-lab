@@ -5,9 +5,11 @@ export type InteractionMode = 'build' | 'delete';
 
 export const THEME_STORAGE_KEY = 'bondlab-theme';
 export const LANGUAGE_STORAGE_KEY = 'bondlab-language';
+export const SHOW_ATOM_LABELS_STORAGE_KEY = 'bondlab-show-atom-labels';
+export const CONTROLS_COLLAPSED_STORAGE_KEY = 'bondlab-controls-collapsed';
 
 const SUPPORTED_THEMES: Theme[] = ['dark', 'light'];
-const SUPPORTED_LANGUAGES: Language[] = ['en', 'es'];
+const SUPPORTED_LANGUAGES: Language[] = ['en', 'es', 'zh', 'fr', 'ja'];
 
 function isTheme(value: string | null): value is Theme {
   return value !== null && SUPPORTED_THEMES.includes(value as Theme);
@@ -22,7 +24,11 @@ export function toggleTheme(theme: Theme): Theme {
 }
 
 export function nextLanguage(language: Language): Language {
-  return language === 'en' ? 'es' : 'en';
+  const currentIndex = SUPPORTED_LANGUAGES.indexOf(language);
+  if (currentIndex === -1) {
+    return SUPPORTED_LANGUAGES[0];
+  }
+  return SUPPORTED_LANGUAGES[(currentIndex + 1) % SUPPORTED_LANGUAGES.length];
 }
 
 export function resolveInitialTheme(
@@ -40,4 +46,21 @@ export function resolveInitialLanguage(storedLanguage: string | null): Language 
     return storedLanguage;
   }
   return 'en';
+}
+
+function resolveInitialBooleanPreference(
+  storedValue: string | null,
+  fallback: boolean,
+): boolean {
+  if (storedValue === 'true') return true;
+  if (storedValue === 'false') return false;
+  return fallback;
+}
+
+export function resolveInitialShowAtomLabels(storedValue: string | null): boolean {
+  return resolveInitialBooleanPreference(storedValue, true);
+}
+
+export function resolveInitialControlsCollapsed(storedValue: string | null): boolean {
+  return resolveInitialBooleanPreference(storedValue, false);
 }

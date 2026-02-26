@@ -1,7 +1,18 @@
 import React, { useMemo, useState } from 'react';
 import { useStore, ELEMENTS, ElementType } from '../store';
 import { identifyMolecule } from '../identifier';
-import { Trash2, X, Plus, Sun, Globe, Moon } from 'lucide-react';
+import {
+  Trash2,
+  X,
+  Plus,
+  Sun,
+  Globe,
+  Moon,
+  Eye,
+  EyeOff,
+  ChevronDown,
+  ChevronUp,
+} from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import { ChallengeMode } from './ChallengeMode';
 import { getMessages, localizeMoleculeName } from '../i18n';
@@ -17,6 +28,10 @@ export function UI() {
   const cycleLanguage = useStore((state) => state.cycleLanguage);
   const interactionMode = useStore((state) => state.interactionMode);
   const setInteractionMode = useStore((state) => state.setInteractionMode);
+  const showAtomLabels = useStore((state) => state.showAtomLabels);
+  const toggleShowAtomLabels = useStore((state) => state.toggleShowAtomLabels);
+  const controlsCollapsed = useStore((state) => state.controlsCollapsed);
+  const toggleControlsCollapsed = useStore((state) => state.toggleControlsCollapsed);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const messages = useMemo(() => getMessages(language), [language]);
@@ -73,7 +88,7 @@ export function UI() {
             
             <div className="flex items-center gap-1">
               <button 
-                className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors ${ghostButtonClass}`}
+                className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${ghostButtonClass}`}
                 aria-label={messages.ui.themeToggle}
                 onClick={toggleTheme}
               >
@@ -118,6 +133,16 @@ export function UI() {
               </button>
             </div>
             <p className={`mt-3 text-xs ${secondaryTextClass}`}>{messages.ui.removeHint}</p>
+            <button
+              onClick={toggleShowAtomLabels}
+              aria-pressed={showAtomLabels}
+              className={`mt-3 w-full min-h-[44px] rounded-xl text-sm font-semibold transition-colors flex items-center justify-between px-3 ${
+                showAtomLabels ? activeModeClass : inactiveModeClass
+              }`}
+            >
+              <span>{messages.ui.showAtomLabels}</span>
+              {showAtomLabels ? <Eye size={16} /> : <EyeOff size={16} />}
+            </button>
           </div>
 
           {/* Desktop Elements Panel */}
@@ -165,12 +190,23 @@ export function UI() {
         {/* Top Right */}
         <div className="flex flex-col gap-4 items-end">
           <div className={`hidden md:block backdrop-blur-md p-4 rounded-2xl border w-64 pointer-events-auto ${panelClass}`}>
-            <h2 className={`font-bold text-sm mb-2 uppercase tracking-wider ${headingTextClass}`}>{messages.ui.controls}</h2>
-            <ul className={`text-sm space-y-2 ${secondaryTextClass}`}>
-              {messages.ui.controlsList.map((item) => (
-                <li key={item}>• {item}</li>
-              ))}
-            </ul>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className={`font-bold text-sm uppercase tracking-wider ${headingTextClass}`}>{messages.ui.controls}</h2>
+              <button
+                onClick={toggleControlsCollapsed}
+                aria-label={controlsCollapsed ? messages.ui.expand : messages.ui.collapse}
+                className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
+              >
+                {controlsCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+              </button>
+            </div>
+            {!controlsCollapsed && (
+              <ul className={`text-sm space-y-2 ${secondaryTextClass}`}>
+                {messages.ui.controlsList.map((item) => (
+                  <li key={item}>• {item}</li>
+                ))}
+              </ul>
+            )}
           </div>
           <ChallengeMode />
         </div>
@@ -191,12 +227,23 @@ export function UI() {
         )}
 
         <div className={`md:hidden w-full max-w-md backdrop-blur-md p-3 rounded-2xl border pointer-events-auto ${panelClass}`}>
-          <h2 className={`font-bold text-xs mb-2 tracking-wider uppercase ${headingTextClass}`}>{messages.ui.mobileTipsTitle}</h2>
-          <ul className={`text-xs space-y-1 ${secondaryTextClass}`}>
-            {messages.ui.controlsList.slice(0, 5).map((item) => (
-              <li key={item}>• {item}</li>
-            ))}
-          </ul>
+          <div className="flex items-center justify-between mb-2">
+            <h2 className={`font-bold text-xs tracking-wider uppercase ${headingTextClass}`}>{messages.ui.mobileTipsTitle}</h2>
+            <button
+              onClick={toggleControlsCollapsed}
+              aria-label={controlsCollapsed ? messages.ui.expand : messages.ui.collapse}
+              className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
+            >
+              {controlsCollapsed ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
+            </button>
+          </div>
+          {!controlsCollapsed && (
+            <ul className={`text-xs space-y-1 ${secondaryTextClass}`}>
+              {messages.ui.controlsList.slice(0, 5).map((item) => (
+                <li key={item}>• {item}</li>
+              ))}
+            </ul>
+          )}
         </div>
 
         {/* Mobile FAB */}

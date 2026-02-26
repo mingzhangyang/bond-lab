@@ -1,4 +1,4 @@
-export type Language = 'en' | 'es';
+export type Language = 'en' | 'es' | 'zh' | 'fr' | 'ja';
 
 export interface Messages {
   appTitle: string;
@@ -15,8 +15,11 @@ export interface Messages {
     buildMode: string;
     deleteMode: string;
     removeHint: string;
+    showAtomLabels: string;
     themeToggle: string;
     languageToggle: string;
+    collapse: string;
+    expand: string;
     close: string;
     mobileTipsTitle: string;
     controlsList: string[];
@@ -60,8 +63,11 @@ const EN_MESSAGES: Messages = {
     buildMode: 'Build',
     deleteMode: 'Delete',
     removeHint: 'Switch to Delete mode to remove atoms and bonds.',
+    showAtomLabels: 'Show atom labels',
     themeToggle: 'Toggle color theme',
     languageToggle: 'Switch language',
+    collapse: 'Collapse',
+    expand: 'Expand',
     close: 'Close',
     mobileTipsTitle: 'Quick tips',
     controlsList: [
@@ -113,8 +119,11 @@ const ES_MESSAGES: Messages = {
     buildMode: 'Construir',
     deleteMode: 'Eliminar',
     removeHint: 'Cambia al modo Eliminar para quitar atomos y enlaces.',
+    showAtomLabels: 'Mostrar simbolos de atomos',
     themeToggle: 'Cambiar tema de color',
     languageToggle: 'Cambiar idioma',
+    collapse: 'Colapsar',
+    expand: 'Expandir',
     close: 'Cerrar',
     mobileTipsTitle: 'Consejos rapidos',
     controlsList: [
@@ -151,9 +160,180 @@ const ES_MESSAGES: Messages = {
   },
 };
 
+const ZH_MESSAGES: Messages = {
+  appTitle: 'BondLab',
+  ui: {
+    elements: '元素',
+    controls: '操作指南',
+    addElement: '添加元素',
+    selectElement: '选择元素',
+    clear: '清空',
+    clearAll: '全部清空',
+    currentMolecule: '当前分子',
+    valence: '价态',
+    interactionMode: '交互',
+    buildMode: '构建',
+    deleteMode: '删除',
+    removeHint: '切换到删除模式可移除原子和键。',
+    showAtomLabels: '显示原子符号',
+    themeToggle: '切换主题',
+    languageToggle: '切换语言',
+    collapse: '收起',
+    expand: '展开',
+    close: '关闭',
+    mobileTipsTitle: '快速提示',
+    controlsList: [
+      '点击元素以添加原子',
+      '点击两个原子以创建键',
+      '拖动原子可移动位置',
+      '点击键可升级键级',
+      '删除模式：点击原子/键可移除',
+      '拖动背景可旋转视角',
+      '双指缩放或滚轮缩放',
+    ],
+  },
+  challenge: {
+    title: '挑战',
+    target: '目标',
+    start: '开始挑战',
+    next: '下一关',
+    retry: '重试',
+    wonHeadline: '太棒了！',
+    wonMessagePrefix: '你成功构建了',
+    lostHeadline: '时间到！',
+    lostMessagePrefix: '目标分子是',
+    secondsShort: '秒',
+    close: '停止挑战',
+  },
+  stability: {
+    title: '稳定性',
+  },
+  elements: {
+    H: '氢',
+    C: '碳',
+    N: '氮',
+    O: '氧',
+  },
+};
+
+const FR_MESSAGES: Messages = {
+  appTitle: 'BondLab',
+  ui: {
+    elements: 'Elements',
+    controls: 'Controles',
+    addElement: 'Ajouter un element',
+    selectElement: 'Selectionner un element',
+    clear: 'Effacer',
+    clearAll: 'Tout effacer',
+    currentMolecule: 'Molecule actuelle',
+    valence: 'Valence',
+    interactionMode: 'Interaction',
+    buildMode: 'Construire',
+    deleteMode: 'Supprimer',
+    removeHint: 'Passez en mode Supprimer pour retirer atomes et liaisons.',
+    showAtomLabels: 'Afficher etiquettes atomiques',
+    themeToggle: 'Changer le theme',
+    languageToggle: 'Changer la langue',
+    collapse: 'Reduire',
+    expand: 'Etendre',
+    close: 'Fermer',
+    mobileTipsTitle: 'Conseils rapides',
+    controlsList: [
+      'Touchez un element pour l ajouter',
+      'Touchez deux atomes pour creer une liaison',
+      'Faites glisser les atomes pour les deplacer',
+      'Touchez une liaison pour l ameliorer',
+      'Mode Supprimer : touchez atome/liaison pour retirer',
+      'Glissez le fond pour tourner la camera',
+      'Pincez ou utilisez la molette pour zoomer',
+    ],
+  },
+  challenge: {
+    title: 'Defi',
+    target: 'Cible',
+    start: 'Defi',
+    next: 'Defi suivant',
+    retry: 'Reessayer',
+    wonHeadline: 'Bravo!',
+    wonMessagePrefix: 'Vous avez construit',
+    lostHeadline: 'Temps ecoule!',
+    lostMessagePrefix: 'La molecule etait',
+    secondsShort: 's',
+    close: 'Arreter le defi',
+  },
+  stability: {
+    title: 'Stabilite',
+  },
+  elements: {
+    H: 'Hydrogene',
+    C: 'Carbone',
+    N: 'Azote',
+    O: 'Oxygene',
+  },
+};
+
+const JA_MESSAGES: Messages = {
+  appTitle: 'BondLab',
+  ui: {
+    elements: '元素',
+    controls: '操作',
+    addElement: '元素を追加',
+    selectElement: '元素を選択',
+    clear: 'クリア',
+    clearAll: 'すべてクリア',
+    currentMolecule: '現在の分子',
+    valence: '価数',
+    interactionMode: '操作モード',
+    buildMode: '作成',
+    deleteMode: '削除',
+    removeHint: '原子と結合を削除するには削除モードに切り替えてください。',
+    showAtomLabels: '原子記号を表示',
+    themeToggle: 'テーマ切替',
+    languageToggle: '言語切替',
+    collapse: '折りたたむ',
+    expand: '展開',
+    close: '閉じる',
+    mobileTipsTitle: 'クイックヒント',
+    controlsList: [
+      '元素をタップして追加',
+      '2つの原子をタップして結合を作成',
+      '原子をドラッグして移動',
+      '結合をタップして結合次数を上げる',
+      '削除モード：原子/結合をタップして削除',
+      '背景をドラッグしてカメラ回転',
+      'ピンチまたはホイールでズーム',
+    ],
+  },
+  challenge: {
+    title: 'チャレンジ',
+    target: '目標',
+    start: '開始',
+    next: '次のチャレンジ',
+    retry: 'もう一度',
+    wonHeadline: 'すばらしい！',
+    wonMessagePrefix: '作成に成功しました',
+    lostHeadline: '時間切れ！',
+    lostMessagePrefix: '正解は',
+    secondsShort: '秒',
+    close: 'チャレンジ停止',
+  },
+  stability: {
+    title: '安定性',
+  },
+  elements: {
+    H: '水素',
+    C: '炭素',
+    N: '窒素',
+    O: '酸素',
+  },
+};
+
 const MESSAGES: Record<Language, Messages> = {
   en: EN_MESSAGES,
   es: ES_MESSAGES,
+  zh: ZH_MESSAGES,
+  fr: FR_MESSAGES,
+  ja: JA_MESSAGES,
 };
 
 const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
@@ -175,6 +355,57 @@ const MOLECULE_NAME_MAP: Record<Language, Record<string, string>> = {
     'Hydrogen Cyanide': 'Cianuro de hidrogeno',
     'Unknown Molecule': 'Molecula desconocida',
   },
+  zh: {
+    Water: '水',
+    Methane: '甲烷',
+    'Carbon Dioxide': '二氧化碳',
+    Ammonia: '氨',
+    Ethane: '乙烷',
+    Ethene: '乙烯',
+    Ethyne: '乙炔',
+    Oxygen: '氧气',
+    Nitrogen: '氮气',
+    Hydrogen: '氢气',
+    Methanol: '甲醇',
+    Ethanol: '乙醇',
+    Formaldehyde: '甲醛',
+    'Hydrogen Cyanide': '氰化氢',
+    'Unknown Molecule': '未知分子',
+  },
+  fr: {
+    Water: 'Eau',
+    Methane: 'Methane',
+    'Carbon Dioxide': 'Dioxyde de carbone',
+    Ammonia: 'Ammoniac',
+    Ethane: 'Ethane',
+    Ethene: 'Ethene',
+    Ethyne: 'Ethyne',
+    Oxygen: 'Oxygene',
+    Nitrogen: 'Azote',
+    Hydrogen: 'Hydrogene',
+    Methanol: 'Methanol',
+    Ethanol: 'Ethanol',
+    Formaldehyde: 'Formaldehyde',
+    'Hydrogen Cyanide': "Cyanure d hydrogene",
+    'Unknown Molecule': 'Molecule inconnue',
+  },
+  ja: {
+    Water: '水',
+    Methane: 'メタン',
+    'Carbon Dioxide': '二酸化炭素',
+    Ammonia: 'アンモニア',
+    Ethane: 'エタン',
+    Ethene: 'エチレン',
+    Ethyne: 'アセチレン',
+    Oxygen: '酸素',
+    Nitrogen: '窒素',
+    Hydrogen: '水素',
+    Methanol: 'メタノール',
+    Ethanol: 'エタノール',
+    Formaldehyde: 'ホルムアルデヒド',
+    'Hydrogen Cyanide': 'シアン化水素',
+    'Unknown Molecule': '不明な分子',
+  },
 };
 
 export function getMessages(language: Language): Messages {
@@ -186,14 +417,24 @@ export function localizeMoleculeName(language: Language, moleculeName: string): 
 }
 
 export function translateStabilityIssue(language: Language, issue: string): string {
-  if (language !== 'es') return issue;
-
   const exceededMatch = issue.match(
     /^([A-Z]) has exceeded its maximum valency \((\d+)\/(\d+) bonds\)\.$/,
   );
   if (exceededMatch) {
     const [, element, current, max] = exceededMatch;
-    return `${element} excedio su valencia maxima (${current}/${max} enlaces).`;
+    if (language === 'es') {
+      return `${element} excedio su valencia maxima (${current}/${max} enlaces).`;
+    }
+    if (language === 'zh') {
+      return `${element} 已超过其最大价态（${current}/${max} 键）。`;
+    }
+    if (language === 'fr') {
+      return `${element} a depasse sa valence maximale (${current}/${max} liaisons).`;
+    }
+    if (language === 'ja') {
+      return `${element} の最大原子価を超えています (${current}/${max} 結合)。`;
+    }
+    return issue;
   }
 
   const unsatisfiedMatch = issue.match(
@@ -201,7 +442,19 @@ export function translateStabilityIssue(language: Language, issue: string): stri
   );
   if (unsatisfiedMatch) {
     const [, element, current, max] = unsatisfiedMatch;
-    return `${element} tiene valencia insatisfecha (${current}/${max} enlaces).`;
+    if (language === 'es') {
+      return `${element} tiene valencia insatisfecha (${current}/${max} enlaces).`;
+    }
+    if (language === 'zh') {
+      return `${element} 的价态未满足（${current}/${max} 键）。`;
+    }
+    if (language === 'fr') {
+      return `${element} a une valence non satisfaite (${current}/${max} liaisons).`;
+    }
+    if (language === 'ja') {
+      return `${element} の原子価が未充足です (${current}/${max} 結合)。`;
+    }
+    return issue;
   }
 
   return issue;
