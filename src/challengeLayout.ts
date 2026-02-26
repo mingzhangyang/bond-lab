@@ -38,8 +38,10 @@ export function getChallengeTimerArc(
   totalTime: number,
   radius: number,
 ): ChallengeTimerArc {
-  const circumference = 2 * Math.PI * radius;
-  if (totalTime <= 0) {
+  const safeRadius = Number.isFinite(radius) && radius > 0 ? radius : 0;
+  const circumference = 2 * Math.PI * safeRadius;
+  const hasValidTotalTime = Number.isFinite(totalTime) && totalTime > 0;
+  if (!hasValidTotalTime) {
     return {
       remainingRatio: 0,
       circumference,
@@ -48,7 +50,8 @@ export function getChallengeTimerArc(
     };
   }
 
-  const remainingRatio = Math.max(0, Math.min(1, timeLeft / totalTime));
+  const safeTimeLeft = Number.isFinite(timeLeft) ? timeLeft : 0;
+  const remainingRatio = Math.max(0, Math.min(1, safeTimeLeft / totalTime));
   return {
     remainingRatio,
     circumference,

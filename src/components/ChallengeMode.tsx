@@ -50,11 +50,11 @@ function MobileChallengeTrigger({
       onClick={onToggle}
       aria-label={isOpen ? messages.ui.close : messages.challenge.title}
       aria-expanded={isOpen}
-      className={`md:hidden fixed left-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[56] h-14 w-14 rounded-full border shadow-xl backdrop-blur-md pointer-events-auto transition-transform active:scale-95 touch-manipulation ${buttonToneClass}`}
+      className={`md:hidden fixed left-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-[56] relative h-14 w-14 rounded-full border shadow-xl backdrop-blur-md pointer-events-auto transition-transform active:scale-95 touch-manipulation ${buttonToneClass}`}
     >
       <svg
         viewBox={`0 0 ${TIMER_RING_VIEWBOX} ${TIMER_RING_VIEWBOX}`}
-        className={`pointer-events-none absolute inset-0 -rotate-90 ${ringActiveClass}`}
+        className={`pointer-events-none absolute inset-0 h-full w-full -rotate-90 ${ringActiveClass}`}
         aria-hidden="true"
       >
         <circle
@@ -75,14 +75,16 @@ function MobileChallengeTrigger({
             stroke="currentColor"
             strokeWidth="3"
             strokeLinecap="round"
-            strokeDasharray={timerArc.strokeDasharray}
-            strokeDashoffset={timerArc.strokeDashoffset}
+            style={{
+              strokeDasharray: timerArc.strokeDasharray,
+              strokeDashoffset: timerArc.strokeDashoffset,
+            }}
             className="transition-[stroke-dashoffset] duration-1000 ease-linear motion-reduce:transition-none"
           />
         )}
       </svg>
       <span className="relative z-10 flex h-full w-full items-center justify-center">
-        {timerArc ? <Timer size={18} /> : <Target size={18} />}
+        {timerArc ? <Target size={18} /> : <Trophy size={18} />}
       </span>
     </button>
   );

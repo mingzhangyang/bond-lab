@@ -65,3 +65,16 @@ test('getChallengeTimerArc clamps invalid inputs to a safe ratio range', () => {
   assert.equal(under.remainingRatio, 0);
   assert.equal(missingTotal.remainingRatio, 0);
 });
+
+test('getChallengeTimerArc handles non-finite values without NaN output', () => {
+  const invalidTimeLeft = getChallengeTimerArc(Number.NaN, 30, 20);
+  const invalidTotal = getChallengeTimerArc(10, Number.POSITIVE_INFINITY, 20);
+
+  assert.equal(Number.isFinite(invalidTimeLeft.remainingRatio), true);
+  assert.equal(Number.isFinite(invalidTimeLeft.strokeDashoffset), true);
+  assert.equal(invalidTimeLeft.remainingRatio, 0);
+
+  assert.equal(Number.isFinite(invalidTotal.remainingRatio), true);
+  assert.equal(Number.isFinite(invalidTotal.strokeDashoffset), true);
+  assert.equal(invalidTotal.remainingRatio, 0);
+});
