@@ -3,10 +3,68 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BondLab</title>
+    <title>BondLab | Interactive Molecule Builder</title>
+    <meta
+      name="description"
+      content="BondLab is an interactive 3D chemistry sandbox where students build molecules, test bond orders, and explore molecular structure, polarity, and stability in real time."
+    />
+    <meta
+      name="keywords"
+      content="chemistry simulator, molecule builder, molecular geometry, bond order, valence electrons, chemistry education, interactive science app"
+    />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="BondLab | Interactive Molecule Builder" />
+    <meta
+      property="og:description"
+      content="Build molecules in 3D, adjust bond order, and learn molecular polarity and stability with BondLab."
+    />
+    <meta property="og:image" content="/og-image.svg" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="BondLab | Interactive Molecule Builder" />
+    <meta
+      name="twitter:description"
+      content="Interactive chemistry app for molecule building, bond editing, and molecular property exploration."
+    />
+    <meta name="twitter:image" content="/og-image.svg" />
+    <link rel="icon" type="image/svg+xml" href="/bondlab-logo.svg" />
+    <script id="seo-json-ld" type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "SoftwareApplication",
+        "name": "BondLab",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Web",
+        "description": "Interactive molecule builder for chemistry learning with real-time structure, polarity, and stability feedback.",
+        "image": "/og-image.svg",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        },
+        "keywords": "chemistry, molecule builder, molecular structure, bond order, polarity, stability",
+        "inLanguage": "en"
+      }
+    </script>
   </head>
   <body>
     <div id="root"></div>
+    <noscript>
+      <section>
+        <h1>BondLab Interactive Chemistry Lab</h1>
+        <p>
+          BondLab is a web-based molecule builder for chemistry learning. Build structures
+          atom-by-atom, create bonds, and explore molecular polarity and stability.
+        </p>
+        <h2>Core Learning Features</h2>
+        <ul>
+          <li>3D molecule building with core elements</li>
+          <li>Real-time bond editing and bond-order upgrades</li>
+          <li>Molecule recognition with formula and structure hints</li>
+          <li>Challenge mode for guided chemistry practice</li>
+        </ul>
+      </section>
+    </noscript>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

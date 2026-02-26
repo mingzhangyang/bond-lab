@@ -126,12 +126,13 @@ export function UI() {
             className={`flex items-center justify-between backdrop-blur-md p-3 md:p-4 rounded-2xl border pointer-events-auto w-full ${panelClass}`}
           >
             <div className="flex items-center gap-3">
-              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
-                <circle cx="10" cy="22" r="6" fill="#6366f1" />
-                <circle cx="22" cy="10" r="8" fill="#a855f7" />
-                <path d="M12 18L18 12" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-                <path d="M16 22L22 16" stroke="white" strokeWidth="2.5" strokeLinecap="round" />
-              </svg>
+              <img
+                src="/bondlab-logo.svg"
+                alt="BondLab logo"
+                width={32}
+                height={32}
+                className="shrink-0"
+              />
               <span className={`font-black text-xl tracking-tight hidden sm:inline ${primaryTextClass}`}>
                 Bond<span className="text-indigo-400">Lab</span>
               </span>
