@@ -10,6 +10,7 @@ export function Scene() {
   const atoms = useStore(state => state.atoms);
   const bonds = useStore(state => state.bonds);
   const theme = useStore(state => state.theme);
+  const draggedAtom = useStore(state => state.draggedAtom);
   const isDark = theme === 'dark';
 
   return (
@@ -35,7 +36,12 @@ export function Scene() {
           ))}
         </group>
 
-        <OrbitControls makeDefault enablePan={false} enableZoom={true} />
+        <OrbitControls
+          makeDefault
+          enablePan={false}
+          enableZoom={true}
+          enabled={draggedAtom === null}
+        />
         <Environment preset={isDark ? 'city' : 'park'} />
         <ContactShadows position={[0, -4, 0]} opacity={isDark ? 0.4 : 0.22} scale={20} blur={2} far={10} />
       </Canvas>

@@ -1,7 +1,8 @@
 import { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
-import { useStore } from './store';
+import { ELEMENTS, useStore } from './store';
+import { computeBondPlacement } from './bondPlacement';
 
 export const atomPositions: Record<string, THREE.Vector3> = {};
 export const atomVelocities: Record<string, THREE.Vector3> = {};
@@ -17,6 +18,7 @@ const K_REPULSION = 5.0;
 const DAMPING = 0.8;
 const MIN_DIST_SQ = 0.01;
 const MIN_DIST = 0.001;
+const BOND_OVERLAP = 0.08;
 const BOND_UP_AXIS = new THREE.Vector3(0, 1, 0);
 
 export function setAtomMeshRef(id: string, mesh: THREE.Mesh | null): void {
@@ -40,16 +42,20 @@ export function TransformSync() {
   const bonds = useStore((state) => state.bonds);
   const diffRef = useRef(new THREE.Vector3());
   const midRef = useRef(new THREE.Vector3());
+  const atomRadiiRef = useRef(new Map<string, number>());
 
   useFrame(() => {
     const diff = diffRef.current;
     const mid = midRef.current;
+    const atomRadii = atomRadiiRef.current;
+    atomRadii.clear();
 
     for (const atom of atoms) {
       const mesh = atomMeshRefs[atom.id];
       const position = atomPositions[atom.id];
       if (!mesh || !position) continue;
       mesh.position.copy(position);
+      atomRadii.set(atom.id, ELEMENTS[atom.element].vdwRadius * 0.4);
     }
 
     for (const bond of bonds) {
@@ -60,17 +66,28 @@ export function TransformSync() {
 
       diff.subVectors(p2, p1);
       const dist = diff.length();
-
-      mid.addVectors(p1, p2).multiplyScalar(0.5);
-      group.position.copy(mid);
+      const sourceRadius = atomRadii.get(bond.source) ?? 0;
+      const targetRadius = atomRadii.get(bond.target) ?? 0;
+      const placement = computeBondPlacement(
+        dist,
+        sourceRadius,
+        targetRadius,
+        BOND_OVERLAP,
+        MIN_DIST,
+      );
 
       if (dist > MIN_DIST) {
         diff.multiplyScalar(1 / dist);
+        mid.copy(p1).addScaledVector(diff, placement.centerOffset);
+        group.position.copy(mid);
         group.quaternion.setFromUnitVectors(BOND_UP_AXIS, diff);
+      } else {
+        mid.addVectors(p1, p2).multiplyScalar(0.5);
+        group.position.copy(mid);
       }
 
       for (const child of group.children) {
-        child.scale.set(1, dist, 1);
+        child.scale.set(1, placement.length, 1);
       }
     }
   });

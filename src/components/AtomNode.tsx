@@ -3,6 +3,7 @@ import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useStore, ELEMENTS, type ElementType } from '../store';
 import { atomPositions, setAtomMeshRef } from '../physics';
+import { toNormalizedDeviceCoordinates } from '../drag';
 
 interface AtomNodeProps {
   id: string;
@@ -24,7 +25,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const removeAtom = useStore((state) => state.removeAtom);
   const interactionMode = useStore((state) => state.interactionMode);
   const [hovered, setHovered] = useState(false);
-  const { camera, size, raycaster } = useThree();
+  const { camera, gl, raycaster } = useThree();
 
   useEffect(() => {
     if (!meshRef.current) return;
@@ -38,11 +39,14 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
     const handlePointerMove = (e: PointerEvent) => {
       if (!atomPositions[id]) return;
 
-      const pointer = pointerRef.current;
-      pointer.set(
-        (e.clientX / size.width) * 2 - 1,
-        -(e.clientY / size.height) * 2 + 1,
+      const rect = gl.domElement.getBoundingClientRect();
+      const ndc = toNormalizedDeviceCoordinates(
+        { clientX: e.clientX, clientY: e.clientY },
+        rect,
       );
+
+      const pointer = pointerRef.current;
+      pointer.set(ndc.x, ndc.y);
       raycaster.setFromCamera(pointer, camera);
 
       const planeNormal = planeNormalRef.current;
@@ -56,7 +60,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       }
     };
 
-    const handlePointerUp = () => {
+    const finishDrag = () => {
       setDraggedAtom(null);
       if (useStore.getState().interactionMode !== 'build') return;
 
@@ -78,13 +82,17 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
     };
 
     window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', handlePointerUp);
+    window.addEventListener('pointerup', finishDrag);
+    window.addEventListener('pointercancel', finishDrag);
+    window.addEventListener('blur', finishDrag);
 
     return () => {
       window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', handlePointerUp);
+      window.removeEventListener('pointerup', finishDrag);
+      window.removeEventListener('pointercancel', finishDrag);
+      window.removeEventListener('blur', finishDrag);
     };
-  }, [isDragged, id, camera, size, raycaster, setDraggedAtom]);
+  }, [isDragged, id, camera, gl, raycaster, setDraggedAtom]);
 
   return (
     <mesh
