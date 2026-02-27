@@ -102,6 +102,7 @@ export function PhysicsEngine() {
   const rotatingBond = useStore((state) => state.rotatingBond);
   const forcesRef = useRef<Record<string, THREE.Vector3>>({});
   const adjacencyRef = useRef<Record<string, string[]>>({});
+  const bondOrderSumsRef = useRef<Record<string, number>>({});
   const scratchRef = useRef({
     diff: new THREE.Vector3(),
     v1: new THREE.Vector3(),
@@ -150,6 +151,7 @@ export function PhysicsEngine() {
     const dt = Math.min(delta, 0.05);
     const forces = forcesRef.current;
     const adjacency = adjacencyRef.current;
+    const bondOrderSums = bondOrderSumsRef.current;
     const atomIds = new Set<string>();
     const {
       diff,
@@ -180,6 +182,8 @@ export function PhysicsEngine() {
       } else {
         adjacency[atom.id].length = 0;
       }
+
+      bondOrderSums[atom.id] = 0;
     }
 
     for (const id in forces) {
@@ -187,6 +191,9 @@ export function PhysicsEngine() {
     }
     for (const id in adjacency) {
       if (!atomIds.has(id)) delete adjacency[id];
+    }
+    for (const id in bondOrderSums) {
+      if (!atomIds.has(id)) delete bondOrderSums[id];
     }
 
     // 1. Global repulsion
@@ -220,6 +227,8 @@ export function PhysicsEngine() {
 
       adjacency[bond.source].push(bond.target);
       adjacency[bond.target].push(bond.source);
+      bondOrderSums[bond.source] += bond.order;
+      bondOrderSums[bond.target] += bond.order;
 
       diff.subVectors(p2, p1);
       const dist = diff.length();
@@ -235,9 +244,9 @@ export function PhysicsEngine() {
       const pC = atomPositions[atom.id];
       if (!pC) continue;
 
-      let numLonePairs = 0;
-      if (atom.element === 'N') numLonePairs = 1;
-      if (atom.element === 'O') numLonePairs = 2;
+      const valence = ELEMENTS[atom.element].valence;
+      const bondOrderSum = bondOrderSums[atom.id] ?? 0;
+      const numLonePairs = Math.floor(Math.max(0, valence - bondOrderSum) / 2);
 
       if (!lonePairs[atom.id]) lonePairs[atom.id] = [];
       const lps = lonePairs[atom.id];

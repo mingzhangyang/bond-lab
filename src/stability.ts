@@ -18,17 +18,23 @@ export interface StabilityOptions {
   angleToleranceDeg?: number;
 }
 
-function getIdealBondAngle(element: Atom['element'], neighborCount: number): number | null {
+function getIdealBondAngle(element: Atom['element'], neighborCount: number, bondOrderSum: number): number | null {
   if (neighborCount < 2) return null;
+  const valence = ELEMENTS[element].valence;
+  const lonePairs = Math.floor(Math.max(0, valence - bondOrderSum) / 2);
   if (neighborCount === 2) {
-    if (element === 'O') return 104.5;
-    return 180;
+    if (lonePairs >= 2) return 104.5; // AX₂E₂: H₂O, H₂S (~92–105°)
+    if (lonePairs === 1) return 120;  // AX₂E₁: SO₂, O₃ (~119°)
+    return 180;                        // AX₂: CO₂, C₂H₂
   }
   if (neighborCount === 3) {
-    if (element === 'N') return 107;
-    return 120;
+    if (lonePairs >= 1) {
+      if (element === 'P') return 100; // PH₃ (~93.5°), PCl₃ (~100.3°)
+      return 107;                       // NH₃ (~107.8°)
+    }
+    return 120; // AX₃: trigonal planar
   }
-  return 109.5;
+  return 109.5; // AX₄: tetrahedral
 }
 
 function toDegrees(radians: number): number {
@@ -59,8 +65,10 @@ function applyGeometryPenalty(
   angleToleranceDeg: number,
 ): { scorePenalty: number, strainEnergy: number, issues: string[] } {
   const neighborsByAtomId = new Map<string, string[]>();
+  const bondOrderSumById = new Map<string, number>();
   for (const atom of atoms) {
     neighborsByAtomId.set(atom.id, []);
+    bondOrderSumById.set(atom.id, 0);
   }
 
   for (const bond of bonds) {
@@ -68,6 +76,8 @@ function applyGeometryPenalty(
     const targetNeighbors = neighborsByAtomId.get(bond.target);
     if (sourceNeighbors) sourceNeighbors.push(bond.target);
     if (targetNeighbors) targetNeighbors.push(bond.source);
+    bondOrderSumById.set(bond.source, (bondOrderSumById.get(bond.source) ?? 0) + bond.order);
+    bondOrderSumById.set(bond.target, (bondOrderSumById.get(bond.target) ?? 0) + bond.order);
   }
 
   let totalScorePenalty = 0;
@@ -76,7 +86,8 @@ function applyGeometryPenalty(
 
   for (const atom of atoms) {
     const neighbors = neighborsByAtomId.get(atom.id) ?? [];
-    const idealAngle = getIdealBondAngle(atom.element, neighbors.length);
+    const bondOrderSum = bondOrderSumById.get(atom.id) ?? neighbors.length;
+    const idealAngle = getIdealBondAngle(atom.element, neighbors.length, bondOrderSum);
     if (idealAngle === null) continue;
 
     const center = positions[atom.id];
