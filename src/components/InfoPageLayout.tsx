@@ -72,28 +72,6 @@ export function InfoPageLayout({ route, title, description, metadata, children }
           </div>
         </header>
 
-        <nav
-          className={`info-reveal mb-5 rounded-2xl border p-2 backdrop-blur-md ${panelClass}`}
-          style={{ animationDelay: '90ms' }}
-          aria-label="Info pages"
-        >
-          <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-            <a
-              href={getPathForRoute('instructions')}
-              className={`${tabBaseClass} ${route === 'instructions' ? activeTabClass : inactiveTabClass}`}
-              aria-current={route === 'instructions' ? 'page' : undefined}
-            >
-              {messages.ui.instructionsTitle}
-            </a>
-            <a
-              href={getPathForRoute('privacy')}
-              className={`${tabBaseClass} ${route === 'privacy' ? activeTabClass : inactiveTabClass}`}
-              aria-current={route === 'privacy' ? 'page' : undefined}
-            >
-              {messages.ui.privacyTitle}
-            </a>
-          </div>
-        </nav>
 
         <article className={`info-reveal rounded-3xl border p-5 md:p-7 backdrop-blur-md ${panelClass}`} style={{ animationDelay: '170ms' }}>
           <div className={`pb-5 md:pb-6 border-b ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
@@ -104,6 +82,18 @@ export function InfoPageLayout({ route, title, description, metadata, children }
           </div>
           <div className={`mt-6 space-y-6 ${headingTextClass}`}>{children}</div>
         </article>
+
+        <footer className="info-reveal mt-12 mb-8 flex flex-col items-center justify-center gap-4 text-center" style={{ animationDelay: '250ms' }}>
+          <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
+            <img src="/bondlab-logo.svg" alt="BondLab Logo" width={24} height={24} />
+            <span className={`info-display font-black text-sm tracking-tight ${pageClass}`}>
+              Bond<span className="text-indigo-400">Lab</span>
+            </span>
+          </div>
+          <p className={`text-[10px] uppercase tracking-widest font-bold opacity-30 ${pageClass}`}>
+            &copy; {new Date().getFullYear()} BondLab &bull; All Rights Reserved
+          </p>
+        </footer>
       </div>
     </main>
   );
