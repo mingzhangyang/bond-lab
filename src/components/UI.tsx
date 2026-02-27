@@ -18,6 +18,9 @@ import {
   Menu,
   ChevronRight,
   ChevronLeft,
+  FlaskConical,
+  Zap,
+  Info,
 } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import {
@@ -246,7 +249,7 @@ export function UI() {
       <div className="lab-reveal relative flex items-start w-full">
         {/* Top Left */}
         <div className="flex flex-col gap-4 w-full md:w-64">
-          
+
           {/* Logo */}
           <div
             className={`flex items-center p-3 md:p-4 rounded-2xl pointer-events-auto w-full ${topBarPanelClass}`}
@@ -339,20 +342,18 @@ export function UI() {
                 </button>
                 {isLanguageSubmenuOpen && (
                   <div
-                    className={`mt-1 mb-2 ml-2 rounded-lg border p-1 ${
-                      isDark ? 'border-white/10 bg-black/10' : 'border-zinc-200 bg-white/70'
-                    }`}
+                    className={`mt-1 mb-2 ml-2 rounded-lg border p-1 ${isDark ? 'border-white/10 bg-black/10' : 'border-zinc-200 bg-white/70'
+                      }`}
                     role="menu"
                     aria-label={messages.ui.languageToggle}
                   >
                     {LANGUAGE_OPTIONS.map((option) => (
                       <button
                         key={option.code}
-                        className={`w-full min-h-[36px] px-2 rounded-md text-xs font-medium transition-colors flex items-center justify-between ${
-                          option.code === language
+                        className={`w-full min-h-[36px] px-2 rounded-md text-xs font-medium transition-colors flex items-center justify-between ${option.code === language
                             ? (isDark ? 'bg-indigo-500/25 text-indigo-100' : 'bg-indigo-100 text-indigo-700')
                             : settingsItemClass
-                        }`}
+                          }`}
                         role="menuitemradio"
                         aria-checked={option.code === language}
                         onClick={() => {
@@ -413,11 +414,10 @@ export function UI() {
             )}
 
             <div
-              className={`lab-reveal flex h-full w-80 rounded-2xl p-4 pointer-events-auto transition-transform duration-300 ${
-                isElementsPanelOpen
+              className={`lab-reveal flex h-full w-80 rounded-2xl p-4 pointer-events-auto transition-transform duration-300 ${isElementsPanelOpen
                   ? 'translate-x-0'
                   : '-translate-x-[calc(100%+2rem)] pointer-events-none'
-              } ${panelClass}`}
+                } ${panelClass}`}
               style={{ animationDelay: '70ms' }}
             >
               <div className="flex flex-col h-full w-full min-h-0">
@@ -471,7 +471,7 @@ export function UI() {
               <ChallengeMode
                 isDrawerLayout={false}
                 isMobileDrawerOpen={false}
-                setIsMobileDrawerOpen={() => {}}
+                setIsMobileDrawerOpen={() => { }}
                 onStart={handleStartChallenge}
               />
             </div>
@@ -492,43 +492,112 @@ export function UI() {
           </div>
         </>
       )}
+      {/* Desktop Right Rail */}
+      {isDesktopViewport && molecule && (
+        <div
+          className="hidden md:flex fixed right-6 top-[calc(env(safe-area-inset-top)+5.75rem)] max-h-[calc(100vh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-7.25rem)] z-40 pointer-events-none"
+        >
+          <div
+            className={`lab-reveal w-80 rounded-2xl p-6 pointer-events-auto flex flex-col gap-6 overflow-y-auto stealth-scrollbar ${panelClass}`}
+            style={{ animationDelay: '130ms' }}
+          >
+            <div>
+              <div className={`info-display text-[10px] uppercase tracking-widest mb-2 font-bold ${headingTextClass}`}>
+                {messages.ui.currentMolecule}
+              </div>
+              <h2 className={`info-display font-black text-3xl tracking-tight leading-tight mb-1 ${primaryTextClass}`}>
+                {moleculeName}
+              </h2>
+              <div className="flex items-center gap-2 text-emerald-400 font-mono text-xl">
+                <FlaskConical size={18} />
+                <span>{molecule.formula}</span>
+              </div>
+            </div>
+
+            {moleculeInfo && (
+              <div className="flex flex-col gap-5">
+                <div className="space-y-2">
+                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                    <Atom size={14} className="opacity-70" />
+                    {structureTitle}
+                  </div>
+                  <div className={`font-mono text-sm p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-black/5'} ${primaryTextClass}`}>
+                    {moleculeInfo.structure}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                    <Info size={14} className="opacity-70" />
+                    {factTitle}
+                  </div>
+                  <div className={`text-sm leading-relaxed ${secondaryTextClass}`}>
+                    {moleculeInfo.fact}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <div className="mt-auto pt-6 border-t border-white/10 flex flex-col gap-3">
+              <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                <Zap size={14} className="opacity-70" />
+                {polarityTitle}
+              </div>
+              <div>
+                <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wide inline-block mb-1 ${polarityReport.classification === 'polar'
+                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+                    : (polarityReport.classification === 'nonpolar'
+                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/20'
+                      : 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/20')
+                  }`}>
+                  {polarityLabel}
+                </span>
+                <p className={`text-xs leading-normal mt-1 italic ${secondaryTextClass}`}>
+                  {polarityReport.reason}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-4 w-full mt-auto">
-        {molecule && (
-          <div className={`lab-reveal px-6 py-3 md:px-8 md:py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
-            <div className="text-center">
-              <div className={`info-display text-[10px] md:text-xs uppercase tracking-widest mb-1 font-semibold ${headingTextClass}`}>
+        {!isDesktopViewport && molecule && (
+          <div className={`lab-reveal px-6 py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
+            <div className="text-center max-w-sm">
+              <div className={`info-display text-[10px] uppercase tracking-widest mb-1 font-semibold ${headingTextClass}`}>
                 {messages.ui.currentMolecule}
               </div>
-              <div className={`info-display font-bold text-xl md:text-3xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
-              <div className="text-emerald-400 font-mono text-lg md:text-xl mt-1">{molecule.formula}</div>
+              <div className={`info-display font-bold text-2xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
+              <div className="text-emerald-400 font-mono text-lg mt-0.5">{molecule.formula}</div>
+
               {moleculeInfo && (
-                <>
-                  <div className={`info-display mt-2 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
-                    {structureTitle}
+                <div className="mt-3 text-left space-y-3">
+                  <div className="flex flex-col">
+                    <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{structureTitle}</span>
+                    <span className={`font-mono text-xs ${primaryTextClass}`}>{moleculeInfo.structure}</span>
                   </div>
-                  <div className={`font-mono text-sm md:text-base ${primaryTextClass}`}>{moleculeInfo.structure}</div>
-                  <div className={`info-display mt-2 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
-                    {factTitle}
+                  <div className="flex flex-col">
+                    <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{factTitle}</span>
+                    <p className={`text-xs leading-relaxed ${secondaryTextClass}`}>{moleculeInfo.fact}</p>
                   </div>
-                  <div className={`text-xs md:text-sm max-w-xl ${secondaryTextClass}`}>{moleculeInfo.fact}</div>
-                </>
+                </div>
               )}
-              <div className={`info-display mt-3 text-[10px] md:text-xs uppercase tracking-widest font-semibold ${headingTextClass}`}>
-                {polarityTitle}
+
+              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
+                <span className={`text-[9px] uppercase tracking-[0.2em] font-bold mb-1 ${headingTextClass}`}>{polarityTitle}</span>
+                <span className={`text-sm font-bold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
+                  {polarityLabel}
+                </span>
               </div>
-              <div className={`font-semibold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
-                {polarityLabel}
-              </div>
-              <div className={`text-[11px] md:text-xs max-w-xl mt-1 ${secondaryTextClass}`}>{polarityReport.reason}</div>
             </div>
           </div>
         )}
 
         {/* Mobile FAB */}
         <div className="md:hidden w-full flex justify-center pointer-events-auto pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-          <button 
+          <button
             onClick={() => setIsDrawerOpen(true)}
             className="lab-fab min-h-[48px] text-white px-6 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transition-transform active:scale-95 touch-manipulation"
           >
@@ -539,29 +608,29 @@ export function UI() {
 
       {/* Drawer Overlay */}
       {isDrawerOpen && (
-        <div 
+        <div
           className="lab-drawer-overlay md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto z-40"
           onClick={() => setIsDrawerOpen(false)}
         />
       )}
 
       {/* Mobile Elements Drawer */}
-      <div 
+      <div
         className={`md:hidden fixed inset-x-0 bottom-0 border-t shadow-2xl pointer-events-auto transform transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-y-0' : 'translate-y-full'} rounded-t-3xl z-50 ${softPanelClass}`}
       >
         <div className="lab-mobile-drawer p-5">
           <div className={`mx-auto mb-4 h-1.5 w-12 rounded-full ${isDark ? 'bg-zinc-600' : 'bg-zinc-300'}`} />
           <div className="flex justify-between items-center mb-6">
             <h2 className={`info-display font-bold text-lg ${primaryTextClass}`}>{messages.ui.selectElement}</h2>
-            <button 
-              onClick={() => setIsDrawerOpen(false)} 
+            <button
+              onClick={() => setIsDrawerOpen(false)}
               aria-label={messages.ui.close}
               className={`min-h-[44px] min-w-[44px] p-2 rounded-full transition-colors touch-manipulation ${ghostButtonClass}`}
             >
               <X size={20} />
             </button>
           </div>
-          
+
           <div className="lab-mobile-scroll grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[42dvh] overflow-y-auto pr-1 stealth-scrollbar">
             {ELEMENT_DISPLAY_ORDER.map(el => {
               const data = ELEMENTS[el];
@@ -571,7 +640,7 @@ export function UI() {
                   onClick={() => { addAtom(el); setIsDrawerOpen(false); }}
                   className={`lab-tile flex min-h-[96px] flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-colors border touch-manipulation ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}
                 >
-                  <div 
+                  <div
                     className="w-11 h-11 rounded-full shadow-inner flex items-center justify-center text-base font-bold"
                     style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
                   >
@@ -582,9 +651,9 @@ export function UI() {
               );
             })}
           </div>
-          
+
           <div className={`mt-5 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
-            <button 
+            <button
               onClick={() => { clear(); setIsDrawerOpen(false); }}
               className={`w-full min-h-[48px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold touch-manipulation ${dangerButtonClass}`}
             >
