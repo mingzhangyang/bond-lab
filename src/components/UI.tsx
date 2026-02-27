@@ -18,6 +18,8 @@ import {
   Menu,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
   FlaskConical,
   Zap,
   Info,
@@ -88,6 +90,7 @@ export function UI() {
     )
   ));
   const [isMobileChallengeOpen, setIsMobileChallengeOpen] = useState(false);
+  const [isMobileInfoCollapsed, setIsMobileInfoCollapsed] = useState(false);
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
@@ -564,35 +567,59 @@ export function UI() {
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-4 w-full mt-auto">
         {!isDesktopViewport && molecule && (
-          <div className={`lab-reveal px-6 py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
-            <div className="text-center max-w-sm">
-              <div className={`info-display text-[10px] uppercase tracking-widest mb-1 font-semibold ${headingTextClass}`}>
-                {messages.ui.currentMolecule}
-              </div>
-              <div className={`info-display font-bold text-2xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
-              <div className="text-emerald-400 font-mono text-lg mt-0.5">{molecule.formula}</div>
+          isMobileInfoCollapsed ? (
+            <button
+              className={`lab-reveal px-5 py-2.5 rounded-3xl pointer-events-auto flex items-center gap-2.5 touch-manipulation ${panelClass}`}
+              style={{ animationDelay: '130ms' }}
+              onClick={() => setIsMobileInfoCollapsed(false)}
+              aria-expanded={false}
+              aria-label={messages.ui.expand}
+            >
+              <FlaskConical size={14} className="text-emerald-400 shrink-0" />
+              <span className={`info-display font-bold text-base tracking-tight ${primaryTextClass}`}>{moleculeName}</span>
+              <span className="text-emerald-400 font-mono text-sm">{molecule.formula}</span>
+              <ChevronUp size={14} className={`${headingTextClass} shrink-0`} />
+            </button>
+          ) : (
+            <div className={`lab-reveal px-6 py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
+              <div className="text-center max-w-sm relative">
+                <button
+                  onClick={() => setIsMobileInfoCollapsed(true)}
+                  className={`absolute -top-1 right-0 p-1 rounded-lg touch-manipulation ${ghostButtonClass}`}
+                  aria-expanded={true}
+                  aria-label={messages.ui.collapse}
+                >
+                  <ChevronDown size={14} />
+                </button>
 
-              {moleculeInfo && (
-                <div className="mt-3 text-left space-y-3">
-                  <div className="flex flex-col">
-                    <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{structureTitle}</span>
-                    <span className={`font-mono text-xs ${primaryTextClass}`}>{moleculeInfo.structure}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{factTitle}</span>
-                    <p className={`text-xs leading-relaxed ${secondaryTextClass}`}>{moleculeInfo.fact}</p>
-                  </div>
+                <div className={`info-display text-[10px] uppercase tracking-widest mb-1 font-semibold ${headingTextClass}`}>
+                  {messages.ui.currentMolecule}
                 </div>
-              )}
+                <div className={`info-display font-bold text-2xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
+                <div className="text-emerald-400 font-mono text-lg mt-0.5">{molecule.formula}</div>
 
-              <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
-                <span className={`text-[9px] uppercase tracking-[0.2em] font-bold mb-1 ${headingTextClass}`}>{polarityTitle}</span>
-                <span className={`text-sm font-bold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
-                  {polarityLabel}
-                </span>
+                {moleculeInfo && (
+                  <div className="mt-3 text-left space-y-3">
+                    <div className="flex flex-col">
+                      <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{structureTitle}</span>
+                      <span className={`font-mono text-xs ${primaryTextClass}`}>{moleculeInfo.structure}</span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{factTitle}</span>
+                      <p className={`text-xs leading-relaxed ${secondaryTextClass}`}>{moleculeInfo.fact}</p>
+                    </div>
+                  </div>
+                )}
+
+                <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
+                  <span className={`text-[9px] uppercase tracking-[0.2em] font-bold mb-1 ${headingTextClass}`}>{polarityTitle}</span>
+                  <span className={`text-sm font-bold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
+                    {polarityLabel}
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
+          )
         )}
 
         {/* Mobile FAB */}
