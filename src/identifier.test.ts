@@ -153,8 +153,8 @@ test('identifyMolecule formula builder supports newly added metal elements', () 
     formula: 'Fe2O3',
   });
   assert.deepEqual(identifyMolecule(calciumChlorideAtoms, calciumChlorideBonds), {
-    name: 'Unknown Molecule',
-    formula: 'CaCl2',
+    name: 'Calcium Chloride',
+    formula: 'CaCl₂',
   });
 
   const sodiumChlorideAtoms: Atom[] = [
@@ -176,7 +176,7 @@ test('identifyMolecule formula builder supports newly added metal elements', () 
   ];
 
   assert.deepEqual(identifyMolecule(sodiumChlorideAtoms, sodiumChlorideBonds), {
-    name: 'Unknown Molecule',
+    name: 'Sodium Chloride',
     formula: 'NaCl',
   });
   assert.deepEqual(identifyMolecule(potassiumOxideAtoms, potassiumOxideBonds), {
@@ -185,7 +185,7 @@ test('identifyMolecule formula builder supports newly added metal elements', () 
   });
 });
 
-test('identifyMolecule does not misidentify ethanol isomer topology', () => {
+test('identifyMolecule identifies dimethyl ether as distinct from ethanol', () => {
   const atoms: Atom[] = [
     { id: 'c1', element: 'C' },
     { id: 'c2', element: 'C' },
@@ -209,9 +209,59 @@ test('identifyMolecule does not misidentify ethanol isomer topology', () => {
   ];
 
   assert.deepEqual(identifyMolecule(atoms, dimethylEtherBonds), {
-    name: 'Unknown Molecule',
-    formula: 'C2H6O',
+    name: 'Dimethyl Ether',
+    formula: 'C₂H₆O',
   });
+});
+
+test('identifyMolecule identifies benzene from Kekulé structure with alternating single and double bonds', () => {
+  const atoms: Atom[] = [
+    { id: 'c1', element: 'C' },
+    { id: 'c2', element: 'C' },
+    { id: 'c3', element: 'C' },
+    { id: 'c4', element: 'C' },
+    { id: 'c5', element: 'C' },
+    { id: 'c6', element: 'C' },
+    { id: 'h1', element: 'H' },
+    { id: 'h2', element: 'H' },
+    { id: 'h3', element: 'H' },
+    { id: 'h4', element: 'H' },
+    { id: 'h5', element: 'H' },
+    { id: 'h6', element: 'H' },
+  ];
+  // Kekulé structure 1: double bonds on c1=c2, c3=c4, c5=c6
+  const bonds1: Bond[] = [
+    { id: 'b1', source: 'c1', target: 'c2', order: 2 },
+    { id: 'b2', source: 'c2', target: 'c3', order: 1 },
+    { id: 'b3', source: 'c3', target: 'c4', order: 2 },
+    { id: 'b4', source: 'c4', target: 'c5', order: 1 },
+    { id: 'b5', source: 'c5', target: 'c6', order: 2 },
+    { id: 'b6', source: 'c6', target: 'c1', order: 1 },
+    { id: 'b7', source: 'c1', target: 'h1', order: 1 },
+    { id: 'b8', source: 'c2', target: 'h2', order: 1 },
+    { id: 'b9', source: 'c3', target: 'h3', order: 1 },
+    { id: 'b10', source: 'c4', target: 'h4', order: 1 },
+    { id: 'b11', source: 'c5', target: 'h5', order: 1 },
+    { id: 'b12', source: 'c6', target: 'h6', order: 1 },
+  ];
+  assert.deepEqual(identifyMolecule(atoms, bonds1), { name: 'Benzene', formula: 'C₆H₆' });
+
+  // Kekulé structure 2: double bonds on c2=c3, c4=c5, c6=c1 (rotated by one position)
+  const bonds2: Bond[] = [
+    { id: 'b1', source: 'c1', target: 'c2', order: 1 },
+    { id: 'b2', source: 'c2', target: 'c3', order: 2 },
+    { id: 'b3', source: 'c3', target: 'c4', order: 1 },
+    { id: 'b4', source: 'c4', target: 'c5', order: 2 },
+    { id: 'b5', source: 'c5', target: 'c6', order: 1 },
+    { id: 'b6', source: 'c6', target: 'c1', order: 2 },
+    { id: 'b7', source: 'c1', target: 'h1', order: 1 },
+    { id: 'b8', source: 'c2', target: 'h2', order: 1 },
+    { id: 'b9', source: 'c3', target: 'h3', order: 1 },
+    { id: 'b10', source: 'c4', target: 'h4', order: 1 },
+    { id: 'b11', source: 'c5', target: 'h5', order: 1 },
+    { id: 'b12', source: 'c6', target: 'h6', order: 1 },
+  ];
+  assert.deepEqual(identifyMolecule(atoms, bonds2), { name: 'Benzene', formula: 'C₆H₆' });
 });
 
 test('isValidMoleculeGraph rejects illegal topology and isConnectedMoleculeGraph detects fragments', () => {
