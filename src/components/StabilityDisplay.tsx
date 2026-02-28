@@ -16,7 +16,11 @@ export function StabilityDisplay() {
     () => calculateStability(atoms, bonds, { positions: atomPositions }),
     [atoms, bonds],
   );
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && !window.matchMedia('(min-width: 768px)').matches
+  ));
 
   if (atoms.length === 0) return null;
 

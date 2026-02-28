@@ -90,7 +90,11 @@ export function UI() {
     )
   ));
   const [isMobileChallengeOpen, setIsMobileChallengeOpen] = useState(false);
-  const [isMobileInfoCollapsed, setIsMobileInfoCollapsed] = useState(false);
+  const [isMobileInfoCollapsed, setIsMobileInfoCollapsed] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && !window.matchMedia('(min-width: 768px)').matches
+  ));
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
