@@ -35,6 +35,9 @@ import { getPathForRoute } from '../routes';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
 import {
+  setElementDragData,
+} from '../drag';
+import {
   getChallengeTimerArc,
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
@@ -243,6 +246,11 @@ export function UI() {
     }
   };
 
+  const handleElementDragStart = (event: React.DragEvent<HTMLButtonElement>, element: keyof typeof ELEMENTS) => {
+    setElementDragData(event.dataTransfer, element);
+    event.dataTransfer.effectAllowed = 'copy';
+  };
+
   return (
     <div
       className={`lab-ui-root absolute inset-0 pointer-events-none flex flex-col justify-between p-4 md:p-6 overflow-hidden ${primaryTextClass}`}
@@ -445,6 +453,8 @@ export function UI() {
                     return (
                       <button
                         key={el}
+                        draggable={isDesktopViewport}
+                        onDragStart={(event) => handleElementDragStart(event, el)}
                         onClick={() => addAtom(el)}
                         className={`flex flex-col items-center gap-2 p-3 rounded-xl text-center transition-colors border ${inactiveModeClass}`}
                       >

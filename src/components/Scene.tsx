@@ -1,10 +1,60 @@
 import React, { useEffect, useState } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { useThree } from '@react-three/fiber';
 import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
 import { useStore } from '../store';
 import { AtomNode } from './AtomNode';
 import { BondNode } from './BondNode';
-import { PhysicsEngine, TransformSync } from '../physics';
+import { PhysicsEngine, TransformSync, setAtomPosition } from '../physics';
+import { getElementFromDragData, hasElementDragData, projectPointerToScenePlane } from '../drag';
+
+function SceneDropTarget() {
+  const addAtom = useStore((state) => state.addAtom);
+  const setSelectedAtom = useStore((state) => state.setSelectedAtom);
+  const { camera, gl, raycaster } = useThree();
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+
+    const handleDragOver = (event: DragEvent) => {
+      if (!hasElementDragData(event.dataTransfer)) return;
+      event.preventDefault();
+      if (event.dataTransfer) {
+        event.dataTransfer.dropEffect = 'copy';
+      }
+    };
+
+    const handleDrop = (event: DragEvent) => {
+      const element = getElementFromDragData(event.dataTransfer);
+      if (!element) return;
+
+      event.preventDefault();
+
+      const position = projectPointerToScenePlane(
+        { clientX: event.clientX, clientY: event.clientY },
+        canvas.getBoundingClientRect(),
+        camera,
+        raycaster,
+      );
+
+      if (!position) return;
+
+      const atomId = addAtom(element);
+      setAtomPosition(atomId, position);
+      setSelectedAtom(atomId);
+    };
+
+    canvas.addEventListener('dragover', handleDragOver);
+    canvas.addEventListener('drop', handleDrop);
+
+    return () => {
+      canvas.removeEventListener('dragover', handleDragOver);
+      canvas.removeEventListener('drop', handleDrop);
+    };
+  }, [addAtom, camera, gl, raycaster, setSelectedAtom]);
+
+  return null;
+}
 
 export function Scene() {
   const atoms = useStore(state => state.atoms);
@@ -45,6 +95,7 @@ export function Scene() {
         
         <PhysicsEngine />
         <TransformSync />
+        <SceneDropTarget />
         
         <group>
           {atoms.map(atom => (

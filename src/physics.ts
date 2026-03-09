@@ -37,6 +37,20 @@ export function setBondGroupRef(id: string, group: THREE.Group | null): void {
   delete bondGroupRefs[id];
 }
 
+export function setAtomPosition(id: string, position: THREE.Vector3Like): void {
+  if (!atomPositions[id]) {
+    atomPositions[id] = new THREE.Vector3();
+  }
+  atomPositions[id].copy(position);
+
+  if (!atomVelocities[id]) {
+    atomVelocities[id] = new THREE.Vector3();
+    return;
+  }
+
+  atomVelocities[id].set(0, 0, 0);
+}
+
 export function TransformSync() {
   const atoms = useStore((state) => state.atoms);
   const bonds = useStore((state) => state.bonds);
