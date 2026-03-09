@@ -307,6 +307,22 @@ html[data-theme='dark'] body {
   animation: labFloat 12s ease-in-out infinite;
 }
 
+.lab-onboarding-highlight {
+  position: relative;
+  border-radius: 1.75rem;
+  box-shadow:
+    0 0 0 1px rgba(129, 140, 248, 0.38),
+    0 0 0 8px rgba(129, 140, 248, 0.12),
+    0 22px 64px rgba(79, 70, 229, 0.24);
+  animation: labGuidePulse 1.8s ease-in-out infinite;
+}
+
+.lab-onboarding-scene-target {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    0 18px 44px rgba(15, 23, 42, 0.14);
+}
+
 @keyframes labRise {
   from {
     opacity: 0;
@@ -333,6 +349,23 @@ html[data-theme='dark'] body {
   }
   to {
     opacity: 1;
+  }
+}
+
+@keyframes labGuidePulse {
+  0%, 100% {
+    transform: translateY(0);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.38),
+      0 0 0 8px rgba(129, 140, 248, 0.12),
+      0 22px 64px rgba(79, 70, 229, 0.24);
+  }
+  50% {
+    transform: translateY(-1px);
+    box-shadow:
+      0 0 0 1px rgba(129, 140, 248, 0.52),
+      0 0 0 10px rgba(129, 140, 248, 0.18),
+      0 26px 72px rgba(79, 70, 229, 0.28);
   }
 }
 
@@ -363,7 +396,9 @@ html[data-theme='dark'] body {
   .lab-orb,
   .lab-drawer-overlay,
   .lab-scene-glow,
-  .lab-ui-skeleton::after {
+  .lab-ui-skeleton::after,
+  .lab-onboarding-highlight,
+  .lab-onboarding-scene-target {
     animation: none !important;
     opacity: 1;
   }

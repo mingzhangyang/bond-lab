@@ -7,8 +7,10 @@ test('getMessages returns English defaults', () => {
   assert.equal(en.ui.menu, 'Menu');
   assert.equal(en.ui.instructions, 'Instructions');
   assert.equal(en.ui.addElement, 'Add Element');
+  assert.equal(en.onboarding.replay, 'Replay Quick Start');
   assert.equal(en.challenge.title, 'Challenge');
   assert.ok(en.ui.controlsList.includes('Hold Shift + drag a single bond to rotate'));
+  assert.ok(en.onboarding.steps.explore.points.includes('Use Delete mode to remove atoms or bonds you do not want.'));
   assert.equal(en.elements.Fe, 'Iron');
   assert.equal(en.elements.Mg, 'Magnesium');
   assert.equal(en.elements.Cu, 'Copper');
@@ -28,15 +30,18 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
   const zh = getMessages('zh');
   assert.equal(zh.ui.instructionsTitle, '操作说明');
   assert.equal(zh.ui.addElement, '添加元素');
+  assert.equal(zh.onboarding.welcomeTitle, '30 秒完成你的第一个分子');
   assert.equal(zh.challenge.title, '挑战');
   assert.ok(zh.ui.controlsList.includes('按住 Shift 并拖动单键可旋转'));
 
   const fr = getMessages('fr');
   assert.equal(fr.ui.addElement, 'Ajouter un element');
+  assert.equal(fr.onboarding.menu, 'Demarrage rapide');
   assert.equal(fr.challenge.title, 'Defi');
 
   const ja = getMessages('ja');
   assert.equal(ja.ui.addElement, '元素を追加');
+  assert.equal(ja.onboarding.finish, '構築を始める');
   assert.equal(ja.challenge.title, 'チャレンジ');
   assert.ok(ja.ui.controlsList.includes('Shiftを押しながら単結合をドラッグして回転'));
 });

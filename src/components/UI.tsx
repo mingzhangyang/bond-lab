@@ -11,6 +11,7 @@ import {
   Trash2,
   X,
   Plus,
+  Sparkles,
   Sun,
   Globe,
   Moon,
@@ -35,12 +36,20 @@ import { getPathForRoute } from '../routes';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
 import {
+  advanceOnboardingStep,
+  ONBOARDING_STORAGE_KEY,
+  ONBOARDING_VERSION,
+  shouldShowOnboarding,
+  type OnboardingStep,
+} from '../onboarding';
+import {
   setElementDragData,
 } from '../drag';
 import {
   getChallengeTimerArc,
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
+import { QuickStartGuide } from './QuickStartGuide';
 
 const LANGUAGE_OPTIONS: Array<{ code: Language; label: string }> = [
   { code: 'en', label: 'English' },
@@ -49,6 +58,24 @@ const LANGUAGE_OPTIONS: Array<{ code: Language; label: string }> = [
   { code: 'fr', label: 'Francais' },
   { code: 'ja', label: '日本語' },
 ];
+
+function getStoredOnboardingVersion(): string | null {
+  if (typeof window === 'undefined') return null;
+  try {
+    return window.localStorage.getItem(ONBOARDING_STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function persistOnboardingSeen(): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, ONBOARDING_VERSION);
+  } catch {
+    // No-op when storage is unavailable.
+  }
+}
 
 export function UI() {
   const atoms = useStore((state) => state.atoms);
@@ -98,6 +125,10 @@ export function UI() {
     && typeof window.matchMedia === 'function'
     && !window.matchMedia('(min-width: 768px)').matches
   ));
+  const [onboardingStep, setOnboardingStep] = useState<OnboardingStep | null>(() => {
+    if (typeof window === 'undefined') return null;
+    return shouldShowOnboarding(getStoredOnboardingVersion()) ? 'welcome' : null;
+  });
 
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
@@ -192,6 +223,9 @@ export function UI() {
       ? 'lab-fab bg-red-500 text-white hover:bg-red-600'
       : 'lab-fab bg-red-500 text-white hover:bg-red-600')
     : 'lab-fab text-white';
+  const isOnboardingActive = onboardingStep !== null;
+  const elementPanelHighlightClass = onboardingStep === 'add-atoms' ? 'lab-onboarding-highlight' : '';
+  const sceneExploreHighlightClass = onboardingStep === 'explore' ? 'lab-onboarding-highlight' : '';
   const themeVars = getLabThemeVars(theme);
   const isDrawerLayout = shouldUseMobileChallengeDrawer(isNarrowViewport, isCoarsePointer, hasTouchInput);
   const mobileChallengeTimerArc = challengeStatus === 'playing'
@@ -237,6 +271,23 @@ export function UI() {
     }
   }, [challengeActive, challengeStatus, isDrawerLayout]);
 
+  useEffect(() => {
+    if (!onboardingStep || onboardingStep === 'welcome') return;
+    setOnboardingStep((current) => {
+      if (!current || current === 'welcome') return current;
+      return advanceOnboardingStep(current, {
+        atomCount: atoms.length,
+        bondCount: bonds.length,
+      });
+    });
+  }, [atoms.length, bonds.length, onboardingStep]);
+
+  useEffect(() => {
+    if (onboardingStep === 'add-atoms' && isDesktopViewport && !isElementsPanelOpen) {
+      setIsElementsPanelOpen(true);
+    }
+  }, [isDesktopViewport, isElementsPanelOpen, onboardingStep]);
+
   const handleStartChallenge = () => {
     const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
     const timeLimit = 30 + randomMol.atomCount * 5;
@@ -251,11 +302,50 @@ export function UI() {
     event.dataTransfer.effectAllowed = 'copy';
   };
 
+  const closeSettingsMenu = () => {
+    setIsSettingsMenuOpen(false);
+    setIsLanguageSubmenuOpen(false);
+  };
+
+  const handleDismissOnboarding = () => {
+    persistOnboardingSeen();
+    setOnboardingStep(null);
+  };
+
+  const handleStartOnboarding = () => {
+    closeSettingsMenu();
+    setOnboardingStep('add-atoms');
+  };
+
+  const handleReplayOnboarding = () => {
+    closeSettingsMenu();
+    setIsDrawerOpen(false);
+    if (isDesktopViewport) {
+      setIsElementsPanelOpen(true);
+    }
+    setOnboardingStep('welcome');
+  };
+
   return (
     <div
       className={`lab-ui-root absolute inset-0 pointer-events-none flex flex-col justify-between p-4 md:p-6 overflow-hidden ${primaryTextClass}`}
       style={themeVars}
     >
+      {isOnboardingActive && onboardingStep && (
+        <QuickStartGuide
+          messages={messages}
+          isDark={isDark}
+          isDesktopViewport={isDesktopViewport}
+          step={onboardingStep}
+          atomCount={atoms.length}
+          bondCount={bonds.length}
+          onStart={handleStartOnboarding}
+          onSkip={handleDismissOnboarding}
+          onFinish={handleDismissOnboarding}
+          onOpenElements={() => setIsDrawerOpen(true)}
+        />
+      )}
+
       <div className="pointer-events-none absolute inset-0 opacity-80" aria-hidden="true">
         <div className={`lab-orb absolute -top-20 left-1/4 h-64 w-64 rounded-full blur-3xl ${isDark ? 'bg-indigo-500/20' : 'bg-indigo-200/60'}`} />
         <div className={`lab-orb absolute -bottom-24 right-1/5 h-72 w-72 rounded-full blur-3xl ${isDark ? 'bg-cyan-500/12' : 'bg-cyan-100/70'}`} style={{ animationDelay: '1.5s' }} />
@@ -318,8 +408,7 @@ export function UI() {
                 className="fixed inset-0 z-50 cursor-default"
                 aria-label={messages.ui.close}
                 onClick={() => {
-                  setIsSettingsMenuOpen(false);
-                  setIsLanguageSubmenuOpen(false);
+                  closeSettingsMenu();
                 }}
               />
               <div
@@ -331,12 +420,19 @@ export function UI() {
                   role="menuitem"
                   onClick={() => {
                     toggleTheme();
-                    setIsSettingsMenuOpen(false);
-                    setIsLanguageSubmenuOpen(false);
+                    closeSettingsMenu();
                   }}
                 >
                   {isDark ? <Sun size={16} /> : <Moon size={16} />}
                   <span>{themeActionText}</span>
+                </button>
+                <button
+                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                  role="menuitem"
+                  onClick={handleReplayOnboarding}
+                >
+                  <Sparkles size={16} />
+                  <span>{messages.onboarding.replay}</span>
                 </button>
                 <button
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between ${settingsItemClass}`}
@@ -373,8 +469,7 @@ export function UI() {
                         aria-checked={option.code === language}
                         onClick={() => {
                           setLanguage(option.code);
-                          setIsSettingsMenuOpen(false);
-                          setIsLanguageSubmenuOpen(false);
+                          closeSettingsMenu();
                         }}
                       >
                         <span>{option.label}</span>
@@ -388,8 +483,7 @@ export function UI() {
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
                   role="menuitem"
                   onClick={() => {
-                    setIsSettingsMenuOpen(false);
-                    setIsLanguageSubmenuOpen(false);
+                    closeSettingsMenu();
                   }}
                 >
                   <BookOpenText size={16} />
@@ -400,8 +494,7 @@ export function UI() {
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
                   role="menuitem"
                   onClick={() => {
-                    setIsSettingsMenuOpen(false);
-                    setIsLanguageSubmenuOpen(false);
+                    closeSettingsMenu();
                   }}
                 >
                   <Shield size={16} />
@@ -416,7 +509,7 @@ export function UI() {
       {/* Desktop Left Rail */}
       <div className="hidden md:flex fixed left-0 top-[calc(env(safe-area-inset-top)+5.75rem)] bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] z-40 pointer-events-none">
         <div className="relative flex h-full flex-col gap-4">
-          <div className="relative flex-1 min-h-0 w-80">
+          <div className={`relative flex-1 min-h-0 w-80 ${elementPanelHighlightClass}`}>
             {!isElementsPanelOpen && (
               <button
                 onClick={() => setIsElementsPanelOpen(true)}
@@ -484,7 +577,7 @@ export function UI() {
           </div>
 
           {isDesktopViewport && (
-            <div className="pointer-events-auto w-80">
+            <div className={`pointer-events-auto w-80 ${sceneExploreHighlightClass}`}>
               <ChallengeMode
                 isDrawerLayout={false}
                 isMobileDrawerOpen={false}
@@ -708,15 +801,17 @@ export function UI() {
         <div className="md:hidden fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex items-end justify-between px-4 pointer-events-none">
           <div className="min-w-14 pointer-events-auto flex justify-start">
             {isDrawerLayout && (
-              <MobileChallengeTrigger
-                messages={messages}
-                isDark={isDark}
-                isOpen={challengeActive && isMobileChallengeOpen}
-                onToggle={challengeActive
-                  ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
-                  : handleStartChallenge}
-                timerArc={mobileChallengeTimerArc}
-              />
+              <div className={sceneExploreHighlightClass}>
+                <MobileChallengeTrigger
+                  messages={messages}
+                  isDark={isDark}
+                  isOpen={challengeActive && isMobileChallengeOpen}
+                  onToggle={challengeActive
+                    ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
+                    : handleStartChallenge}
+                  timerArc={mobileChallengeTimerArc}
+                />
+              </div>
             )}
           </div>
 
@@ -724,7 +819,7 @@ export function UI() {
             onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
             aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
             title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-            className={`w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass}`}
+            className={`w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass} ${sceneExploreHighlightClass}`}
           >
             {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
           </button>
@@ -736,7 +831,7 @@ export function UI() {
           onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
           aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
           title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-          className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass}`}
+          className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass} ${sceneExploreHighlightClass}`}
         >
           {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
         </button>

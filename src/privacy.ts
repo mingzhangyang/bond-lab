@@ -7,7 +7,7 @@ export interface PrivacyPolicy {
 }
 
 export const PRIVACY_POLICY: PrivacyPolicy = {
-  version: '2026-02-26',
+  version: '2026-03-09',
   dataCollection: [
     'BondLab runs primarily in your browser and does not require account registration.',
     'Molecule edits, challenge progress, and interactions are processed locally on your device.',
@@ -16,6 +16,7 @@ export const PRIVACY_POLICY: PrivacyPolicy = {
   localStorageUsage: [
     'Theme preference is stored locally so the app remembers light or dark mode.',
     'Language selection is stored locally to keep your preferred locale.',
+    'Quick-start onboarding completion is stored locally so returning visitors are not shown the same guide automatically.',
     'No account identity data is stored in local storage by default.',
   ],
   externalServices: [

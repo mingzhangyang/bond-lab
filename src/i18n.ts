@@ -48,6 +48,42 @@ export interface Messages {
   stability: {
     title: string;
   };
+  onboarding: {
+    menu: string;
+    replay: string;
+    welcomeBadge: string;
+    welcomeTitle: string;
+    welcomeDescription: string;
+    welcomeHint: string;
+    start: string;
+    skip: string;
+    openElements: string;
+    finish: string;
+    viewInstructions: string;
+    stepLabel: string;
+    steps: {
+      addAtoms: {
+        title: string;
+        descriptionDesktop: string;
+        descriptionMobile: string;
+        progress: string;
+        complete: string;
+        canvasHint: string;
+      };
+      createBond: {
+        title: string;
+        description: string;
+        progress: string;
+        complete: string;
+        canvasHint: string;
+      };
+      explore: {
+        title: string;
+        description: string;
+        points: string[];
+      };
+    };
+  };
   elements: Record<ElementType, string>;
 }
 
@@ -105,6 +141,47 @@ const EN_MESSAGES: Messages = {
   },
   stability: {
     title: 'Stability',
+  },
+  onboarding: {
+    menu: 'Quick Start',
+    replay: 'Replay Quick Start',
+    welcomeBadge: 'First time here?',
+    welcomeTitle: 'Build your first molecule in 30 seconds',
+    welcomeDescription: 'Start a short guided tour that teaches atom placement, bond creation, and the most important lab controls.',
+    welcomeHint: 'You can reopen this guide anytime from the menu.',
+    start: 'Start guide',
+    skip: 'Skip for now',
+    openElements: 'Open elements',
+    finish: 'Start building',
+    viewInstructions: 'Full instructions',
+    stepLabel: 'Step',
+    steps: {
+      addAtoms: {
+        title: 'Add your first atoms',
+        descriptionDesktop: 'Click an element on the left, or drag one into the drawing area. Add 2 atoms to continue.',
+        descriptionMobile: 'Tap the add button, then choose 2 elements to place in the lab.',
+        progress: 'Add 2 atoms',
+        complete: 'Great — your first atoms are in place.',
+        canvasHint: 'Drop elements here',
+      },
+      createBond: {
+        title: 'Create a bond',
+        description: 'Tap one atom, then another, to connect them. One bond is enough to continue.',
+        progress: 'Create 1 bond',
+        complete: 'Nice — your structure now has a bond.',
+        canvasHint: 'Tap two atoms here',
+      },
+      explore: {
+        title: 'Move, inspect, and clean up',
+        description: 'Before you begin, learn the three controls you will use most often.',
+        points: [
+          'Drag atoms to reposition them in the structure.',
+          'Drag the background to rotate the view, then scroll or pinch to zoom.',
+          'Use Delete mode to remove atoms or bonds you do not want.',
+          'Open Challenge when you are ready for a timed molecule task.',
+        ],
+      },
+    },
   },
   elements: {
     H: 'Hydrogen',
@@ -180,6 +257,47 @@ const ES_MESSAGES: Messages = {
   stability: {
     title: 'Estabilidad',
   },
+  onboarding: {
+    menu: 'Inicio rapido',
+    replay: 'Repetir inicio rapido',
+    welcomeBadge: 'Primera vez aqui?',
+    welcomeTitle: 'Construye tu primera molecula en 30 segundos',
+    welcomeDescription: 'Inicia una guia corta para aprender a colocar atomos, crear enlaces y usar los controles principales del laboratorio.',
+    welcomeHint: 'Puedes abrir esta guia otra vez desde el menu.',
+    start: 'Iniciar guia',
+    skip: 'Omitir por ahora',
+    openElements: 'Abrir elementos',
+    finish: 'Empezar a construir',
+    viewInstructions: 'Instrucciones completas',
+    stepLabel: 'Paso',
+    steps: {
+      addAtoms: {
+        title: 'Agrega tus primeros atomos',
+        descriptionDesktop: 'Haz clic en un elemento a la izquierda o arrastralo al area de dibujo. Agrega 2 atomos para continuar.',
+        descriptionMobile: 'Toca el boton de agregar y elige 2 elementos para colocarlos en el laboratorio.',
+        progress: 'Agregar 2 atomos',
+        complete: 'Perfecto: tus primeros atomos ya estan colocados.',
+        canvasHint: 'Suelta elementos aqui',
+      },
+      createBond: {
+        title: 'Crea un enlace',
+        description: 'Toca un atomo y luego otro para conectarlos. Un enlace es suficiente para continuar.',
+        progress: 'Crear 1 enlace',
+        complete: 'Bien: tu estructura ya tiene un enlace.',
+        canvasHint: 'Toca dos atomos aqui',
+      },
+      explore: {
+        title: 'Mover, observar y limpiar',
+        description: 'Antes de empezar, revisa los tres controles que mas usaras.',
+        points: [
+          'Arrastra atomos para cambiar su posicion.',
+          'Arrastra el fondo para rotar la vista y usa zoom con rueda o pellizco.',
+          'Usa el modo Eliminar para quitar atomos o enlaces.',
+          'Abre Desafio cuando quieras probar una meta con tiempo.',
+        ],
+      },
+    },
+  },
   elements: {
     H: 'Hidrogeno',
     C: 'Carbono',
@@ -253,6 +371,47 @@ const ZH_MESSAGES: Messages = {
   },
   stability: {
     title: '稳定性',
+  },
+  onboarding: {
+    menu: '快速上手',
+    replay: '重新查看快速上手',
+    welcomeBadge: '第一次来到这里？',
+    welcomeTitle: '30 秒完成你的第一个分子',
+    welcomeDescription: '开始一个简短引导，快速学会放置原子、创建化学键，以及实验室里最重要的几个操作。',
+    welcomeHint: '之后你也可以随时从菜单重新打开这份引导。',
+    start: '开始引导',
+    skip: '暂时跳过',
+    openElements: '打开元素面板',
+    finish: '开始构建',
+    viewInstructions: '查看完整说明',
+    stepLabel: '步骤',
+    steps: {
+      addAtoms: {
+        title: '先放入原子',
+        descriptionDesktop: '点击左侧元素，或直接拖到绘图区。放入 2 个原子后继续。',
+        descriptionMobile: '点击添加按钮，然后选择 2 个元素放入实验区。',
+        progress: '放入 2 个原子',
+        complete: '很好，你已经放好了第一批原子。',
+        canvasHint: '可拖拽到此处',
+      },
+      createBond: {
+        title: '创建化学键',
+        description: '先点一个原子，再点另一个原子，即可把它们连接起来。创建 1 根键即可继续。',
+        progress: '创建 1 根键',
+        complete: '很好，结构中已经有化学键了。',
+        canvasHint: '在这里点击两个原子',
+      },
+      explore: {
+        title: '移动、观察与清理',
+        description: '开始实验前，先记住最常用的 3 类操作。',
+        points: [
+          '拖动原子可以调整它们在结构中的位置。',
+          '拖动背景可旋转视角，滚轮或双指可缩放。',
+          '切换到删除模式后，可以移除原子或化学键。',
+          '准备好后，可以打开挑战模式进行限时搭建。',
+        ],
+      },
+    },
   },
   elements: {
     H: '氢',
@@ -328,6 +487,47 @@ const FR_MESSAGES: Messages = {
   stability: {
     title: 'Stabilite',
   },
+  onboarding: {
+    menu: 'Demarrage rapide',
+    replay: 'Revoir le demarrage rapide',
+    welcomeBadge: 'Premiere visite ?',
+    welcomeTitle: 'Construisez votre premiere molecule en 30 secondes',
+    welcomeDescription: 'Lancez une courte visite guidee pour apprendre a placer des atomes, creer des liaisons et utiliser les commandes essentielles du labo.',
+    welcomeHint: 'Vous pourrez rouvrir ce guide a tout moment depuis le menu.',
+    start: 'Demarrer le guide',
+    skip: 'Passer pour le moment',
+    openElements: 'Ouvrir les elements',
+    finish: 'Commencer a construire',
+    viewInstructions: 'Instructions completes',
+    stepLabel: 'Etape',
+    steps: {
+      addAtoms: {
+        title: 'Ajoutez vos premiers atomes',
+        descriptionDesktop: 'Cliquez sur un element a gauche ou faites-le glisser dans la zone de dessin. Ajoutez 2 atomes pour continuer.',
+        descriptionMobile: 'Touchez le bouton d ajout puis choisissez 2 elements a placer dans le labo.',
+        progress: 'Ajouter 2 atomes',
+        complete: 'Parfait : vos premiers atomes sont en place.',
+        canvasHint: 'Deposez des elements ici',
+      },
+      createBond: {
+        title: 'Creez une liaison',
+        description: 'Touchez un atome puis un autre pour les relier. Une seule liaison suffit pour continuer.',
+        progress: 'Creer 1 liaison',
+        complete: 'Bien : votre structure contient maintenant une liaison.',
+        canvasHint: 'Touchez deux atomes ici',
+      },
+      explore: {
+        title: 'Deplacer, observer et nettoyer',
+        description: 'Avant de commencer, retenez les trois controles les plus utiles.',
+        points: [
+          'Faites glisser les atomes pour ajuster leur position.',
+          'Faites glisser le fond pour tourner la vue puis zoomez avec molette ou pincement.',
+          'Utilisez le mode Supprimer pour retirer des atomes ou des liaisons.',
+          'Ouvrez le defi quand vous etes pret pour un objectif chronometre.',
+        ],
+      },
+    },
+  },
   elements: {
     H: 'Hydrogene',
     C: 'Carbone',
@@ -401,6 +601,47 @@ const JA_MESSAGES: Messages = {
   },
   stability: {
     title: '安定性',
+  },
+  onboarding: {
+    menu: 'クイックスタート',
+    replay: 'クイックスタートをもう一度見る',
+    welcomeBadge: '初めてですか？',
+    welcomeTitle: '30 秒で最初の分子を作ってみましょう',
+    welcomeDescription: '短いガイドで、原子の配置、結合の作成、ラボでよく使う操作をすぐに学べます。',
+    welcomeHint: 'このガイドは後でメニューからいつでも開き直せます。',
+    start: 'ガイドを始める',
+    skip: '今はスキップ',
+    openElements: '元素パネルを開く',
+    finish: '構築を始める',
+    viewInstructions: '詳しい説明を見る',
+    stepLabel: 'ステップ',
+    steps: {
+      addAtoms: {
+        title: '最初の原子を置く',
+        descriptionDesktop: '左の元素をクリックするか、描画エリアへドラッグしてください。2 個の原子を置くと次へ進みます。',
+        descriptionMobile: '追加ボタンを押して、2 つの元素を選んでラボに配置してください。',
+        progress: '原子を 2 個置く',
+        complete: 'よくできました。最初の原子が配置されました。',
+        canvasHint: 'ここにドロップ',
+      },
+      createBond: {
+        title: '結合を作る',
+        description: '1 つの原子をタップしてから、もう 1 つをタップすると結合できます。1 本作れば先へ進めます。',
+        progress: '結合を 1 本作る',
+        complete: '構造に結合が追加されました。',
+        canvasHint: 'ここで 2 つの原子をタップ',
+      },
+      explore: {
+        title: '動かす・観察する・整理する',
+        description: '始める前に、よく使う 3 つの操作を確認しましょう。',
+        points: [
+          '原子をドラッグして位置を調整できます。',
+          '背景をドラッグして視点を回転し、ホイールやピンチで拡大縮小できます。',
+          '削除モードを使うと原子や結合を消せます。',
+          '準備ができたら、チャレンジで時間制の課題に挑戦できます。',
+        ],
+      },
+    },
   },
   elements: {
     H: '水素',
