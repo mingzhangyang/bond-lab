@@ -373,9 +373,11 @@ export function UI() {
             </div>
           </div>
 
-          <div className="pointer-events-auto">
-            <StabilityDisplay />
-          </div>
+          {!isDesktopViewport && (
+            <div className="pointer-events-auto">
+              <StabilityDisplay />
+            </div>
+          )}
         </div>
       </div>
 
@@ -603,70 +605,80 @@ export function UI() {
         </>
       )}
       {/* Desktop Right Rail */}
-      {isDesktopViewport && molecule && (
+      {isDesktopViewport && (atoms.length > 0 || molecule) && (
         <div
-          className="hidden md:flex fixed right-6 top-[calc(env(safe-area-inset-top)+5.75rem)] max-h-[calc(100vh-env(safe-area-inset-top)-env(safe-area-inset-bottom)-7.25rem)] z-40 pointer-events-none"
+          className="hidden md:flex fixed right-6 top-[calc(env(safe-area-inset-top)+5.75rem)] bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] z-40 pointer-events-none"
         >
-          <div
-            className={`lab-reveal w-80 rounded-2xl p-6 pointer-events-auto flex flex-col gap-6 overflow-y-auto stealth-scrollbar ${panelClass}`}
-            style={{ animationDelay: '130ms' }}
-          >
-            <div>
-              <div className={`info-display text-[10px] uppercase tracking-widest mb-2 font-bold ${headingTextClass}`}>
-                {messages.ui.currentMolecule}
+          <div className="flex h-full w-80 flex-col gap-4">
+            {atoms.length > 0 && (
+              <div className="pointer-events-auto shrink-0">
+                <StabilityDisplay />
               </div>
-              <h2 className={`info-display font-black text-3xl tracking-tight leading-tight mb-1 ${primaryTextClass}`}>
-                {moleculeName}
-              </h2>
-              <div className="flex items-center gap-2 text-emerald-400 font-mono text-xl">
-                <FlaskConical size={18} />
-                <span>{molecule.formula}</span>
-              </div>
-            </div>
+            )}
 
-            {moleculeInfo && (
-              <div className="flex flex-col gap-5">
-                <div className="space-y-2">
-                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                    <Atom size={14} className="opacity-70" />
-                    {structureTitle}
+            {molecule && (
+              <div
+                className={`lab-reveal min-h-0 flex-1 rounded-2xl p-6 pointer-events-auto flex flex-col gap-6 overflow-y-auto stealth-scrollbar ${panelClass}`}
+                style={{ animationDelay: '130ms' }}
+              >
+                <div>
+                  <div className={`info-display text-[10px] uppercase tracking-widest mb-2 font-bold ${headingTextClass}`}>
+                    {messages.ui.currentMolecule}
                   </div>
-                  <div className={`font-mono text-sm p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-black/5'} ${primaryTextClass}`}>
-                    {moleculeInfo.structure}
+                  <h2 className={`info-display font-black text-3xl tracking-tight leading-tight mb-1 ${primaryTextClass}`}>
+                    {moleculeName}
+                  </h2>
+                  <div className="flex items-center gap-2 text-emerald-400 font-mono text-xl">
+                    <FlaskConical size={18} />
+                    <span>{molecule.formula}</span>
                   </div>
                 </div>
 
-                <div className="space-y-2">
-                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                    <Info size={14} className="opacity-70" />
-                    {factTitle}
+                {moleculeInfo && (
+                  <div className="flex flex-col gap-5">
+                    <div className="space-y-2">
+                      <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                        <Atom size={14} className="opacity-70" />
+                        {structureTitle}
+                      </div>
+                      <div className={`font-mono text-sm p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-black/5'} ${primaryTextClass}`}>
+                        {moleculeInfo.structure}
+                      </div>
+                    </div>
+
+                    <div className="space-y-2">
+                      <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                        <Info size={14} className="opacity-70" />
+                        {factTitle}
+                      </div>
+                      <div className={`text-sm leading-relaxed ${secondaryTextClass}`}>
+                        {moleculeInfo.fact}
+                      </div>
+                    </div>
                   </div>
-                  <div className={`text-sm leading-relaxed ${secondaryTextClass}`}>
-                    {moleculeInfo.fact}
+                )}
+
+                <div className="mt-auto pt-6 border-t border-white/10 flex flex-col gap-3">
+                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
+                    <Zap size={14} className="opacity-70" />
+                    {polarityTitle}
+                  </div>
+                  <div>
+                    <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wide inline-block mb-1 ${polarityReport.classification === 'polar'
+                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
+                        : (polarityReport.classification === 'nonpolar'
+                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/20'
+                          : 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/20')
+                      }`}>
+                      {polarityLabel}
+                    </span>
+                    <p className={`text-xs leading-normal mt-1 italic ${secondaryTextClass}`}>
+                      {polarityReport.reason}
+                    </p>
                   </div>
                 </div>
               </div>
             )}
-
-            <div className="mt-auto pt-6 border-t border-white/10 flex flex-col gap-3">
-              <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                <Zap size={14} className="opacity-70" />
-                {polarityTitle}
-              </div>
-              <div>
-                <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wide inline-block mb-1 ${polarityReport.classification === 'polar'
-                    ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
-                    : (polarityReport.classification === 'nonpolar'
-                      ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/20'
-                      : 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/20')
-                  }`}>
-                  {polarityLabel}
-                </span>
-                <p className={`text-xs leading-normal mt-1 italic ${secondaryTextClass}`}>
-                  {polarityReport.reason}
-                </p>
-              </div>
-            </div>
           </div>
         </div>
       )}
