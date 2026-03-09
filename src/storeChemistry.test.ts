@@ -26,3 +26,24 @@ test('addBond stores chemistry metadata and updates rotatable on bond order upgr
 
   useStore.getState().clear();
 });
+
+test('addBond allows carbon monoxide as a carbon-oxygen triple bond special case', () => {
+  useStore.getState().clear();
+
+  const carbon = useStore.getState().addAtom('C');
+  const oxygen = useStore.getState().addAtom('O');
+
+  useStore.getState().addBond(carbon, oxygen);
+  useStore.getState().addBond(carbon, oxygen);
+  useStore.getState().addBond(carbon, oxygen);
+
+  const bond = useStore.getState().bonds[0];
+
+  assert.equal(useStore.getState().bonds.length, 1);
+  assert.equal(bond.order, 3);
+  assert.equal(bond.rotatable, false);
+  assert.equal(bond.bondLength, 1.13);
+  assert.equal(bond.bondEnergy, 1072);
+
+  useStore.getState().clear();
+});

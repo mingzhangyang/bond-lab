@@ -54,6 +54,17 @@ export interface BondChemistryInput extends Partial<BondChemistry> {
   order: number;
 }
 
+export interface BondingAtom {
+  id: string;
+  element: ElementType;
+}
+
+export interface BondingBond {
+  source: string;
+  target: string;
+  order: number;
+}
+
 type BondPropertyTable = Record<string, Record<number, number>>;
 type BondPropertyEntry = [ElementType, ElementType, Record<number, number>];
 
@@ -335,4 +346,56 @@ export function normalizeBondChemistry(
     bondEnergy: bond.bondEnergy ?? derived.bondEnergy,
     rotatable: bond.rotatable ?? derived.rotatable,
   };
+}
+
+function getBondOrderSum(atomId: string, bonds: BondingBond[]): number {
+  return bonds.reduce((sum, bond) => {
+    if (bond.source === atomId || bond.target === atomId) {
+      return sum + bond.order;
+    }
+    return sum;
+  }, 0);
+}
+
+function getAtomById(atomId: string, atoms: BondingAtom[]): BondingAtom | undefined {
+  return atoms.find((atom) => atom.id === atomId);
+}
+
+function isTwoAtomCarbonOxygenPair(atoms: BondingAtom[], bonds: BondingBond[]): boolean {
+  if (atoms.length !== 2 || bonds.length !== 1) return false;
+  const pair = [...atoms.map((atom) => atom.element)].sort().join('-');
+  return pair === 'C-O';
+}
+
+function isCarbonMonoxide(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
+  if (!isTwoAtomCarbonOxygenPair(atoms, bonds)) return false;
+  if (bonds[0]?.order !== 3) return false;
+  const atom = getAtomById(atomId, atoms);
+  return atom?.element === 'C' || atom?.element === 'O';
+}
+
+export function getAtomBondLimit(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
+  const atom = getAtomById(atomId, atoms);
+  if (!atom) return 0;
+
+  if (atom.element === 'O' && isTwoAtomCarbonOxygenPair(atoms, bonds)) {
+    return 3;
+  }
+
+  return ELEMENTS[atom.element].maxBonds;
+}
+
+export function isAtomBondingValid(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
+  return getBondOrderSum(atomId, bonds) <= getAtomBondLimit(atomId, atoms, bonds);
+}
+
+export function getAtomBondTarget(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
+  const atom = getAtomById(atomId, atoms);
+  if (!atom) return 0;
+
+  if (isCarbonMonoxide(atomId, atoms, bonds)) {
+    return 3;
+  }
+
+  return ELEMENTS[atom.element].maxBonds;
 }

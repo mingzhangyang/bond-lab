@@ -1,4 +1,4 @@
-import { ELEMENTS, normalizeBondChemistry } from './chemistry.ts';
+import { ELEMENTS, getAtomBondTarget, normalizeBondChemistry } from './chemistry.ts';
 import type { Atom, Bond } from './store.ts';
 
 export interface StabilityReport {
@@ -162,18 +162,18 @@ export function calculateStability(atoms: Atom[], bonds: Bond[], options: Stabil
 
   for (const atom of atoms) {
     const count = bondCounts[atom.id];
-    const maxBonds = ELEMENTS[atom.element].maxBonds;
+    const targetBondCount = getAtomBondTarget(atom.id, atoms, bonds);
     
-    if (count > maxBonds) {
-      const excess = count - maxBonds;
+    if (count > targetBondCount) {
+      const excess = count - targetBondCount;
       score -= 30 + Math.max(0, excess - 1) * 12;
       strainEnergy += 500 + excess * 180; // stronger penalty for larger overfill
-      issues.push(`${atom.element} has exceeded its maximum valency (${count}/${maxBonds} bonds).`);
-    } else if (count < maxBonds) {
-      const deficit = maxBonds - count;
+      issues.push(`${atom.element} has exceeded its maximum valency (${count}/${targetBondCount} bonds).`);
+    } else if (count < targetBondCount) {
+      const deficit = targetBondCount - count;
       score -= Math.min(24, deficit * 6);
       strainEnergy += deficit * 110;
-      issues.push(`${atom.element} has unsatisfied valency (${count}/${maxBonds} bonds).`);
+      issues.push(`${atom.element} has unsatisfied valency (${count}/${targetBondCount} bonds).`);
     }
   }
 

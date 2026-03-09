@@ -104,6 +104,10 @@ const MOLECULE_INFO: Record<string, MoleculeInfo> = {
     structure: 'N=O',
     fact: 'Nitric oxide is a signaling molecule in the body that helps regulate blood pressure.',
   },
+  'Carbon Monoxide': {
+    structure: 'C≡O',
+    fact: 'Carbon monoxide is a linear, strongly bound molecule that is dangerous because it binds tightly to hemoglobin.',
+  },
   'Hydrogen Peroxide': {
     structure: 'H-O-O-H',
     fact: 'The O-O single bond in hydrogen peroxide is weak, making it a powerful oxidizer.',

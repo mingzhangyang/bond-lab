@@ -136,3 +136,19 @@ test('calculateStability does not apply geometry penalty when there are insuffic
   assert.deepEqual(withGeometry, withoutGeometry);
   assert.ok(withGeometry.issues.every((issue) => !issue.includes('Geometry strain')));
 });
+
+test('calculateStability treats carbon monoxide triple bond as a stable special case', () => {
+  const atoms: Atom[] = [
+    { id: 'c1', element: 'C' },
+    { id: 'o1', element: 'O' },
+  ];
+  const bonds: Bond[] = [
+    { id: 'b1', source: 'c1', target: 'o1', order: 3, bondEnergy: 1072, bondLength: 1.13, rotatable: false },
+  ];
+
+  const result = calculateStability(atoms, bonds);
+
+  assert.equal(result.score, 100);
+  assert.equal(result.energy, 1072);
+  assert.deepEqual(result.issues, []);
+});

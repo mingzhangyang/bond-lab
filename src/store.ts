@@ -14,6 +14,7 @@ import {
   ELEMENTS,
   ELEMENT_DISPLAY_ORDER,
   getBondChemistry,
+  isAtomBondingValid,
   type BondChemistry,
   type ElementType,
 } from './chemistry.ts';
@@ -158,51 +159,61 @@ export const useStore = create<GameState>((set, get) => ({
     const targetAtom = state.atoms.find(a => a.id === target);
     if (!sourceAtom || !targetAtom) return state;
     
-    const sourceBonds = state.bonds.filter(b => b.source === source || b.target === source).reduce((sum, b) => sum + b.order, 0);
-    const targetBonds = state.bonds.filter(b => b.source === target || b.target === target).reduce((sum, b) => sum + b.order, 0);
-    
     if (existing) {
-      if (sourceBonds < ELEMENTS[sourceAtom.element].maxBonds && targetBonds < ELEMENTS[targetAtom.element].maxBonds) {
-        if (existing.order < 3) {
-          const nextOrder = existing.order + 1;
+      if (existing.order < 3) {
+        const nextOrder = existing.order + 1;
+        const nextBonds = state.bonds.map((bond) => (
+          bond.id === existing.id
+            ? { ...bond, order: nextOrder }
+            : bond
+        ));
+
+        if (isAtomBondingValid(source, state.atoms, nextBonds) && isAtomBondingValid(target, state.atoms, nextBonds)) {
           const chemistry: BondChemistry = getBondChemistry(
             sourceAtom.element,
             targetAtom.element,
             nextOrder,
           );
           return {
-            bonds: state.bonds.map((b) => (
-              b.id === existing.id
+            bonds: nextBonds.map((bond) => (
+              bond.id === existing.id
                 ? {
-                    ...b,
-                    order: nextOrder,
+                    ...bond,
                     bondLength: chemistry.bondLength,
                     bondEnergy: chemistry.bondEnergy,
                     rotatable: chemistry.rotatable,
                   }
-                : b
+                : bond
             ))
           };
         }
       }
       return state;
     }
-    
-    if (sourceBonds < ELEMENTS[sourceAtom.element].maxBonds && targetBonds < ELEMENTS[targetAtom.element].maxBonds) {
+
+    const nextBonds = [
+      ...state.bonds,
+      {
+        id: uuidv4(),
+        source,
+        target,
+        order: 1,
+      },
+    ];
+
+    if (isAtomBondingValid(source, state.atoms, nextBonds) && isAtomBondingValid(target, state.atoms, nextBonds)) {
       const chemistry = getBondChemistry(sourceAtom.element, targetAtom.element, 1);
       return {
-        bonds: [
-          ...state.bonds,
-          {
-            id: uuidv4(),
-            source,
-            target,
-            order: 1,
-            bondLength: chemistry.bondLength,
-            bondEnergy: chemistry.bondEnergy,
-            rotatable: chemistry.rotatable,
-          },
-        ]
+        bonds: nextBonds.map((bond) => (
+          bond.source === source && bond.target === target && bond.order === 1 && !('bondLength' in bond)
+            ? {
+                ...bond,
+                bondLength: chemistry.bondLength,
+                bondEnergy: chemistry.bondEnergy,
+                rotatable: chemistry.rotatable,
+              }
+            : bond
+        ))
       };
     }
     

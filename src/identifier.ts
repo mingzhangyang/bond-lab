@@ -233,6 +233,12 @@ const MOLECULE_TEMPLATES: MoleculeTemplate[] = [
     bonds: [{ a: 0, b: 1, order: 2 }],
   },
   {
+    name: 'Carbon Monoxide',
+    formula: 'CO',
+    atoms: ['C', 'O'],
+    bonds: [{ a: 0, b: 1, order: 3 }],
+  },
+  {
     name: 'Hydrogen Peroxide',
     formula: 'H₂O₂',
     atoms: ['O', 'O', 'H', 'H'],

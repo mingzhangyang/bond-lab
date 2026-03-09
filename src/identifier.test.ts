@@ -123,6 +123,16 @@ test('identifyMolecule formula builder supports two-letter element symbols', () 
   assert.deepEqual(identifyMolecule(atoms, bonds), { name: 'Unknown Molecule', formula: 'CCl' });
 });
 
+test('identifyMolecule identifies carbon monoxide from a carbon-oxygen triple bond', () => {
+  const atoms: Atom[] = [
+    { id: 'c1', element: 'C' },
+    { id: 'o1', element: 'O' },
+  ];
+  const bonds: Bond[] = [{ id: 'b1', source: 'c1', target: 'o1', order: 3 }];
+
+  assert.deepEqual(identifyMolecule(atoms, bonds), { name: 'Carbon Monoxide', formula: 'CO' });
+});
+
 test('identifyMolecule formula builder supports newly added metal elements', () => {
   const ironOxideAtoms: Atom[] = [
     { id: 'fe1', element: 'Fe' },
