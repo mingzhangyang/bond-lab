@@ -19,6 +19,12 @@ export interface SeoContent {
   intro: string;
   featureHeading: string;
   features: string[];
+  useCasesHeading: string;
+  useCases: string[];
+  audienceHeading: string;
+  audiences: string[];
+  disclaimerHeading: string;
+  disclaimer: string;
   faqHeading: string;
   faqs: SeoFaqItem[];
 }
@@ -80,20 +86,20 @@ export const SEO_IMAGE_URL = `${SEO_BASE_URL}/og-image.svg`;
 const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   en: {
     meta: {
-      titleSuffix: 'Interactive Molecule Builder',
+      titleSuffix: '3D Molecule Builder for Chemistry Learning',
       description:
-        'BondLab is an interactive 3D chemistry sandbox where students build molecules, test bond orders, and explore molecular structure, polarity, and stability in real time.',
+        'BondLab is an interactive 3D chemistry learning app where students build molecules, test bond orders, and explore molecular structure, polarity, and stability in real time.',
       keywords:
-        'chemistry simulator, molecule builder, molecular geometry, bond order, valence electrons, chemistry education, interactive science app',
+        '3d molecule builder, chemistry simulator, molecular geometry, bond order, valence electrons, chemistry education, interactive science app',
       ogDescription:
-        'Build molecules in 3D, adjust bond order, and learn molecular polarity and stability with BondLab.',
+        'Build molecules in 3D, adjust bond order, and explore molecular polarity, geometry, and stability with BondLab.',
       twitterDescription:
-        'Interactive chemistry app for molecule building, bond editing, and molecular property exploration.',
+        'Interactive 3D chemistry app for molecule building, bond editing, and molecular property exploration.',
     },
     content: {
       heading: 'BondLab Interactive Chemistry Lab',
       intro:
-        'BondLab helps learners understand chemistry by letting them construct molecules atom-by-atom and observe how structure changes affect properties.',
+        'BondLab helps learners understand chemistry by letting them construct molecules atom-by-atom, compare bond patterns, and observe how structure changes affect properties.',
       featureHeading: 'What you can do in BondLab',
       features: [
         'Build molecules with hydrogen, carbon, nitrogen, and oxygen atoms.',
@@ -102,6 +108,21 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         'Analyze molecular polarity and stability feedback while editing in real time.',
         'Practice with challenge mode to recreate target molecules under time pressure.',
       ],
+      useCasesHeading: 'Best use cases for BondLab',
+      useCases: [
+        'Use BondLab in chemistry class to introduce molecular structure and bond order visually.',
+        'Practice building small molecules while checking polarity and stability hints as you edit.',
+        'Explore how changing a single bond to a double bond affects formula interpretation and geometry cues.',
+      ],
+      audienceHeading: 'Who BondLab is for',
+      audiences: [
+        'Students learning introductory chemistry and molecular structure.',
+        'Teachers who want a quick visual molecule builder for demonstrations.',
+        'Curious learners looking for a playful chemistry sandbox on the web.',
+      ],
+      disclaimerHeading: 'Educational model notice',
+      disclaimer:
+        'BondLab is designed for science outreach, classroom demos, and exploration. Its molecule recognition, stability, and polarity outputs are simplified learning aids rather than rigorous chemical analysis.',
       faqHeading: 'Chemistry topics covered in BondLab',
       faqs: [
         {
@@ -171,20 +192,20 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   es: {
     meta: {
-      titleSuffix: 'Constructor Interactivo de Moleculas',
+      titleSuffix: 'Constructor 3D de Moleculas para Aprender Quimica',
       description:
-        'BondLab es un laboratorio de quimica 3D interactivo para construir moleculas, probar ordenes de enlace y explorar estructura molecular, polaridad y estabilidad en tiempo real.',
+        'BondLab es una aplicacion educativa de quimica 3D para construir moleculas, probar ordenes de enlace y explorar estructura molecular, polaridad y estabilidad en tiempo real.',
       keywords:
-        'simulador de quimica, constructor de moleculas, geometria molecular, orden de enlace, electrones de valencia, educacion cientifica',
+        'constructor 3D de moleculas, simulador de quimica, geometria molecular, orden de enlace, electrones de valencia, educacion cientifica',
       ogDescription:
-        'Construye moleculas en 3D, ajusta el orden de enlace y estudia polaridad y estabilidad con BondLab.',
+        'Construye moleculas en 3D, ajusta el orden de enlace y explora polaridad, geometria y estabilidad con BondLab.',
       twitterDescription:
-        'Aplicacion interactiva de quimica para construir moleculas y analizar propiedades moleculares.',
+        'Aplicacion 3D interactiva de quimica para construir moleculas y analizar propiedades moleculares.',
     },
     content: {
       heading: 'BondLab Laboratorio Interactivo de Quimica',
       intro:
-        'BondLab ayuda a los estudiantes a comprender quimica construyendo moleculas atomo por atomo y observando como cambian sus propiedades.',
+        'BondLab ayuda a los estudiantes a comprender quimica construyendo moleculas atomo por atomo y observando como cambian sus propiedades y enlaces.',
       featureHeading: 'Que puedes hacer en BondLab',
       features: [
         'Construir moleculas con hidrogeno, carbono, nitrogeno y oxigeno.',
@@ -193,6 +214,21 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         'Analizar polaridad molecular y estabilidad en tiempo real.',
         'Practicar en modo desafio recreando moleculas objetivo contra reloj.',
       ],
+      useCasesHeading: 'Mejores usos de BondLab',
+      useCases: [
+        'Usar BondLab en clase para introducir estructura molecular y orden de enlace de forma visual.',
+        'Practicar la construccion de moleculas pequenas mientras revisas pistas de polaridad y estabilidad.',
+        'Explorar como cambiar un enlace simple a doble modifica la interpretacion de la estructura.',
+      ],
+      audienceHeading: 'Para quien es BondLab',
+      audiences: [
+        'Estudiantes que aprenden quimica introductoria y estructura molecular.',
+        'Docentes que buscan una herramienta visual rapida para demostraciones.',
+        'Personas curiosas que quieren explorar quimica de forma interactiva en la web.',
+      ],
+      disclaimerHeading: 'Aviso sobre el modelo educativo',
+      disclaimer:
+        'BondLab esta pensado para divulgacion cientifica, demostraciones en clase y exploracion. La identificacion molecular, la estabilidad y la polaridad son ayudas simplificadas y no sustituyen un analisis quimico riguroso.',
       faqHeading: 'Temas de quimica cubiertos en BondLab',
       faqs: [
         {
@@ -262,17 +298,17 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   zh: {
     meta: {
-      titleSuffix: '交互式分子构建器',
+      titleSuffix: '3D 化学学习分子构建器',
       description:
-        'BondLab 是一款 3D 交互式化学实验室，可用于构建分子、测试键级，并实时探索分子结构、极性与稳定性。',
-      keywords: '化学模拟器, 分子构建, 分子几何, 键级, 价电子, 化学教育, 互动科学应用',
-      ogDescription: '在 BondLab 中以 3D 方式构建分子，调整键级并学习极性与稳定性。',
-      twitterDescription: '用于分子构建、键编辑与分子性质探索的交互式化学应用。',
+        'BondLab 是一款 3D 交互式化学学习应用，可用于构建分子、测试键级，并实时探索分子结构、极性与稳定性。',
+      keywords: '3D 分子构建器, 化学模拟器, 分子构建, 分子几何, 键级, 价电子, 化学教育, 互动科学应用',
+      ogDescription: '在 BondLab 中以 3D 方式构建分子，调整键级并探索极性、几何与稳定性。',
+      twitterDescription: '用于分子构建、键编辑与分子性质探索的 3D 交互式化学应用。',
     },
     content: {
       heading: 'BondLab 交互式化学实验室',
       intro:
-        'BondLab 通过逐个原子构建分子，帮助学习者理解结构变化如何影响分子性质。',
+        'BondLab 通过逐个原子构建分子，帮助学习者理解结构变化、键级变化如何影响分子性质。',
       featureHeading: 'BondLab 可以做什么',
       features: [
         '使用氢、碳、氮、氧构建分子。',
@@ -281,6 +317,21 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         '在编辑过程中实时分析分子极性与稳定性反馈。',
         '在挑战模式中限时复现目标分子。',
       ],
+      useCasesHeading: '适合如何使用 BondLab',
+      useCases: [
+        '在化学课堂中用它直观演示分子结构、键级和几何关系。',
+        '在练习小分子构建时，结合极性和稳定性提示进行观察。',
+        '对比单键、双键和三键变化对结构理解带来的影响。',
+      ],
+      audienceHeading: 'BondLab 适合谁',
+      audiences: [
+        '正在学习入门化学和分子结构的学生。',
+        '需要快速演示分子构建过程的教师。',
+        '希望在网页上轻松体验化学构建的科普用户。',
+      ],
+      disclaimerHeading: '教育模型说明',
+      disclaimer:
+        'BondLab 主要用于科普展示、课堂演示与互动探索。分子识别、稳定性和极性结果基于简化规则，更适合作为学习提示，而非严格的化学分析。',
       faqHeading: 'BondLab 覆盖的化学主题',
       faqs: [
         {
@@ -349,20 +400,20 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   fr: {
     meta: {
-      titleSuffix: 'Constructeur Moleculaire Interactif',
+      titleSuffix: 'Constructeur Moleculaire 3D pour Apprendre la Chimie',
       description:
-        'BondLab est un laboratoire de chimie 3D interactif pour construire des molecules, tester les ordres de liaison et explorer structure moleculaire, polarite et stabilite en temps reel.',
+        'BondLab est une application educative de chimie 3D pour construire des molecules, tester les ordres de liaison et explorer structure moleculaire, polarite et stabilite en temps reel.',
       keywords:
-        'simulateur de chimie, constructeur de molecules, geometrie moleculaire, ordre de liaison, electrons de valence, education scientifique',
+        'constructeur 3D de molecules, simulateur de chimie, geometrie moleculaire, ordre de liaison, electrons de valence, education scientifique',
       ogDescription:
-        'Construisez des molecules en 3D, ajustez les liaisons et etudiez polarite et stabilite avec BondLab.',
+        'Construisez des molecules en 3D, ajustez les liaisons et explorez polarite, geometrie et stabilite avec BondLab.',
       twitterDescription:
-        'Application de chimie interactive pour construire des molecules et analyser leurs proprietes.',
+        'Application 3D de chimie interactive pour construire des molecules et analyser leurs proprietes.',
     },
     content: {
       heading: 'BondLab Laboratoire de Chimie Interactif',
       intro:
-        'BondLab aide les apprenants a comprendre la chimie en construisant des molecules atome par atome.',
+        'BondLab aide les apprenants a comprendre la chimie en construisant des molecules atome par atome et en observant les effets des liaisons.',
       featureHeading: 'Ce que vous pouvez faire dans BondLab',
       features: [
         'Construire des molecules avec hydrogene, carbone, azote et oxygene.',
@@ -371,6 +422,21 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         'Analyser polarite moleculaire et stabilite en temps reel.',
         'S entrainer avec le mode defi pour reconstruire des molecules cibles.',
       ],
+      useCasesHeading: 'Meilleurs usages de BondLab',
+      useCases: [
+        'Presenter visuellement la structure moleculaire et l ordre de liaison en cours de chimie.',
+        'S exercer a construire de petites molecules avec des indices de polarite et de stabilite.',
+        'Comparer l effet d une liaison simple, double ou triple sur la lecture de la structure.',
+      ],
+      audienceHeading: 'Pour qui est BondLab',
+      audiences: [
+        'Les eleves qui apprennent la chimie introductive et la structure moleculaire.',
+        'Les enseignants qui veulent un outil visuel rapide pour leurs demonstrations.',
+        'Les curieux qui souhaitent explorer la chimie de facon ludique sur le web.',
+      ],
+      disclaimerHeading: 'Note sur le modele educatif',
+      disclaimer:
+        'BondLab est concu pour la vulgarisation scientifique, les demonstrations en classe et l exploration. Les resultats de stabilite, de polarite et d identification des molecules sont simplifies et ne remplacent pas une analyse chimique rigoureuse.',
       faqHeading: 'Sujets de chimie couverts par BondLab',
       faqs: [
         {
@@ -440,17 +506,17 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   ja: {
     meta: {
-      titleSuffix: 'インタラクティブ分子ビルダー',
+      titleSuffix: '化学学習向け 3D 分子ビルダー',
       description:
         'BondLab は分子を組み立てながら結合次数を試し、分子構造・極性・安定性をリアルタイムで学べる 3D 化学学習アプリです。',
-      keywords: '化学シミュレーター, 分子作成, 分子構造, 結合次数, 価電子, 化学教育, インタラクティブ学習',
-      ogDescription: '3D で分子を作成し、結合次数や極性、安定性を学べる BondLab。',
-      twitterDescription: '分子作成と結合編集を通じて分子特性を学べるインタラクティブ化学アプリ。',
+      keywords: '3D 分子ビルダー, 化学シミュレーター, 分子作成, 分子構造, 結合次数, 価電子, 化学教育, インタラクティブ学習',
+      ogDescription: '3D で分子を作成し、結合次数、極性、幾何、安定性を学べる BondLab。',
+      twitterDescription: '分子作成と結合編集を通じて分子特性を学べる 3D インタラクティブ化学アプリ。',
     },
     content: {
       heading: 'BondLab インタラクティブ化学ラボ',
       intro:
-        'BondLab は原子を一つずつ配置して分子を作ることで、構造変化が性質に与える影響を理解しやすくします。',
+        'BondLab は原子を一つずつ配置して分子を作ることで、構造変化や結合の違いが性質に与える影響を理解しやすくします。',
       featureHeading: 'BondLab でできること',
       features: [
         '水素、炭素、窒素、酸素を使って分子を構築。',
@@ -459,6 +525,21 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         '編集しながら極性と安定性をリアルタイム解析。',
         'チャレンジモードで目標分子を時間内に再現。',
       ],
+      useCasesHeading: 'BondLab の活用シーン',
+      useCases: [
+        '授業で分子構造や結合次数を視覚的に説明したいとき。',
+        '小さな分子を作りながら極性や安定性のヒントを確認したいとき。',
+        '単結合、二重結合、三重結合の違いを比べながら理解したいとき。',
+      ],
+      audienceHeading: 'BondLab が向いている人',
+      audiences: [
+        '入門化学や分子構造を学ぶ学生。',
+        '短時間で分子構築を見せたい先生や講師。',
+        'ブラウザで気軽に化学を体験したい学習者。',
+      ],
+      disclaimerHeading: '学習モデルに関する注意',
+      disclaimer:
+        'BondLab は科学コミュニケーション、授業デモ、探索体験のためのアプリです。分子認識、安定性、極性の結果は簡略化された学習補助であり、厳密な化学解析の代わりにはなりません。',
       faqHeading: 'BondLab が扱う化学トピック',
       faqs: [
         {

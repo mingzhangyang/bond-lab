@@ -87,6 +87,20 @@ export function LabPage() {
             <li key={feature}>{feature}</li>
           ))}
         </ul>
+        <h2>{seo.content.useCasesHeading}</h2>
+        <ul>
+          {seo.content.useCases.map((useCase) => (
+            <li key={useCase}>{useCase}</li>
+          ))}
+        </ul>
+        <h2>{seo.content.audienceHeading}</h2>
+        <ul>
+          {seo.content.audiences.map((audience) => (
+            <li key={audience}>{audience}</li>
+          ))}
+        </ul>
+        <h2>{seo.content.disclaimerHeading}</h2>
+        <p>{seo.content.disclaimer}</p>
         <h2>{seo.content.faqHeading}</h2>
         {seo.content.faqs.map((faq) => (
           <article key={faq.question}>
@@ -94,6 +108,10 @@ export function LabPage() {
             <p>{faq.answer}</p>
           </article>
         ))}
+        <nav aria-label="BondLab SEO links">
+          <a href="/instructions">{messages.ui.instructions}</a>
+          <a href="/privacy">{messages.ui.privacy}</a>
+        </nav>
       </section>
     </main>
   );

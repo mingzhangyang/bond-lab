@@ -11,6 +11,9 @@ test('seo metadata mentions chemistry and molecules', () => {
 
 test('seo content provides substantial crawlable sections', () => {
   assert.ok(SEO_CONTENT.features.length >= 4);
+  assert.ok(SEO_CONTENT.useCases.length >= 3);
+  assert.ok(SEO_CONTENT.audiences.length >= 3);
+  assert.match(SEO_CONTENT.disclaimer, /educ|simpl|analysis/i);
   assert.ok(SEO_CONTENT.faqs.length >= 3);
 });
 
