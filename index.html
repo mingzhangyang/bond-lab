@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#18181b" />
+    <meta name="apple-mobile-web-app-title" content="BondLab" />
     <style>
       :root {
         background: #18181b;
@@ -67,25 +69,36 @@
       name="keywords"
       content="chemistry simulator, molecule builder, molecular geometry, bond order, valence electrons, chemistry education, interactive science app"
     />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="BondLab" />
     <meta property="og:url" content="https://bondlab.orangely.xyz/" />
     <meta property="og:title" content="BondLab | Interactive Molecule Builder" />
     <meta
       property="og:description"
       content="Build molecules in 3D, adjust bond order, and learn molecular polarity and stability with BondLab."
     />
-    <meta property="og:image" content="/og-image.svg" />
-    <meta name="twitter:card" content="summary" />
+    <meta property="og:image" content="https://bondlab.orangely.xyz/og-image.svg" />
+    <meta property="og:image:alt" content="BondLab interactive chemistry lab preview" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="BondLab | Interactive Molecule Builder" />
     <meta
       name="twitter:description"
       content="Interactive chemistry app for molecule building, bond editing, and molecular property exploration."
     />
-    <meta name="twitter:image" content="/og-image.svg" />
+    <meta name="twitter:image" content="https://bondlab.orangely.xyz/og-image.svg" />
+    <meta name="twitter:image:alt" content="BondLab interactive chemistry lab preview" />
     <link rel="icon" type="image/svg+xml" href="/bondlab-logo.svg" />
     <link rel="apple-touch-icon" href="/bondlab-logo.svg" />
     <script id="seo-json-ld" type="application/ld+json">
+      [{
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "BondLab",
+        "url": "https://bondlab.orangely.xyz/",
+        "inLanguage": "en",
+        "description": "BondLab is an interactive 3D chemistry sandbox where students build molecules, test bond orders, and explore molecular structure, polarity, and stability in real time."
+      },
       {
         "@context": "https://schema.org",
         "@type": "SoftwareApplication",
@@ -93,7 +106,7 @@
         "applicationCategory": "EducationalApplication",
         "operatingSystem": "Web",
         "description": "Interactive molecule builder for chemistry learning with real-time structure, polarity, and stability feedback.",
-        "image": "/og-image.svg",
+        "image": "https://bondlab.orangely.xyz/og-image.svg",
         "offers": {
           "@type": "Offer",
           "price": "0",
@@ -101,7 +114,33 @@
         },
         "keywords": "chemistry, molecule builder, molecular structure, bond order, polarity, stability",
         "inLanguage": "en"
-      }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [{
+          "@type": "Question",
+          "name": "How does BondLab teach molecular structure?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "BondLab visualizes atoms and bonds in 3D, making geometry and connectivity easier to understand than static diagrams."
+          }
+        }, {
+          "@type": "Question",
+          "name": "Can BondLab be used for valence and bond order practice?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. You can add atoms, change bond order, and immediately compare your model with expected valence behavior."
+          }
+        }, {
+          "@type": "Question",
+          "name": "Does BondLab include molecule recognition and polarity hints?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Yes. The app identifies supported molecules and provides polarity classification with a short explanation."
+          }
+        }]
+      }]
     </script>
   </head>
   <body>
@@ -120,6 +159,10 @@
           <li>Molecule recognition with formula and structure hints</li>
           <li>Challenge mode for guided chemistry practice</li>
         </ul>
+        <p>
+          Read the <a href="/instructions">instructions</a> to learn the controls, or review the
+          <a href="/privacy"> privacy policy</a> for storage and data details.
+        </p>
       </section>
     </noscript>
     <script type="module" src="/src/main.tsx"></script>

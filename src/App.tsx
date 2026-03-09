@@ -6,7 +6,7 @@
 import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
 import { useStore } from './store';
 import { getMessages } from './i18n';
-import { getSeo } from './seo';
+import { getRouteSeo, getSeo, SEO_IMAGE_URL } from './seo';
 import { getRouteFromPath } from './routes';
 import type { AppRoute } from './routes';
 import { getAppShellTheme } from './appShell';
@@ -52,10 +52,17 @@ export default function App() {
   });
   const messages = useMemo(() => getMessages(language), [language]);
   const seo = useMemo(() => getSeo(language), [language]);
+  const routeSeo = useMemo(() => getRouteSeo(language, route), [language, route]);
 
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
     document.documentElement.style.colorScheme = theme;
+
+    const themeColor = theme === 'dark' ? '#18181b' : '#e2e8f0';
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) {
+      themeColorMeta.setAttribute('content', themeColor);
+    }
   }, [theme]);
 
   useEffect(() => {
@@ -77,9 +84,9 @@ export default function App() {
         ? messages.ui.instructionsTitle
         : seo.meta.titleSuffix;
     const routeDescription = route === 'privacy'
-      ? `${messages.ui.privacyTitle} - ${messages.appTitle}`
+      ? routeSeo.description
       : route === 'instructions'
-        ? `${messages.ui.instructionsTitle} - ${messages.appTitle}`
+        ? routeSeo.description
         : seo.meta.description;
     const pageTitle = `${messages.appTitle} | ${routeTitle}`;
     const setMetaContent = (selector: string, content: string) => {
@@ -93,44 +100,35 @@ export default function App() {
     document.documentElement.lang = language;
 
     setMetaContent('meta[name="description"]', routeDescription);
-    setMetaContent('meta[name="keywords"]', route === 'lab' ? seo.meta.keywords : 'bondlab');
+    setMetaContent('meta[name="keywords"]', routeSeo.keywords);
+    setMetaContent('meta[name="robots"]', routeSeo.robots);
+    setMetaContent('meta[property="og:type"]', routeSeo.ogType);
     setMetaContent('meta[property="og:title"]', pageTitle);
-    setMetaContent(
-      'meta[property="og:description"]',
-      route === 'lab' ? seo.meta.ogDescription : routeDescription,
-    );
+    setMetaContent('meta[property="og:description"]', route === 'lab' ? seo.meta.ogDescription : routeDescription);
+    setMetaContent('meta[property="og:image"]', SEO_IMAGE_URL);
+    setMetaContent('meta[property="og:image:alt"]', routeSeo.ogImageAlt);
+    setMetaContent('meta[property="og:url"]', routeSeo.canonicalUrl);
     setMetaContent('meta[name="twitter:title"]', pageTitle);
     setMetaContent('meta[name="twitter:description"]', route === 'lab' ? seo.meta.twitterDescription : routeDescription);
+    setMetaContent('meta[name="twitter:card"]', 'summary_large_image');
+    setMetaContent('meta[name="twitter:image"]', SEO_IMAGE_URL);
+    setMetaContent('meta[name="twitter:image:alt"]', routeSeo.ogImageAlt);
 
     const canonical = document.querySelector('link[rel="canonical"]');
     if (canonical) {
-      canonical.setAttribute('href', window.location.href);
+      canonical.setAttribute('href', routeSeo.canonicalUrl);
     } else {
       const link = document.createElement('link');
       link.rel = 'canonical';
-      link.href = window.location.href;
+      link.href = routeSeo.canonicalUrl;
       document.head.appendChild(link);
     }
-    setMetaContent('meta[property="og:url"]', window.location.href);
 
     const jsonLdScript = document.querySelector('#seo-json-ld');
     if (jsonLdScript) {
-      jsonLdScript.textContent = route === 'lab' ? JSON.stringify(seo.jsonLd) : '';
+      jsonLdScript.textContent = JSON.stringify(routeSeo.jsonLd);
     }
-
-    let faqScript = document.querySelector('#seo-faq-json-ld');
-    if (route === 'lab' && seo.faqJsonLd) {
-      if (!faqScript) {
-        faqScript = document.createElement('script');
-        faqScript.id = 'seo-faq-json-ld';
-        faqScript.setAttribute('type', 'application/ld+json');
-        document.head.appendChild(faqScript);
-      }
-      faqScript.textContent = JSON.stringify(seo.faqJsonLd);
-    } else if (faqScript) {
-      faqScript.remove();
-    }
-  }, [language, messages.appTitle, messages.ui.instructionsTitle, messages.ui.privacyTitle, route, seo]);
+  }, [language, messages.appTitle, messages.ui.instructionsTitle, messages.ui.privacyTitle, route, routeSeo, seo]);
 
   if (route === 'privacy') {
     return (

@@ -1,4 +1,5 @@
 import type { Language } from './i18n';
+import type { AppRoute } from './routes';
 
 export interface SeoFaqItem {
   question: string;
@@ -54,6 +55,28 @@ export interface SeoBundle {
   faqJsonLd?: SeoJsonLd;
 }
 
+export interface SeoRouteConfig {
+  description: string;
+  keywords: string;
+  robots: string;
+  canonicalUrl: string;
+  ogType: 'website' | 'article';
+  ogImageAlt: string;
+  jsonLd: Array<Record<string, unknown>>;
+}
+
+interface SeoPageCopy {
+  title: string;
+  description: string;
+  keywords: string;
+}
+
+const SEO_ROBOTS_INDEX = 'index, follow, max-image-preview:large';
+const SEO_ROBOTS_NOINDEX = 'noindex, follow';
+
+export const SEO_BASE_URL = 'https://bondlab.orangely.xyz';
+export const SEO_IMAGE_URL = `${SEO_BASE_URL}/og-image.svg`;
+
 const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   en: {
     meta: {
@@ -106,7 +129,7 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       operatingSystem: 'Web',
       description:
         'Interactive molecule builder for chemistry learning with real-time structure, polarity, and stability feedback.',
-      image: '/og-image.svg',
+      image: SEO_IMAGE_URL,
       keywords: 'chemistry, molecule builder, molecular structure, bond order, polarity, stability',
       inLanguage: 'en',
       offers: {
@@ -197,7 +220,7 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       operatingSystem: 'Web',
       description:
         'Constructor interactivo de moleculas para aprender quimica con retroalimentacion de estructura, polaridad y estabilidad.',
-      image: '/og-image.svg',
+      image: SEO_IMAGE_URL,
       keywords: 'quimica, constructor de moleculas, estructura molecular, orden de enlace, polaridad, estabilidad',
       inLanguage: 'es',
       offers: {
@@ -284,7 +307,7 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Web',
       description: '用于化学学习的交互式分子构建器，提供结构、极性和稳定性实时反馈。',
-      image: '/og-image.svg',
+      image: SEO_IMAGE_URL,
       keywords: '化学, 分子构建, 分子结构, 键级, 极性, 稳定性',
       inLanguage: 'zh',
       offers: {
@@ -375,7 +398,7 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       operatingSystem: 'Web',
       description:
         'Constructeur interactif de molecules pour apprendre la chimie avec retour en temps reel sur structure, polarite et stabilite.',
-      image: '/og-image.svg',
+      image: SEO_IMAGE_URL,
       keywords: 'chimie, constructeur de molecules, structure moleculaire, ordre de liaison, polarite, stabilite',
       inLanguage: 'fr',
       offers: {
@@ -463,7 +486,7 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       operatingSystem: 'Web',
       description:
         '分子構造・極性・安定性をリアルタイムで学べる化学向けインタラクティブ分子ビルダー。',
-      image: '/og-image.svg',
+      image: SEO_IMAGE_URL,
       keywords: '化学, 分子作成, 分子構造, 結合次数, 極性, 安定性',
       inLanguage: 'ja',
       offers: {
@@ -505,9 +528,164 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
 };
 
+const SEO_PAGE_COPY: Record<Language, Record<Exclude<AppRoute, 'lab'>, SeoPageCopy>> = {
+  en: {
+    instructions: {
+      title: 'Instructions',
+      description:
+        'Read the BondLab usage guide to learn molecule-building controls, bond editing, view navigation, and chemistry learning tips.',
+      keywords:
+        'BondLab instructions, molecule builder guide, chemistry app tutorial, bond editing help, molecular structure learning',
+    },
+    privacy: {
+      title: 'Privacy Policy',
+      description:
+        'Review the BondLab privacy policy to understand local storage usage, saved preferences, and how the app handles user data.',
+      keywords:
+        'BondLab privacy policy, chemistry app privacy, local storage settings, educational app data usage',
+    },
+  },
+  es: {
+    instructions: {
+      title: 'Instrucciones',
+      description:
+        'Consulta la guia de uso de BondLab para aprender controles de construccion molecular, edicion de enlaces y navegacion de la vista.',
+      keywords:
+        'instrucciones BondLab, guia de moleculas, tutorial de quimica, ayuda de enlaces, aprendizaje de estructura molecular',
+    },
+    privacy: {
+      title: 'Politica de privacidad',
+      description:
+        'Revisa la politica de privacidad de BondLab para conocer el uso de almacenamiento local, preferencias guardadas y tratamiento de datos.',
+      keywords:
+        'privacidad BondLab, politica de privacidad, almacenamiento local, datos de aplicacion educativa',
+    },
+  },
+  zh: {
+    instructions: {
+      title: '使用说明',
+      description:
+        '查看 BondLab 使用说明，了解分子构建、键编辑、视角控制与化学学习提示。',
+      keywords:
+        'BondLab 使用说明, 分子构建教程, 化学应用指南, 键编辑帮助, 分子结构学习',
+    },
+    privacy: {
+      title: '隐私政策',
+      description:
+        '阅读 BondLab 隐私政策，了解本地存储、偏好设置保存方式以及应用如何处理用户数据。',
+      keywords:
+        'BondLab 隐私政策, 化学应用隐私, 本地存储, 教育应用数据说明',
+    },
+  },
+  fr: {
+    instructions: {
+      title: 'Instructions',
+      description:
+        'Consultez le guide BondLab pour apprendre les controles de construction moleculaire, l edition des liaisons et la navigation dans la vue.',
+      keywords:
+        'instructions BondLab, guide de molecules, tutoriel de chimie, aide sur les liaisons, apprentissage structure moleculaire',
+    },
+    privacy: {
+      title: 'Politique de confidentialite',
+      description:
+        'Consultez la politique de confidentialite de BondLab pour comprendre le stockage local, les preferences sauvegardees et le traitement des donnees.',
+      keywords:
+        'confidentialite BondLab, politique de confidentialite, stockage local, donnees application educative',
+    },
+  },
+  ja: {
+    instructions: {
+      title: '操作説明',
+      description:
+        'BondLab の操作説明で、分子構築、結合編集、視点操作、学習ヒントを確認できます。',
+      keywords:
+        'BondLab 操作説明, 分子作成ガイド, 化学アプリ使い方, 結合編集ヘルプ, 分子構造学習',
+    },
+    privacy: {
+      title: 'プライバシーポリシー',
+      description:
+        'BondLab のプライバシーポリシーで、ローカル保存、設定保持、ユーザーデータの扱いを確認できます。',
+      keywords:
+        'BondLab プライバシー, プライバシーポリシー, ローカル保存, 教育アプリのデータ利用',
+    },
+  },
+};
+
+function getCanonicalUrl(route: AppRoute): string {
+  if (route === 'lab') {
+    return `${SEO_BASE_URL}/`;
+  }
+
+  return `${SEO_BASE_URL}/${route}`;
+}
+
+function getWebsiteJsonLd(language: Language, description: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: 'BondLab',
+    url: `${SEO_BASE_URL}/`,
+    inLanguage: language,
+    description,
+  };
+}
+
+function getWebPageJsonLd(language: Language, title: string, description: string, url: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebPage',
+    name: `BondLab | ${title}`,
+    url,
+    inLanguage: language,
+    description,
+    isPartOf: {
+      '@type': 'WebSite',
+      name: 'BondLab',
+      url: `${SEO_BASE_URL}/`,
+    },
+  };
+}
+
 export const SEO_META = SEO_BY_LANGUAGE.en.meta;
 export const SEO_CONTENT = SEO_BY_LANGUAGE.en.content;
 
 export function getSeo(language: Language): SeoBundle {
   return SEO_BY_LANGUAGE[language];
+}
+
+export function getRouteSeo(language: Language, route: AppRoute): SeoRouteConfig {
+  const seo = SEO_BY_LANGUAGE[language];
+  const canonicalUrl = getCanonicalUrl(route);
+  const ogImageAlt = `${seo.content.heading} preview image`;
+
+  if (route === 'lab') {
+    return {
+      description: seo.meta.description,
+      keywords: seo.meta.keywords,
+      robots: SEO_ROBOTS_INDEX,
+      canonicalUrl,
+      ogType: 'website',
+      ogImageAlt,
+      jsonLd: [
+        getWebsiteJsonLd(language, seo.meta.description),
+        seo.jsonLd as Record<string, unknown>,
+        ...(seo.faqJsonLd ? [seo.faqJsonLd as Record<string, unknown>] : []),
+      ],
+    };
+  }
+
+  const page = SEO_PAGE_COPY[language][route];
+
+  return {
+    description: page.description,
+    keywords: page.keywords,
+    robots: route === 'privacy' ? SEO_ROBOTS_NOINDEX : SEO_ROBOTS_INDEX,
+    canonicalUrl,
+    ogType: 'article',
+    ogImageAlt,
+    jsonLd: [
+      getWebsiteJsonLd(language, seo.meta.description),
+      getWebPageJsonLd(language, page.title, page.description, canonicalUrl),
+    ],
+  };
 }
