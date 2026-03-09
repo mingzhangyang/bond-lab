@@ -24,25 +24,34 @@ export interface SeoContent {
 
 export interface SeoJsonLd {
   '@context': string;
-  '@type': 'SoftwareApplication';
-  name: string;
-  applicationCategory: 'EducationalApplication';
-  operatingSystem: 'Web';
-  description: string;
-  image: string;
-  keywords: string;
-  inLanguage: Language;
-  offers: {
+  '@type': 'SoftwareApplication' | 'FAQPage';
+  name?: string;
+  applicationCategory?: 'EducationalApplication';
+  operatingSystem?: 'Web';
+  description?: string;
+  image?: string;
+  keywords?: string;
+  inLanguage?: Language;
+  offers?: {
     '@type': 'Offer';
     price: string;
     priceCurrency: 'USD';
   };
+  mainEntity?: {
+    '@type': 'Question';
+    name: string;
+    acceptedAnswer: {
+      '@type': 'Answer';
+      text: string;
+    };
+  }[];
 }
 
 export interface SeoBundle {
   meta: SeoMeta;
   content: SeoContent;
   jsonLd: SeoJsonLd;
+  faqJsonLd?: SeoJsonLd;
 }
 
 const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
@@ -106,6 +115,36 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         priceCurrency: 'USD',
       },
     },
+    faqJsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'How does BondLab teach molecular structure?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'BondLab visualizes atoms and bonds in 3D, making geometry and connectivity easier to understand than static diagrams.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Can BondLab be used for valence and bond order practice?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. You can add atoms, change bond order, and immediately compare your model with expected valence behavior.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Does BondLab include molecule recognition and polarity hints?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Yes. The app identifies supported molecules and provides polarity classification with a short explanation.',
+          },
+        },
+      ],
+    },
   },
   es: {
     meta: {
@@ -167,6 +206,36 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         priceCurrency: 'USD',
       },
     },
+    faqJsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Como ensena BondLab la estructura molecular?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'BondLab muestra atomos y enlaces en 3D para entender geometria y conectividad mejor que con diagramas estaticos.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Se puede practicar valencia y orden de enlace?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Si. Puedes agregar atomos, cambiar el orden de enlace y comparar al instante con el comportamiento de valencia esperado.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Incluye reconocimiento de moleculas y pistas de polaridad?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Si. La aplicacion identifica moleculas compatibles y muestra clasificacion de polaridad con una breve explicacion.',
+          },
+        },
+      ],
+    },
   },
   zh: {
     meta: {
@@ -223,6 +292,36 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         price: '0',
         priceCurrency: 'USD',
       },
+    },
+    faqJsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'BondLab 如何帮助理解分子结构？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'BondLab 以 3D 方式可视化原子与化学键，比静态图更容易理解几何结构和连接关系。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '可以用于练习价态与键级吗？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '可以。你可以添加原子、修改键级，并立即对照预期的价态行为。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '是否提供分子识别与极性提示？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '是的。应用会识别已支持分子，并给出极性分类与简要说明。',
+          },
+        },
+      ],
     },
   },
   fr: {
@@ -285,6 +384,36 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         priceCurrency: 'USD',
       },
     },
+    faqJsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'Comment BondLab enseigne la structure moleculaire ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'BondLab visualise atomes et liaisons en 3D pour mieux comprendre geometrie et connectivite.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'Peut-on pratiquer valence et ordre de liaison ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Oui. Vous ajoutez des atomes, modifiez les liaisons et comparez immediatement au comportement attendu.',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: 'BondLab propose-t-il identification et polarite ?',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'Oui. L application reconnait les molecules prises en charge et affiche une classification de polarite.',
+          },
+        },
+      ],
+    },
   },
   ja: {
     meta: {
@@ -342,6 +471,36 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
         price: '0',
         priceCurrency: 'USD',
       },
+    },
+    faqJsonLd: {
+      '@context': 'https://schema.org',
+      '@type': 'FAQPage',
+      mainEntity: [
+        {
+          '@type': 'Question',
+          name: 'BondLab は分子構造をどう学習できますか？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: '原子と結合を 3D 可視化することで、静的な図より幾何構造と結合関係を理解しやすくします。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '価数や結合次数の練習に使えますか？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'はい。原子追加や結合次数変更を行い、期待される価数挙動とすぐ比較できます。',
+          },
+        },
+        {
+          '@type': 'Question',
+          name: '分子認識や極性のヒントはありますか？',
+          acceptedAnswer: {
+            '@type': 'Answer',
+            text: 'あります。対応分子を識別し、極性分類と簡潔な説明を表示します。',
+          },
+        },
+      ],
     },
   },
 };

@@ -25,6 +25,9 @@ test('getSeo returns localized bundles for supported languages', () => {
     assert.ok(seo.content.faqs.length >= 3);
     assert.equal(seo.jsonLd.inLanguage, language);
     assert.equal(seo.jsonLd.image, '/og-image.svg');
+    assert.ok(seo.faqJsonLd);
+    assert.equal(seo.faqJsonLd['@type'], 'FAQPage');
+    assert.ok(seo.faqJsonLd.mainEntity && seo.faqJsonLd.mainEntity.length >= 3);
   }
 });
 

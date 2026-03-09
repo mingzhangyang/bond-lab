@@ -100,14 +100,35 @@ export default function App() {
       route === 'lab' ? seo.meta.ogDescription : routeDescription,
     );
     setMetaContent('meta[name="twitter:title"]', pageTitle);
-    setMetaContent(
-      'meta[name="twitter:description"]',
-      route === 'lab' ? seo.meta.twitterDescription : routeDescription,
-    );
+    setMetaContent('meta[name="twitter:description"]', route === 'lab' ? seo.meta.twitterDescription : routeDescription);
+
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) {
+      canonical.setAttribute('href', window.location.href);
+    } else {
+      const link = document.createElement('link');
+      link.rel = 'canonical';
+      link.href = window.location.href;
+      document.head.appendChild(link);
+    }
+    setMetaContent('meta[property="og:url"]', window.location.href);
 
     const jsonLdScript = document.querySelector('#seo-json-ld');
     if (jsonLdScript) {
       jsonLdScript.textContent = route === 'lab' ? JSON.stringify(seo.jsonLd) : '';
+    }
+
+    let faqScript = document.querySelector('#seo-faq-json-ld');
+    if (route === 'lab' && seo.faqJsonLd) {
+      if (!faqScript) {
+        faqScript = document.createElement('script');
+        faqScript.id = 'seo-faq-json-ld';
+        faqScript.setAttribute('type', 'application/ld+json');
+        document.head.appendChild(faqScript);
+      }
+      faqScript.textContent = JSON.stringify(seo.faqJsonLd);
+    } else if (faqScript) {
+      faqScript.remove();
     }
   }, [language, messages.appTitle, messages.ui.instructionsTitle, messages.ui.privacyTitle, route, seo]);
 
