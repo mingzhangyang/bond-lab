@@ -30,6 +30,9 @@ export interface Messages {
     privacyTitle: string;
     privacyVersion: string;
     mobileTipsTitle: string;
+    educationalDisclaimerTitle: string;
+    educationalDisclaimerBody: string;
+    educationalDisclaimerShort: string;
     controlsList: string[];
   };
   challenge: {
@@ -115,6 +118,9 @@ const EN_MESSAGES: Messages = {
     privacyTitle: 'Privacy Policy',
     privacyVersion: 'Version',
     mobileTipsTitle: 'Quick tips',
+    educationalDisclaimerTitle: 'About the science in BondLab',
+    educationalDisclaimerBody: 'BondLab is designed for science outreach, classroom demos, and playful exploration. Stability, polarity, and molecule identification use simplified rules and should be treated as guidance rather than rigorous chemical analysis.',
+    educationalDisclaimerShort: 'For education and fun — simplified chemistry model.',
     controlsList: [
       'Tap an element to add it',
       'Tap two atoms to create a bond',
@@ -230,6 +236,9 @@ const ES_MESSAGES: Messages = {
     privacyTitle: 'Politica de privacidad',
     privacyVersion: 'Version',
     mobileTipsTitle: 'Consejos rapidos',
+    educationalDisclaimerTitle: 'Sobre la ciencia en BondLab',
+    educationalDisclaimerBody: 'BondLab esta pensado para divulgacion cientifica, demostraciones en clase y exploracion interactiva. La estabilidad, la polaridad y la identificacion de moleculas usan reglas simplificadas y deben tomarse como referencia, no como un analisis quimico riguroso.',
+    educationalDisclaimerShort: 'Solo para divulgacion y entretenimiento; modelo quimico simplificado.',
     controlsList: [
       'Toca un elemento para agregarlo',
       'Toca dos atomos para enlazarlos',
@@ -345,6 +354,9 @@ const ZH_MESSAGES: Messages = {
     privacyTitle: '隐私政策',
     privacyVersion: '版本',
     mobileTipsTitle: '快速提示',
+    educationalDisclaimerTitle: '关于 BondLab 中的科学说明',
+    educationalDisclaimerBody: 'BondLab 主要用于科普展示、课堂演示和互动体验。稳定性、极性与分子识别基于简化规则，仅供参考，不应视为严格的化学分析。',
+    educationalDisclaimerShort: '仅供科普与娱乐参考',
     controlsList: [
       '点击元素以添加原子',
       '点击两个原子以创建键',
@@ -460,6 +472,9 @@ const FR_MESSAGES: Messages = {
     privacyTitle: 'Politique de confidentialite',
     privacyVersion: 'Version',
     mobileTipsTitle: 'Conseils rapides',
+    educationalDisclaimerTitle: 'A propos de la science dans BondLab',
+    educationalDisclaimerBody: 'BondLab est concu pour la vulgarisation scientifique, les demonstrations en classe et l exploration ludique. La stabilite, la polarite et l identification des molecules reposent sur des regles simplifiees et doivent etre considerees comme des indications, pas comme une analyse chimique rigoureuse.',
+    educationalDisclaimerShort: 'Pour apprendre et s amuser : modele chimique simplifie.',
     controlsList: [
       'Touchez un element pour l ajouter',
       'Touchez deux atomes pour creer une liaison',
@@ -575,6 +590,9 @@ const JA_MESSAGES: Messages = {
     privacyTitle: 'プライバシーポリシー',
     privacyVersion: '版',
     mobileTipsTitle: 'クイックヒント',
+    educationalDisclaimerTitle: 'BondLab の科学的な位置づけ',
+    educationalDisclaimerBody: 'BondLab は科学コミュニケーション、授業デモ、気軽な探索体験のために設計されています。安定性、極性、分子識別は簡略化したルールに基づくため、厳密な化学解析ではなく参考情報として扱ってください。',
+    educationalDisclaimerShort: '学習と体験向けの簡略化した化学モデルです。',
     controlsList: [
       '元素をタップして追加',
       '2つの原子をタップして結合を作成',

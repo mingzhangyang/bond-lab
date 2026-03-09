@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { BookOpenText, CheckCircle2 } from 'lucide-react';
+import { BookOpenText, CheckCircle2, Info } from 'lucide-react';
 import { getMessages } from '../i18n';
 import type { Language } from '../i18n';
 import { useStore } from '../store';
@@ -137,6 +137,12 @@ export function InstructionsPage() {
   const mutedClass = isDark ? 'text-zinc-400' : 'text-zinc-600';
   const badgeClass = 'info-accent-pill inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold';
   const tipsClass = 'info-callout info-reveal rounded-2xl border p-4 md:p-5';
+  const disclaimerClass = isDark
+    ? 'info-reveal rounded-2xl border border-amber-300/20 bg-amber-500/10 p-4 md:p-5'
+    : 'info-reveal rounded-2xl border border-amber-300 bg-amber-50/95 p-4 md:p-5';
+  const disclaimerTitleClass = isDark ? 'text-amber-100' : 'text-amber-950';
+  const disclaimerTextClass = isDark ? 'text-amber-100/85' : 'text-amber-900';
+  const disclaimerIconClass = isDark ? 'text-amber-300' : 'text-amber-700';
 
   const instructionGroups = [
     {
@@ -173,6 +179,20 @@ export function InstructionsPage() {
         </span>
       )}
     >
+      <section className={disclaimerClass} style={{ animationDelay: '230ms' }}>
+        <div className="flex items-start gap-3">
+          <Info size={18} className={`mt-0.5 shrink-0 ${disclaimerIconClass}`} aria-hidden="true" />
+          <div>
+            <h2 className={`info-display text-sm md:text-base font-bold ${disclaimerTitleClass}`}>
+              {messages.ui.educationalDisclaimerTitle}
+            </h2>
+            <p className={`mt-2 text-xs leading-6 md:text-sm ${disclaimerTextClass}`}>
+              {messages.ui.educationalDisclaimerBody}
+            </p>
+          </div>
+        </div>
+      </section>
+
       {instructionGroups.map((group, groupIndex) => (
         <section
           key={group.key}

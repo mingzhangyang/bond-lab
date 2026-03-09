@@ -3,6 +3,7 @@ import {
   BookOpenText,
   CheckCircle2,
   Compass,
+  Info,
   Link2,
   MousePointerClick,
   Sparkles,
@@ -49,6 +50,9 @@ export function QuickStartGuide({
     ? 'bg-indigo-500/18 text-indigo-100 border border-indigo-400/20'
     : 'bg-indigo-100 text-indigo-700 border border-indigo-200';
   const guideCardBaseClass = `rounded-[28px] border backdrop-blur-xl ${cardClass}`;
+  const disclaimerClass = isDark
+    ? 'mt-4 rounded-2xl border border-amber-300/15 bg-amber-500/10 px-4 py-3 text-amber-100'
+    : 'mt-4 rounded-2xl border border-amber-300 bg-amber-50 px-4 py-3 text-amber-950';
 
   const stepProgress = useMemo(() => {
     if (step === 'add-atoms') {
@@ -95,6 +99,14 @@ export function QuickStartGuide({
             <p className={`mt-3 text-xs leading-5 md:text-sm ${subduedTextClass}`}>
               {messages.onboarding.welcomeHint}
             </p>
+            <div className={disclaimerClass}>
+              <div className="flex items-start gap-2.5">
+                <Info size={16} className="mt-0.5 shrink-0" />
+                <p className="text-xs leading-5 md:text-sm">
+                  {messages.ui.educationalDisclaimerShort}
+                </p>
+              </div>
+            </div>
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <button

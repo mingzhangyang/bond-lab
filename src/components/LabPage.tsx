@@ -69,9 +69,14 @@ export function LabPage() {
         <UI />
       </Suspense>
       <footer
-        className={`pointer-events-none fixed inset-x-0 bottom-3 z-30 text-center text-[11px] uppercase tracking-[0.16em] ${footerTextClass}`}
+        className={`pointer-events-none fixed inset-x-0 bottom-3 z-30 flex flex-col items-center gap-1 text-center ${footerTextClass}`}
       >
-        © {new Date().getFullYear()} {messages.appTitle}
+        <p className="text-[11px] uppercase tracking-[0.16em]">
+          © {new Date().getFullYear()} {messages.appTitle}
+        </p>
+        <p className="max-w-md px-4 text-[11px] leading-relaxed opacity-85">
+          {messages.ui.educationalDisclaimerShort}
+        </p>
       </footer>
       <section className="sr-only" aria-label="BondLab SEO content">
         <h1>{seo.content.heading}</h1>
