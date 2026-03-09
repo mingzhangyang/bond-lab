@@ -30,10 +30,12 @@ test('getMessages returns Spanish copy', () => {
 
 test('getMessages returns Chinese, French, and Japanese copy', () => {
   const zh = getMessages('zh');
-  assert.equal(zh.ui.instructionsTitle, '操作说明');
+  assert.equal(zh.ui.instructionsTitle, '使用说明');
+  assert.equal(zh.ui.instructions, '使用说明');
   assert.equal(zh.ui.addElement, '添加元素');
   assert.equal(zh.ui.educationalDisclaimerShort, '仅供科普与娱乐参考');
   assert.equal(zh.onboarding.welcomeTitle, '30 秒完成你的第一个分子');
+  assert.equal(zh.onboarding.replay, '快速上手');
   assert.equal(zh.challenge.title, '挑战');
   assert.ok(zh.ui.controlsList.includes('按住 Shift 并拖动单键可旋转'));
 

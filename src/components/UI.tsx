@@ -429,14 +429,6 @@ export function UI() {
                   <span>{themeActionText}</span>
                 </button>
                 <button
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={handleReplayOnboarding}
-                >
-                  <Sparkles size={16} />
-                  <span>{messages.onboarding.replay}</span>
-                </button>
-                <button
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between ${settingsItemClass}`}
                   role="menuitem"
                   onClick={() => {
@@ -480,6 +472,14 @@ export function UI() {
                     ))}
                   </div>
                 )}
+                <button
+                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                  role="menuitem"
+                  onClick={handleReplayOnboarding}
+                >
+                  <Sparkles size={16} />
+                  <span>{messages.onboarding.replay}</span>
+                </button>
                 <a
                   href={getPathForRoute('instructions')}
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}

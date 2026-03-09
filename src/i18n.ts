@@ -332,8 +332,8 @@ const ZH_MESSAGES: Messages = {
     elements: '元素',
     menu: '菜单',
     controls: '操作指南',
-    instructions: '说明',
-    instructionsTitle: '操作说明',
+    instructions: '使用说明',
+    instructionsTitle: '使用说明',
     addElement: '添加元素',
     selectElement: '选择元素',
     clear: '清空',
@@ -386,7 +386,7 @@ const ZH_MESSAGES: Messages = {
   },
   onboarding: {
     menu: '快速上手',
-    replay: '重新查看快速上手',
+    replay: '快速上手',
     welcomeBadge: '第一次来到这里？',
     welcomeTitle: '30 秒完成你的第一个分子',
     welcomeDescription: '开始一个简短引导，快速学会放置原子、创建化学键，以及实验室里最重要的几个操作。',
@@ -395,7 +395,7 @@ const ZH_MESSAGES: Messages = {
     skip: '暂时跳过',
     openElements: '打开元素面板',
     finish: '开始构建',
-    viewInstructions: '查看完整说明',
+    viewInstructions: '查看使用说明',
     stepLabel: '步骤',
     steps: {
       addAtoms: {
