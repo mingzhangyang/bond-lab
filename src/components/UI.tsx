@@ -361,7 +361,7 @@ export function UI() {
           >
             <div className="flex items-center gap-3">
               <img
-                src="/bondlab-logo.svg"
+                src="/BondLab-LogoSmall-128x128.svg"
                 alt="BondLab logo"
                 width={32}
                 height={32}

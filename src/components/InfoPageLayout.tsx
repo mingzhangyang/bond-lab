@@ -85,7 +85,7 @@ export function InfoPageLayout({ route, title, description, metadata, children }
 
         <footer className="info-reveal mt-12 mb-8 flex flex-col items-center justify-center gap-4 text-center" style={{ animationDelay: '250ms' }}>
           <div className="flex items-center gap-2 opacity-50 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-500">
-            <img src="/bondlab-logo.svg" alt="BondLab Logo" width={24} height={24} />
+            <img src="/BondLab-LogoSmall-128x128.svg" alt="BondLab Logo" width={24} height={24} />
             <span className={`info-display font-black text-sm tracking-tight ${pageClass}`}>
               Bond<span className="text-indigo-400">Lab</span>
             </span>

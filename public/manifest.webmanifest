@@ -1,0 +1,34 @@
+{
+  "name": "BondLab",
+  "short_name": "BondLab",
+  "description": "Interactive 3D molecule builder for chemistry learning.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#18181b",
+  "theme_color": "#18181b",
+  "icons": [
+    {
+      "src": "/BondLab-Favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/BondLab-AppIcon-180x180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/BondLab-LogoLarge-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/BondLab-AdaptiveIcon-108x108.png",
+      "sizes": "108x108",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -30,6 +30,7 @@ export interface SeoContent {
 }
 
 export interface SeoJsonLd {
+  [key: string]: unknown;
   '@context': string;
   '@type': 'SoftwareApplication' | 'FAQPage';
   name?: string;
@@ -81,7 +82,7 @@ const SEO_ROBOTS_INDEX = 'index, follow, max-image-preview:large';
 const SEO_ROBOTS_NOINDEX = 'noindex, follow';
 
 export const SEO_BASE_URL = 'https://bondlab.orangely.xyz';
-export const SEO_IMAGE_URL = `${SEO_BASE_URL}/og-image.svg`;
+export const SEO_IMAGE_URL = `${SEO_BASE_URL}/BondLab-OG-Image-1200x630.png`;
 
 const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   en: {

@@ -9,6 +9,11 @@ test('seo metadata mentions chemistry and molecules', () => {
   assert.match(SEO_META.keywords, /chemistry/i);
 });
 
+test('seo image uses the updated PNG social preview asset', () => {
+  assert.equal(SEO_IMAGE_URL, `${SEO_BASE_URL}/BondLab-OG-Image-1200x630.png`);
+  assert.match(SEO_IMAGE_URL, /\.png$/);
+});
+
 test('seo content provides substantial crawlable sections', () => {
   assert.ok(SEO_CONTENT.features.length >= 4);
   assert.ok(SEO_CONTENT.useCases.length >= 3);
