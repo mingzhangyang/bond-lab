@@ -7,7 +7,8 @@ export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
     build: {
-      chunkSizeWarningLimit: 1000,
+      // Keep warnings active for oversized bundles so regressions are visible in CI/local builds.
+      chunkSizeWarningLimit: 700,
       rollupOptions: {
         output: {
           manualChunks(id) {

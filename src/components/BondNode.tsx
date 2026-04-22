@@ -2,7 +2,8 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { type Bond, useStore } from '../store';
-import { atomPositions, setBondGroupRef } from '../physics';
+import { atomPositions, notifyAtomPositionsChanged, setBondGroupRef } from '../physics';
+import { useShiftPressed } from '../keyboard';
 import {
   canRotateBond,
   getRotationGroupAtomIds,
@@ -30,7 +31,7 @@ const ROTATION_MAX_DELTA_PX = 20;
 function BondNodeImpl({ bond }: BondNodeProps) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
-  const [shiftPressed, setShiftPressed] = useState(false);
+  const shiftPressed = useShiftPressed();
   const suppressClickRef = useRef(false);
   const rotationRef = useRef<RotationState | null>(null);
   const removeBond = useStore((state) => state.removeBond);
@@ -57,25 +58,6 @@ function BondNodeImpl({ bond }: BondNodeProps) {
       }
     };
   }, [bond.id]);
-
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Shift') setShiftPressed(true);
-    };
-    const handleKeyUp = (event: KeyboardEvent) => {
-      if (event.key === 'Shift') setShiftPressed(false);
-    };
-    const resetShift = () => setShiftPressed(false);
-
-    window.addEventListener('keydown', handleKeyDown);
-    window.addEventListener('keyup', handleKeyUp);
-    window.addEventListener('blur', resetShift);
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown);
-      window.removeEventListener('keyup', handleKeyUp);
-      window.removeEventListener('blur', resetShift);
-    };
-  }, []);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -152,6 +134,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
         axis,
         Math.max(-ROTATION_MAX_DELTA_PX, Math.min(ROTATION_MAX_DELTA_PX, deltaX)) * ROTATION_SENSITIVITY,
       );
+      notifyAtomPositionsChanged();
       rotationState.didRotate = true;
     };
 

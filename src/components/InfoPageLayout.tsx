@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import { ArrowLeft, Globe, Moon, Sun } from 'lucide-react';
 import { getMessages } from '../i18n';
-import { getPathForRoute } from '../routes';
+import { getPathForRoute, navigateToRoute } from '../routes';
 import { useStore } from '../store';
 import { getInfoThemeVars } from '../theme';
 
@@ -49,6 +49,10 @@ export function InfoPageLayout({ route, title, description, metadata, children }
           <a
             href={getPathForRoute('lab')}
             className={`min-h-[44px] rounded-xl px-3 text-sm font-semibold transition-colors inline-flex items-center gap-2 ${ghostButtonClass}`}
+            onClick={(event) => {
+              event.preventDefault();
+              navigateToRoute('lab');
+            }}
           >
             <ArrowLeft size={16} />
             <span>{messages.ui.backToLab}</span>

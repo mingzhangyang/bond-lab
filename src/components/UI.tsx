@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useStore, ELEMENTS, ELEMENT_DISPLAY_ORDER } from '../store';
 import { identifyMolecule, KNOWN_MOLECULES } from '../identifier';
 import { calculateMolecularPolarity } from '../polarity';
-import { atomPositions } from '../physics';
+import { atomPositions, useAtomPositionVersion } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
 import {
   Atom,
@@ -32,7 +32,7 @@ import {
   MOBILE_CHALLENGE_TRIGGER_RADIUS,
 } from './ChallengeMode';
 import { getMessages, localizeMoleculeName, type Language } from '../i18n';
-import { getPathForRoute } from '../routes';
+import { getPathForRoute, navigateToRoute } from '../routes';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
 import {
@@ -50,6 +50,10 @@ import {
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
 import { QuickStartGuide } from './QuickStartGuide';
+import {
+  getChallengeCandidateMolecules,
+  pickChallengeMolecule,
+} from '../challengeTargets';
 
 const LANGUAGE_OPTIONS: Array<{ code: Language; label: string }> = [
   { code: 'en', label: 'English' },
@@ -131,6 +135,7 @@ export function UI() {
   });
 
   const messages = useMemo(() => getMessages(language), [language]);
+  const atomPositionVersion = useAtomPositionVersion();
   const isDark = theme === 'dark';
   const molecule = useMemo(() => identifyMolecule(atoms, bonds), [atoms, bonds]);
   const moleculeName = useMemo(
@@ -143,7 +148,7 @@ export function UI() {
   );
   const polarityReport = useMemo(
     () => calculateMolecularPolarity(atoms, bonds, atomPositions),
-    [atoms, bonds],
+    [atoms, bonds, atomPositionVersion],
   );
 
   const polarityLabel = useMemo(() => {
@@ -289,7 +294,9 @@ export function UI() {
   }, [isDesktopViewport, isElementsPanelOpen, onboardingStep]);
 
   const handleStartChallenge = () => {
-    const randomMol = KNOWN_MOLECULES[Math.floor(Math.random() * KNOWN_MOLECULES.length)];
+    const challengePool = getChallengeCandidateMolecules(KNOWN_MOLECULES);
+    const randomMol = pickChallengeMolecule(challengePool, Math.random()) ?? KNOWN_MOLECULES[0];
+    if (!randomMol) return;
     const timeLimit = 30 + randomMol.atomCount * 5;
     startChallenge({ name: randomMol.name, formula: randomMol.formula }, timeLimit);
     if (isDrawerLayout) {
@@ -484,8 +491,10 @@ export function UI() {
                   href={getPathForRoute('instructions')}
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
                   role="menuitem"
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
                     closeSettingsMenu();
+                    navigateToRoute('instructions');
                   }}
                 >
                   <BookOpenText size={16} />
@@ -495,8 +504,10 @@ export function UI() {
                   href={getPathForRoute('privacy')}
                   className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
                   role="menuitem"
-                  onClick={() => {
+                  onClick={(event) => {
+                    event.preventDefault();
                     closeSettingsMenu();
+                    navigateToRoute('privacy');
                   }}
                 >
                   <Shield size={16} />

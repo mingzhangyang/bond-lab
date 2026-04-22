@@ -6,7 +6,7 @@ It is designed for chemistry learning: build molecules, inspect bond behavior, a
 ## Features
 
 - 3D molecule sandbox with draggable atoms.
-- Core elements: Hydrogen (`H`), Carbon (`C`), Nitrogen (`N`), Oxygen (`O`).
+- Expanded element set including `H`, `C`, `N`, `O`, `F`, `Cl`, `S`, `P`, `Na`, `K`, `Mg`, `Ca`, `Al`, `Fe`, and `Cu`.
 - Bond building with chemistry constraints (single/double/triple bond order and valency limits).
 - Bond rotation interaction for rotatable single bonds (`Shift + drag`).
 - Molecule identification from known structure templates plus fallback formula display.
@@ -60,22 +60,14 @@ The `.env.example` file only contains optional placeholders for deployment integ
 
 ## Known Molecules
 
-The identifier currently includes:
+The identifier includes a broad built-in template library spanning:
 
-- Water (`H2O`)
-- Methane (`CH4`)
-- Carbon Dioxide (`CO2`)
-- Ammonia (`NH3`)
-- Ethane (`C2H6`)
-- Ethene (`C2H4`)
-- Ethyne (`C2H2`)
-- Oxygen (`O2`)
-- Nitrogen (`N2`)
-- Hydrogen (`H2`)
-- Methanol (`CH3OH`)
-- Ethanol (`C2H5OH`)
-- Formaldehyde (`CH2O`)
-- Hydrogen Cyanide (`HCN`)
+- introductory molecules (for example `H2O`, `CO2`, `NH3`, `CH4`);
+- small organics and functional isomers (for example alcohols, acids, ethers, nitriles);
+- selected inorganic and ionic compounds;
+- larger biochemistry-themed structures and examples.
+
+For the canonical list used by the app, see `src/identifier.ts`.
 
 ## Project Structure
 

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useSyncExternalStore } from 'react';
 import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ELEMENTS, useStore } from './store';
@@ -20,6 +20,40 @@ const MIN_DIST_SQ = 0.01;
 const MIN_DIST = 0.001;
 const BOND_OVERLAP = 0.08;
 const BOND_UP_AXIS = new THREE.Vector3(0, 1, 0);
+const POSITION_EMIT_INTERVAL_SEC = 0.1;
+
+let atomPositionVersion = 0;
+const atomPositionListeners = new Set<() => void>();
+
+function emitAtomPositionChange(): void {
+  atomPositionVersion++;
+  for (const listener of atomPositionListeners) {
+    listener();
+  }
+}
+
+export function notifyAtomPositionsChanged(): void {
+  emitAtomPositionChange();
+}
+
+export function getAtomPositionVersion(): number {
+  return atomPositionVersion;
+}
+
+export function subscribeToAtomPositionChanges(listener: () => void): () => void {
+  atomPositionListeners.add(listener);
+  return () => {
+    atomPositionListeners.delete(listener);
+  };
+}
+
+export function useAtomPositionVersion(): number {
+  return useSyncExternalStore(
+    subscribeToAtomPositionChanges,
+    getAtomPositionVersion,
+    () => 0,
+  );
+}
 
 export function setAtomMeshRef(id: string, mesh: THREE.Mesh | null): void {
   if (mesh) {
@@ -45,10 +79,12 @@ export function setAtomPosition(id: string, position: THREE.Vector3Like): void {
 
   if (!atomVelocities[id]) {
     atomVelocities[id] = new THREE.Vector3();
+    emitAtomPositionChange();
     return;
   }
 
   atomVelocities[id].set(0, 0, 0);
+  emitAtomPositionChange();
 }
 
 export function TransformSync() {
@@ -117,6 +153,7 @@ export function PhysicsEngine() {
   const forcesRef = useRef<Record<string, THREE.Vector3>>({});
   const adjacencyRef = useRef<Record<string, string[]>>({});
   const bondOrderSumsRef = useRef<Record<string, number>>({});
+  const positionEmitTimerRef = useRef(0);
   const scratchRef = useRef({
     diff: new THREE.Vector3(),
     v1: new THREE.Vector3(),
@@ -163,6 +200,7 @@ export function PhysicsEngine() {
     }
 
     const dt = Math.min(delta, 0.05);
+    positionEmitTimerRef.current += dt;
     const forces = forcesRef.current;
     const adjacency = adjacencyRef.current;
     const bondOrderSums = bondOrderSumsRef.current;
@@ -402,9 +440,18 @@ export function PhysicsEngine() {
       const f = forces[atom.id];
       vel.addScaledVector(f, dt);
       vel.multiplyScalar(DAMPING);
-      pos.addScaledVector(vel, dt);
+      if (vel.lengthSq() > 1e-7) {
+        pos.addScaledVector(vel, dt);
+        positionsChanged = true;
+      }
+    }
+
+    if (positionsChanged && positionEmitTimerRef.current >= POSITION_EMIT_INTERVAL_SEC) {
+      emitAtomPositionChange();
+      positionEmitTimerRef.current = 0;
     }
   });
 
   return null;
 }
+    let positionsChanged = false;

@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { calculateStability } from '../stability';
 import { getMessages, translateStabilityIssue } from '../i18n';
-import { atomPositions } from '../physics';
+import { atomPositions, useAtomPositionVersion } from '../physics';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 
 export function StabilityDisplay() {
@@ -12,9 +12,10 @@ export function StabilityDisplay() {
   const language = useStore((state) => state.language);
   const messages = useMemo(() => getMessages(language), [language]);
   const isDark = theme === 'dark';
+  const atomPositionVersion = useAtomPositionVersion();
   const report = useMemo(
     () => calculateStability(atoms, bonds, { positions: atomPositions }),
-    [atoms, bonds],
+    [atoms, bonds, atomPositionVersion],
   );
   const [collapsed, setCollapsed] = useState(() => (
     typeof window !== 'undefined'

@@ -3,6 +3,7 @@ import { useStore } from '../store';
 import { getMessages } from '../i18n';
 import { getSeo } from '../seo';
 import { getAppShellTheme } from '../appShell';
+import { getPathForRoute, navigateToRoute } from '../routes';
 
 const Scene = lazy(async () => {
   const module = await import('./Scene');
@@ -109,8 +110,24 @@ export function LabPage() {
           </article>
         ))}
         <nav aria-label="BondLab SEO links">
-          <a href="/instructions">{messages.ui.instructions}</a>
-          <a href="/privacy">{messages.ui.privacy}</a>
+          <a
+            href={getPathForRoute('instructions')}
+            onClick={(event) => {
+              event.preventDefault();
+              navigateToRoute('instructions');
+            }}
+          >
+            {messages.ui.instructions}
+          </a>
+          <a
+            href={getPathForRoute('privacy')}
+            onClick={(event) => {
+              event.preventDefault();
+              navigateToRoute('privacy');
+            }}
+          >
+            {messages.ui.privacy}
+          </a>
         </nav>
       </section>
     </main>

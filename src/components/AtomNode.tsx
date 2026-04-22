@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useStore, ELEMENTS, type ElementType } from '../store';
-import { atomPositions, setAtomMeshRef } from '../physics';
+import { atomPositions, setAtomMeshRef, setAtomPosition } from '../physics';
 import { toNormalizedDeviceCoordinates } from '../drag';
 
 interface AtomNodeProps {
@@ -56,7 +56,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
 
       const target = targetRef.current;
       if (raycaster.ray.intersectPlane(plane, target)) {
-        atomPositions[id].copy(target);
+        setAtomPosition(id, target);
       }
     };
 
