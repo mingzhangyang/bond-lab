@@ -33,12 +33,9 @@ The dev server runs on `http://localhost:3000`.
 
 ## Environment Variables
 
-An `.env.example` file exists with:
+No environment variables are required for local frontend development.
 
-- `GEMINI_API_KEY`
-- `APP_URL`
-
-Current frontend code does not read these values directly at runtime, but they may be required by your hosting/runtime integration workflow.
+The `.env.example` file only contains optional placeholders for deployment integrations.
 
 ## Scripts
 

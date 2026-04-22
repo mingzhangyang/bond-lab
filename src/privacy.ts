@@ -22,7 +22,7 @@ export const PRIVACY_POLICY: PrivacyPolicy = {
   externalServices: [
     'By default, BondLab works without sending molecule data to external APIs.',
     'If optional AI-assisted features are enabled in the future, service usage will be disclosed in-app before activation.',
-    'API keys such as GEMINI_API_KEY should be configured locally and not committed to the repository.',
+    'Any API keys used for optional integrations should be stored securely and never committed to the repository.',
   ],
   updatesAndContact: [
     'This policy may be updated as features evolve; the version date above reflects the latest change.',

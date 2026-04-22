@@ -8,3 +8,4 @@ coverage/
 !.env.example
 
 screenshot*.png
+.codex

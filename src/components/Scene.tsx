@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
-import { OrbitControls, Environment, ContactShadows } from '@react-three/drei';
+import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 import { useStore } from '../store';
 import { AtomNode } from './AtomNode';
 import { BondNode } from './BondNode';
@@ -63,24 +63,6 @@ export function Scene() {
   const draggedAtom = useStore(state => state.draggedAtom);
   const rotatingBond = useStore(state => state.rotatingBond);
   const isDark = theme === 'dark';
-  const [showDeferredEffects, setShowDeferredEffects] = useState(false);
-
-  useEffect(() => {
-    const enableEffects = () => setShowDeferredEffects(true);
-
-    if (typeof window !== 'undefined' && 'requestIdleCallback' in window) {
-      const idleId = window.requestIdleCallback(enableEffects, { timeout: 250 });
-      return () => {
-        window.cancelIdleCallback(idleId);
-      };
-    }
-
-    const timeoutTarget = typeof window !== 'undefined' ? window : globalThis;
-    const timeoutId = timeoutTarget.setTimeout(enableEffects, 120);
-    return () => {
-      timeoutTarget.clearTimeout(timeoutId);
-    };
-  }, []);
 
   return (
     <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
@@ -89,8 +71,11 @@ export function Scene() {
         onPointerMissed={() => useStore.getState().setSelectedAtom(null)}
       >
         <color attach="background" args={[isDark ? '#18181b' : '#e2e8f0']} />
-        <ambientLight intensity={isDark ? 0.5 : 0.8} />
-        <directionalLight position={[10, 10, 5]} intensity={isDark ? 1 : 0.8} castShadow />
+        <ambientLight intensity={isDark ? 0.6 : 0.85} />
+        <hemisphereLight
+          args={[isDark ? '#6b7280' : '#e2e8f0', isDark ? '#1f2937' : '#94a3b8', isDark ? 0.25 : 0.3]}
+        />
+        <directionalLight position={[10, 10, 5]} intensity={isDark ? 0.9 : 0.7} />
         <directionalLight position={[-10, -10, -5]} intensity={isDark ? 0.5 : 0.35} />
         
         <PhysicsEngine />
@@ -112,19 +97,6 @@ export function Scene() {
           enableZoom={true}
           enabled={draggedAtom === null && rotatingBond === null}
         />
-        {showDeferredEffects ? (
-          <>
-            <Environment preset={isDark ? 'city' : 'park'} />
-            <ContactShadows
-              position={[0, -4, 0]}
-              opacity={isDark ? 0.4 : 0.22}
-              scale={20}
-              blur={2}
-              near={0.1}
-              far={10}
-            />
-          </>
-        ) : null}
       </Canvas>
     </div>
   );
