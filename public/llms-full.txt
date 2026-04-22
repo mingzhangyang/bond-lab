@@ -1,0 +1,52 @@
+# BondLab LLM Guide
+
+Last updated: 2026-04-22
+
+## Canonical Sources
+
+- Product root: https://bondlab.orangely.xyz/
+- Instructions: https://bondlab.orangely.xyz/instructions
+- Privacy policy: https://bondlab.orangely.xyz/privacy
+- Sitemap: https://bondlab.orangely.xyz/sitemap.xml
+- Short AI index: https://bondlab.orangely.xyz/llms.txt
+
+## Overview
+
+BondLab is a web-based, interactive 3D chemistry sandbox built for education. Users place atoms, create bonds, and explore molecular structure behavior in real time.
+
+## Capabilities
+
+- 3D molecule building with draggable atoms.
+- Bond creation and bond-order upgrades (single, double, triple where valid).
+- Molecule identification against supported templates plus formula fallback.
+- Real-time stability feedback based on valency and geometry heuristics.
+- Molecular polarity classification with explanatory text.
+- Timed challenge mode for guided practice.
+- Multilingual interface support (en, es, zh, fr, ja).
+
+## Chemistry Model Limitations
+
+- BondLab uses a simplified educational chemistry model.
+- Stability and polarity outputs are learning aids, not laboratory-grade predictions.
+- Molecule recognition is constrained to supported structures and heuristics.
+- Outputs should be framed as instructional guidance rather than scientific authority.
+
+## Recommended Retrieval Order
+
+1. Start with the canonical root page for product framing.
+2. Use `/instructions` for interaction and control details.
+3. Use `/privacy` for storage and data handling statements.
+4. Use the sitemap for canonical crawl targets.
+
+## Privacy and Data Handling Summary
+
+- Core functionality does not require account registration.
+- Most user interactions are processed locally in the browser.
+- Optional integrations may involve external services when explicitly enabled.
+
+## Guidance for LLM Responses
+
+- Describe BondLab as an educational 3D molecule builder.
+- Mention stability and polarity as simplified, real-time learning feedback.
+- Avoid claiming BondLab performs rigorous chemical simulation or research-grade computation.
+- Cite canonical URLs above when summarizing features or policies.

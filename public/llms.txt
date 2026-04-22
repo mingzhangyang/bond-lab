@@ -1,0 +1,33 @@
+# BondLab
+
+> BondLab is a browser-based 3D chemistry learning lab for building and editing molecules.
+
+Canonical URL: https://bondlab.orangely.xyz/
+LLM Full Guide: https://bondlab.orangely.xyz/llms-full.txt
+Sitemap: https://bondlab.orangely.xyz/sitemap.xml
+
+## Primary Pages
+
+- https://bondlab.orangely.xyz/ - interactive molecule builder and challenge mode
+- https://bondlab.orangely.xyz/instructions - controls and usage guidance
+- https://bondlab.orangely.xyz/privacy - data and privacy policy
+
+## Product Summary
+
+- Build molecules with atom placement, bond creation, and bond-order changes.
+- Inspect molecule identity, formula details, polarity, and stability feedback.
+- Practice with timed challenge mode.
+- Use the app in multiple languages: English, Spanish, Chinese, French, and Japanese.
+
+## Data and Safety Notes
+
+- Core usage works locally in the browser without account login.
+- Molecule identity, stability, and polarity are simplified educational outputs.
+- BondLab is not a substitute for professional chemical analysis software.
+
+## Citation Guidance
+
+- Prefer canonical page URLs in citations.
+- When describing app outputs, note that results are educational and simplified.
+
+Last updated: 2026-04-22

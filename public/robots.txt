@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
-Sitemap: /sitemap.xml
+# AI-readable docs
+# https://bondlab.orangely.xyz/llms.txt
+# https://bondlab.orangely.xyz/llms-full.txt
+
+Sitemap: https://bondlab.orangely.xyz/sitemap.xml

@@ -45,18 +45,24 @@ test('getRouteSeo returns canonical route metadata and structured data', () => {
   assert.equal(labSeo.robots, 'index, follow, max-image-preview:large');
   assert.equal(labSeo.ogType, 'website');
   assert.ok(labSeo.jsonLd.length >= 3);
+  assert.ok(labSeo.jsonLd.some((entry) => entry['@type'] === 'WebSite'));
+  assert.ok(labSeo.jsonLd.some((entry) => entry['@type'] === 'SoftwareApplication'));
+  assert.ok(labSeo.jsonLd.some((entry) => entry['@type'] === 'FAQPage'));
 
   const instructionsSeo = getRouteSeo('zh', 'instructions');
   assert.equal(instructionsSeo.canonicalUrl, `${SEO_BASE_URL}/instructions`);
   assert.equal(instructionsSeo.ogType, 'article');
   assert.match(instructionsSeo.description, /使用说明|BondLab/);
   assert.match(instructionsSeo.keywords, /使用说明|教程/);
+  assert.ok(instructionsSeo.jsonLd.some((entry) => entry['@type'] === 'HowTo'));
+  assert.ok(instructionsSeo.jsonLd.some((entry) => entry['@type'] === 'BreadcrumbList'));
 
   const privacySeo = getRouteSeo('en', 'privacy');
   assert.equal(privacySeo.canonicalUrl, `${SEO_BASE_URL}/privacy`);
   assert.equal(privacySeo.robots, 'noindex, follow');
   assert.equal(privacySeo.ogType, 'article');
-  assert.equal(privacySeo.jsonLd.length, 2);
+  assert.ok(privacySeo.jsonLd.some((entry) => entry['@type'] === 'WebPage'));
+  assert.ok(privacySeo.jsonLd.some((entry) => entry['@type'] === 'BreadcrumbList'));
 });
 
 test('localized descriptions differ across languages', () => {

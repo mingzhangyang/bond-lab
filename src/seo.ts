@@ -32,10 +32,11 @@ export interface SeoContent {
 export interface SeoJsonLd {
   [key: string]: unknown;
   '@context': string;
-  '@type': 'SoftwareApplication' | 'FAQPage';
+  '@type': string;
   name?: string;
   applicationCategory?: 'EducationalApplication';
   operatingSystem?: 'Web';
+  url?: string;
   description?: string;
   image?: string;
   keywords?: string;
@@ -728,6 +729,53 @@ function getWebPageJsonLd(language: Language, title: string, description: string
   };
 }
 
+function getBreadcrumbJsonLd(language: Language, route: AppRoute, pageTitle?: string): Record<string, unknown> {
+  const listItems = [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'BondLab',
+      item: `${SEO_BASE_URL}/`,
+    },
+  ];
+
+  if (route !== 'lab' && pageTitle) {
+    listItems.push({
+      '@type': 'ListItem',
+      position: 2,
+      name: pageTitle,
+      item: getCanonicalUrl(route),
+    });
+  }
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    inLanguage: language,
+    itemListElement: listItems,
+  };
+}
+
+function getHowToJsonLd(language: Language, description: string): Record<string, unknown> {
+  const page = SEO_PAGE_COPY[language].instructions;
+  const featureSteps = SEO_BY_LANGUAGE[language].content.features.slice(0, 4);
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'HowTo',
+    name: `BondLab | ${page.title}`,
+    description,
+    inLanguage: language,
+    totalTime: 'PT5M',
+    step: featureSteps.map((feature, index) => ({
+      '@type': 'HowToStep',
+      position: index + 1,
+      name: `${page.title} ${index + 1}`,
+      text: feature,
+    })),
+  };
+}
+
 export const SEO_META = SEO_BY_LANGUAGE.en.meta;
 export const SEO_CONTENT = SEO_BY_LANGUAGE.en.content;
 
@@ -739,6 +787,7 @@ export function getRouteSeo(language: Language, route: AppRoute): SeoRouteConfig
   const seo = SEO_BY_LANGUAGE[language];
   const canonicalUrl = getCanonicalUrl(route);
   const ogImageAlt = `${seo.content.heading} preview image`;
+  const breadcrumbJsonLd = getBreadcrumbJsonLd(language, route, route === 'lab' ? undefined : SEO_PAGE_COPY[language][route].title);
 
   if (route === 'lab') {
     return {
@@ -752,6 +801,7 @@ export function getRouteSeo(language: Language, route: AppRoute): SeoRouteConfig
         getWebsiteJsonLd(language, seo.meta.description),
         seo.jsonLd as Record<string, unknown>,
         ...(seo.faqJsonLd ? [seo.faqJsonLd as Record<string, unknown>] : []),
+        breadcrumbJsonLd,
       ],
     };
   }
@@ -768,6 +818,8 @@ export function getRouteSeo(language: Language, route: AppRoute): SeoRouteConfig
     jsonLd: [
       getWebsiteJsonLd(language, seo.meta.description),
       getWebPageJsonLd(language, page.title, page.description, canonicalUrl),
+      ...(route === 'instructions' ? [getHowToJsonLd(language, page.description)] : []),
+      breadcrumbJsonLd,
     ],
   };
 }

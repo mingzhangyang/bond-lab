@@ -11,6 +11,14 @@ import { getRouteFromPath } from './routes';
 import type { AppRoute } from './routes';
 import { getAppShellTheme } from './appShell';
 
+const OG_LOCALE_BY_LANGUAGE = {
+  en: 'en_US',
+  es: 'es_ES',
+  zh: 'zh_CN',
+  fr: 'fr_FR',
+  ja: 'ja_JP',
+} as const;
+
 const LabPage = lazy(async () => {
   const module = await import('./components/LabPage');
   return { default: module.LabPage };
@@ -101,8 +109,10 @@ export default function App() {
 
     setMetaContent('meta[name="description"]', routeDescription);
     setMetaContent('meta[name="keywords"]', routeSeo.keywords);
+    setMetaContent('meta[name="language"]', language);
     setMetaContent('meta[name="robots"]', routeSeo.robots);
     setMetaContent('meta[property="og:type"]', routeSeo.ogType);
+    setMetaContent('meta[property="og:locale"]', OG_LOCALE_BY_LANGUAGE[language]);
     setMetaContent('meta[property="og:title"]', pageTitle);
     setMetaContent('meta[property="og:description"]', route === 'lab' ? seo.meta.ogDescription : routeDescription);
     setMetaContent('meta[property="og:image"]', SEO_IMAGE_URL);
