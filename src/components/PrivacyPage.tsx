@@ -210,7 +210,6 @@ export function PrivacyPage() {
 
   return (
     <InfoPageLayout
-      route="privacy"
       title={messages.ui.privacyTitle}
       description={copy.intro}
       metadata={(

@@ -195,6 +195,8 @@ export function PhysicsEngine() {
   }, [atoms]);
 
   useFrame((_, delta) => {
+    let positionsChanged = false;
+
     if (rotatingBond !== null) {
       return;
     }
@@ -454,4 +456,3 @@ export function PhysicsEngine() {
 
   return null;
 }
-    let positionsChanged = false;

@@ -1,5 +1,4 @@
 import { create } from 'zustand';
-import { v4 as uuidv4 } from 'uuid';
 import type { Language } from './i18n.ts';
 import {
   LANGUAGE_STORAGE_KEY,
@@ -104,7 +103,15 @@ const initialTheme = resolveInitialTheme(
 );
 const initialLanguage = resolveInitialLanguage(getStoredValue(LANGUAGE_STORAGE_KEY));
 
-export const useStore = create<GameState>((set, get) => ({
+function createId(): string {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+
+  return `id-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+}
+
+export const useStore = create<GameState>((set) => ({
   atoms: [],
   bonds: [],
   draggedAtom: null,
@@ -139,7 +146,7 @@ export const useStore = create<GameState>((set, get) => ({
   }),
   setInteractionMode: (interactionMode) => set({ interactionMode }),
   addAtom: (element) => {
-    const id = uuidv4();
+    const id = createId();
     set((state) => ({
       atoms: [...state.atoms, { id, element }]
     }));
@@ -194,7 +201,7 @@ export const useStore = create<GameState>((set, get) => ({
     const nextBonds = [
       ...state.bonds,
       {
-        id: uuidv4(),
+        id: createId(),
         source,
         target,
         order: 1,

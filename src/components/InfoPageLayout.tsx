@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { ArrowLeft, Globe, Moon, Sun } from 'lucide-react';
 import { getMessages } from '../i18n';
 import { getPathForRoute, navigateToRoute } from '../routes';
@@ -6,14 +6,13 @@ import { useStore } from '../store';
 import { getInfoThemeVars } from '../theme';
 
 interface InfoPageLayoutProps {
-  route: 'privacy' | 'instructions';
   title: string;
   description?: string;
-  metadata?: React.ReactNode;
-  children: React.ReactNode;
+  metadata?: ReactNode;
+  children: ReactNode;
 }
 
-export function InfoPageLayout({ route, title, description, metadata, children }: InfoPageLayoutProps) {
+export function InfoPageLayout({ title, description, metadata, children }: InfoPageLayoutProps) {
   const theme = useStore((state) => state.theme);
   const language = useStore((state) => state.language);
   const toggleTheme = useStore((state) => state.toggleTheme);
@@ -28,11 +27,6 @@ export function InfoPageLayout({ route, title, description, metadata, children }
     : 'text-zinc-700 hover:text-zinc-900 hover:bg-black/5';
   const headingTextClass = isDark ? 'text-zinc-400' : 'text-zinc-600';
   const leadTextClass = isDark ? 'text-zinc-300' : 'text-zinc-700';
-  const tabBaseClass = 'min-h-[44px] rounded-xl px-4 text-sm font-semibold transition-colors inline-flex items-center';
-  const activeTabClass = 'info-accent-pill ring-1 ring-indigo-300/35';
-  const inactiveTabClass = isDark
-    ? 'text-zinc-300 hover:text-white hover:bg-white/10'
-    : 'text-zinc-600 hover:text-zinc-900 hover:bg-black/5';
   const themeVars = getInfoThemeVars(theme);
 
   return (

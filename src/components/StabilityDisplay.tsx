@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useStore } from '../store';
 import { calculateStability } from '../stability';
 import { getMessages, translateStabilityIssue } from '../i18n';

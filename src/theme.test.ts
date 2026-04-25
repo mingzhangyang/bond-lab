@@ -3,8 +3,8 @@ import test from 'node:test';
 import { getInfoThemeVars, getLabThemeVars } from './theme.ts';
 
 test('info theme exposes key variables for both modes', () => {
-  const darkVars = getInfoThemeVars('dark');
-  const lightVars = getInfoThemeVars('light');
+  const darkVars = getInfoThemeVars('dark') as Record<string, string>;
+  const lightVars = getInfoThemeVars('light') as Record<string, string>;
 
   assert.ok(darkVars['--info-page-bg']);
   assert.ok(darkVars['--info-panel-bg']);
@@ -16,8 +16,8 @@ test('info theme exposes key variables for both modes', () => {
 });
 
 test('lab theme exposes key variables for both modes', () => {
-  const darkVars = getLabThemeVars('dark');
-  const lightVars = getLabThemeVars('light');
+  const darkVars = getLabThemeVars('dark') as Record<string, string>;
+  const lightVars = getLabThemeVars('light') as Record<string, string>;
 
   assert.ok(darkVars['--lab-panel-bg']);
   assert.ok(darkVars['--lab-fab-bg']);

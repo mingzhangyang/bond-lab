@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 import { BookOpenText, CheckCircle2, Info } from 'lucide-react';
 import { getMessages } from '../i18n';
 import type { Language } from '../i18n';
@@ -170,7 +170,6 @@ export function InstructionsPage() {
 
   return (
     <InfoPageLayout
-      route="instructions"
       title={messages.ui.instructionsTitle}
       description={copy.intro}
       metadata={(
