@@ -57,7 +57,7 @@ export function LabPage() {
 
   return (
     <main
-      className="app-shell relative h-screen w-screen overflow-hidden font-sans"
+      className="app-shell relative h-[100dvh] w-screen overflow-hidden font-sans"
       style={{
         backgroundColor: shellTheme.background,
         color: shellTheme.text,
@@ -70,7 +70,7 @@ export function LabPage() {
         <UI />
       </Suspense>
       <footer
-        className={`pointer-events-none fixed inset-x-0 bottom-3 z-30 flex flex-col items-center gap-1 text-center ${footerTextClass}`}
+        className={`pointer-events-none fixed inset-x-0 bottom-3 z-30 hidden md:flex flex-col items-center gap-1 text-center ${footerTextClass}`}
       >
         <p className="text-[11px] uppercase tracking-[0.16em]">
           © {new Date().getFullYear()} {messages.appTitle}

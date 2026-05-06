@@ -131,8 +131,10 @@ export function MoleculeInspector({
   if (isMobileInfoCollapsed) {
     return (
       <button
-        className={`lab-reveal px-5 py-2.5 rounded-3xl pointer-events-auto flex items-center gap-2.5 touch-manipulation ${panelClass}`}
-        style={{ animationDelay: '130ms' }}
+        className={`lab-reveal fixed left-1/2 z-[58] w-[min(24rem,calc(100vw-2rem))] -translate-x-1/2 rounded-3xl px-5 py-2.5 pointer-events-auto flex items-center gap-2.5 touch-manipulation ${panelClass}`}
+        style={{ animationDelay: '130ms', bottom: 'calc(5.9rem + env(safe-area-inset-bottom))' }}
+        data-testid="mobile-molecule-pill"
+        type="button"
         onClick={() => setIsMobileInfoCollapsed(false)}
         aria-expanded={false}
         aria-label={messages.ui.expand}
@@ -146,8 +148,12 @@ export function MoleculeInspector({
   }
 
   return (
-    <div className={`lab-reveal px-6 py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
-      <div className="text-center max-w-sm relative">
+    <div
+      className={`lab-reveal fixed inset-x-3 z-[58] rounded-3xl px-6 py-4 pointer-events-auto transform transition-all ${panelClass}`}
+      style={{ animationDelay: '130ms', bottom: 'calc(5.55rem + env(safe-area-inset-bottom))' }}
+      data-testid="mobile-molecule-sheet"
+    >
+      <div className="relative mx-auto max-w-sm text-center">
         <button
           onClick={() => setIsMobileInfoCollapsed(true)}
           className={`absolute -top-1 right-0 p-1 rounded-lg touch-manipulation ${ghostButtonClass}`}

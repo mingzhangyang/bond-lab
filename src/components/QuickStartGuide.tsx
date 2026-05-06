@@ -218,6 +218,21 @@ export function QuickStartGuide({
             </ul>
           )}
 
+          {isExploreStep && !isDesktopViewport && (
+            <div className="mt-4 flex flex-wrap gap-2">
+              {messages.ui.controlsList.slice(0, 3).map((tip) => (
+                <span
+                  key={tip}
+                  className={`rounded-full border px-2.5 py-1 text-[11px] ${
+                    isDark ? 'border-white/12 bg-white/6 text-zinc-200' : 'border-slate-200 bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  {tip}
+                </span>
+              ))}
+            </div>
+          )}
+
           <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
             {isAddAtomsStep && !isDesktopViewport && (
               <button

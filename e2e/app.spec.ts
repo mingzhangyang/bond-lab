@@ -70,3 +70,29 @@ test('core molecule actions work in browser runtime', async ({ page }) => {
   expect(cleared.atomCount).toBe(0);
   expect(cleared.bondCount).toBe(0);
 });
+
+test('mobile dock opens element drawer and toggles interaction mode', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await expect(page.getByTestId('mobile-action-dock')).toBeVisible();
+  await page.getByTestId('mobile-dock-add-button').click();
+  await expect(page.getByTestId('mobile-elements-drawer')).toBeVisible();
+
+  await page.getByTestId('mobile-elements-drawer-close').click();
+  await expect(page.getByTestId('mobile-elements-drawer')).not.toBeVisible();
+
+  await page.getByTestId('interaction-mode-toggle-mobile').click();
+  const interactionMode = await page.evaluate(() => window.__bondlabStore?.getState().interactionMode);
+  expect(interactionMode).toBe('delete');
+});
+
+test('settings uses bottom sheet layout on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+
+  await page.getByTestId('settings-menu-button').click();
+  await expect(page.getByTestId('settings-menu-sheet')).toBeVisible();
+  await page.getByTestId('settings-menu-backdrop').click();
+  await expect(page.getByTestId('settings-menu-sheet')).not.toBeVisible();
+});

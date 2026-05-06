@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   BookOpenText,
   Check,
@@ -51,11 +51,27 @@ export function SettingsMenu({
 }: SettingsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLanguageSubmenuOpen, setIsLanguageSubmenuOpen] = useState(false);
+  const [isMobileViewport, setIsMobileViewport] = useState(() => (
+    typeof window !== 'undefined'
+    && typeof window.matchMedia === 'function'
+    && window.matchMedia('(max-width: 767px)').matches
+  ));
 
   const closeMenu = () => {
     setIsOpen(false);
     setIsLanguageSubmenuOpen(false);
   };
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
+    const mobileMedia = window.matchMedia('(max-width: 767px)');
+    const syncViewport = () => setIsMobileViewport(mobileMedia.matches);
+    syncViewport();
+    mobileMedia.addEventListener('change', syncViewport);
+    return () => {
+      mobileMedia.removeEventListener('change', syncViewport);
+    };
+  }, []);
 
   return (
     <div
@@ -85,12 +101,16 @@ export function SettingsMenu({
         {isOpen && (
           <>
             <button
+              data-testid="settings-menu-backdrop"
               className="fixed inset-0 z-50 cursor-default"
               aria-label={messages.ui.close}
               onClick={closeMenu}
             />
             <div
-              className={`absolute right-0 top-full mt-2 w-52 rounded-xl p-2 shadow-xl z-[60] sm:w-56 ${softPanelClass}`}
+              data-testid={isMobileViewport ? 'settings-menu-sheet' : 'settings-menu-dropdown'}
+              className={isMobileViewport
+                ? `fixed inset-x-3 bottom-[calc(0.85rem+env(safe-area-inset-bottom))] z-[60] rounded-2xl border p-3 shadow-2xl ${softPanelClass}`
+                : `absolute right-0 top-full mt-2 w-52 rounded-xl p-2 shadow-xl z-[60] sm:w-56 ${softPanelClass}`}
               role="menu"
             >
               <button

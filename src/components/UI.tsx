@@ -6,6 +6,7 @@ import { atomPositions, useAtomPositionVersion } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
 import {
   Atom,
+  Trophy,
   Trash2,
   X,
   Plus,
@@ -15,8 +16,6 @@ import {
 import { StabilityDisplay } from './StabilityDisplay';
 import {
   ChallengeMode,
-  MobileChallengeTrigger,
-  MOBILE_CHALLENGE_TRIGGER_RADIUS,
 } from './ChallengeMode';
 import { getMessages, localizeMoleculeName } from '../i18n';
 import { toggleInteractionMode } from '../preferences';
@@ -32,7 +31,6 @@ import {
   setElementDragData,
 } from '../drag';
 import {
-  getChallengeTimerArc,
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
 import { QuickStartGuide } from './QuickStartGuide';
@@ -111,6 +109,7 @@ export function UI() {
     if (typeof window === 'undefined') return null;
     return shouldShowOnboarding(getStoredOnboardingVersion()) ? 'welcome' : null;
   });
+  const [mobileStatusChip, setMobileStatusChip] = useState<string | null>(null);
 
   const messages = useMemo(() => getMessages(language), [language]);
   const atomPositionVersion = useAtomPositionVersion();
@@ -211,8 +210,8 @@ export function UI() {
   const sceneExploreHighlightClass = onboardingStep === 'explore' ? 'lab-onboarding-highlight' : '';
   const themeVars = getLabThemeVars(theme);
   const isDrawerLayout = shouldUseMobileChallengeDrawer(isNarrowViewport, isCoarsePointer, hasTouchInput);
-  const mobileChallengeTimerArc = challengeStatus === 'playing'
-    ? getChallengeTimerArc(challengeTimeLeft, challengeTotalTime, MOBILE_CHALLENGE_TRIGGER_RADIUS)
+  const mobileChallengeProgress = challengeStatus === 'playing' && challengeTotalTime > 0
+    ? Math.max(0, Math.min(1, challengeTimeLeft / challengeTotalTime))
     : null;
 
   useEffect(() => {
@@ -271,6 +270,17 @@ export function UI() {
     }
   }, [isDesktopViewport, isElementsPanelOpen, onboardingStep]);
 
+  useEffect(() => {
+    if (!mobileStatusChip) return;
+    const timeout = window.setTimeout(() => setMobileStatusChip(null), 1200);
+    return () => window.clearTimeout(timeout);
+  }, [mobileStatusChip]);
+
+  const showMobileStatusChip = (label: string) => {
+    if (isDesktopViewport) return;
+    setMobileStatusChip(label);
+  };
+
   const handleStartChallenge = () => {
     const challengePool = getChallengeCandidateMolecules(KNOWN_MOLECULES);
     const randomMol = pickChallengeMolecule(challengePool, Math.random()) ?? KNOWN_MOLECULES[0];
@@ -280,6 +290,7 @@ export function UI() {
     if (isDrawerLayout) {
       setIsMobileChallengeOpen(true);
     }
+    showMobileStatusChip(messages.challenge.title);
   };
 
   const handleElementDragStart = (event: React.DragEvent<HTMLButtonElement>, element: keyof typeof ELEMENTS) => {
@@ -302,6 +313,12 @@ export function UI() {
       setIsElementsPanelOpen(true);
     }
     setOnboardingStep('welcome');
+  };
+
+  const handleToggleInteractionMode = () => {
+    const nextMode = toggleInteractionMode(interactionMode);
+    setInteractionMode(nextMode);
+    showMobileStatusChip(nextMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode);
   };
 
   return (
@@ -457,19 +474,6 @@ export function UI() {
         </div>
       </div>
 
-      {/* Mobile Challenge */}
-      {!isDesktopViewport && (
-        <>
-          <div className="pointer-events-auto md:hidden">
-            <ChallengeMode
-              isDrawerLayout={isDrawerLayout}
-              isMobileDrawerOpen={isMobileChallengeOpen}
-              setIsMobileDrawerOpen={setIsMobileChallengeOpen}
-              onStart={handleStartChallenge}
-            />
-          </div>
-        </>
-      )}
       {/* Desktop Right Rail */}
       {isDesktopViewport && (atoms.length > 0 || molecule) && (
         <div
@@ -509,7 +513,7 @@ export function UI() {
 
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-4 w-full mt-auto">
-        {!isDesktopViewport && (
+        {!isDesktopViewport && !isMobileChallengeOpen && (
           <MoleculeInspector
             isDesktopViewport={false}
             molecule={molecule}
@@ -532,17 +536,6 @@ export function UI() {
             messages={messages}
           />
         )}
-
-        {/* Mobile FAB */}
-        <div className="md:hidden w-full flex justify-center pointer-events-auto pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
-          <button
-            data-testid="open-elements-drawer"
-            onClick={() => setIsDrawerOpen(true)}
-            className="lab-fab min-h-[48px] text-white px-6 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transition-transform active:scale-95 touch-manipulation"
-          >
-            <Plus size={20} /> {messages.ui.addElement}
-          </button>
-        </div>
       </div>
 
       {/* Drawer Overlay */}
@@ -555,6 +548,7 @@ export function UI() {
 
       {/* Mobile Elements Drawer */}
       <div
+        data-testid="mobile-elements-drawer"
         className={`md:hidden fixed inset-x-0 bottom-0 border-t shadow-2xl pointer-events-auto transform transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-y-0' : 'translate-y-full'} rounded-t-3xl z-50 ${softPanelClass}`}
       >
         <div className="lab-mobile-drawer p-5">
@@ -562,6 +556,7 @@ export function UI() {
           <div className="flex justify-between items-center mb-6">
             <h2 className={`info-display font-bold text-lg ${primaryTextClass}`}>{messages.ui.selectElement}</h2>
             <button
+              data-testid="mobile-elements-drawer-close"
               onClick={() => setIsDrawerOpen(false)}
               aria-label={messages.ui.close}
               className={`min-h-[44px] min-w-[44px] p-2 rounded-full transition-colors touch-manipulation ${ghostButtonClass}`}
@@ -577,7 +572,11 @@ export function UI() {
                 <button
                   key={el}
                   data-testid={`mobile-element-button-${el}`}
-                  onClick={() => { addAtom(el); setIsDrawerOpen(false); }}
+                  onClick={() => {
+                    addAtom(el);
+                    setIsDrawerOpen(false);
+                    showMobileStatusChip(messages.elements[el]);
+                  }}
                   className={`lab-tile flex min-h-[96px] flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-colors border touch-manipulation ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}
                 >
                   <div
@@ -595,7 +594,11 @@ export function UI() {
           <div className={`mt-5 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
             <button
               data-testid="clear-elements-mobile"
-              onClick={() => { clear(); setIsDrawerOpen(false); }}
+              onClick={() => {
+                clear();
+                setIsDrawerOpen(false);
+                showMobileStatusChip(messages.ui.clearAll);
+              }}
               className={`w-full min-h-[48px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold touch-manipulation ${dangerButtonClass}`}
             >
               <Trash2 size={18} /> {messages.ui.clearAll}
@@ -605,39 +608,87 @@ export function UI() {
       </div>
 
       {!isDesktopViewport && (
-        <div className="md:hidden fixed inset-x-0 bottom-[calc(1rem+env(safe-area-inset-bottom))] z-50 flex items-end justify-between px-4 pointer-events-none">
-          <div className="min-w-14 pointer-events-auto flex justify-start">
-            {isDrawerLayout && (
-              <div className={sceneExploreHighlightClass}>
-                <MobileChallengeTrigger
-                  messages={messages}
-                  isDark={isDark}
-                  isOpen={challengeActive && isMobileChallengeOpen}
-                  onToggle={challengeActive
-                    ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
-                    : handleStartChallenge}
-                  timerArc={mobileChallengeTimerArc}
-                />
+        <div className="md:hidden fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[60] pointer-events-none">
+          {mobileStatusChip && (
+            <div className="mb-2 flex justify-center">
+              <div className={`lab-reveal rounded-full border px-3 py-1 text-xs font-semibold ${softPanelClass}`}>
+                {mobileStatusChip}
               </div>
-            )}
-          </div>
-
-          <button
-            data-testid="interaction-mode-toggle-mobile"
-            onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
-            aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-            title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-            className={`w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass} ${sceneExploreHighlightClass}`}
+            </div>
+          )}
+          <div
+            data-testid="mobile-action-dock"
+            className={`pointer-events-auto grid grid-cols-3 gap-2 rounded-2xl border p-2 shadow-2xl ${softPanelClass}`}
           >
-            {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
-          </button>
+            <button
+              data-testid="mobile-dock-challenge-button"
+              onClick={challengeActive
+                ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
+                : handleStartChallenge}
+              aria-label={messages.challenge.title}
+              className={`relative min-h-[52px] rounded-xl border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 ${
+                isDark ? 'border-white/12 text-zinc-100' : 'border-zinc-300 text-zinc-800'
+              } ${sceneExploreHighlightClass}`}
+            >
+              <Trophy size={16} />
+              <span className="text-[10px] font-semibold uppercase tracking-wide">{messages.challenge.title}</span>
+              {isDrawerLayout && mobileChallengeProgress !== null && (
+                <span className={`absolute inset-x-2 bottom-1 h-1 overflow-hidden rounded-full ${isDark ? 'bg-zinc-700' : 'bg-zinc-300'}`}>
+                  <span
+                    className={`block h-full rounded-full ${mobileChallengeProgress <= 0.2 ? 'bg-red-500' : 'bg-indigo-500'}`}
+                    style={{ width: `${mobileChallengeProgress * 100}%` }}
+                  />
+                </span>
+              )}
+            </button>
+            <button
+              data-testid="mobile-dock-add-button"
+              onClick={() => {
+                setIsDrawerOpen(true);
+                showMobileStatusChip(messages.ui.addElement);
+              }}
+              aria-label={messages.ui.addElement}
+              className={`lab-fab min-h-[52px] rounded-xl text-white transition-transform active:scale-95 touch-manipulation flex flex-col items-center justify-center gap-0.5 ${
+                onboardingStep === 'add-atoms' ? 'lab-onboarding-highlight' : ''
+              }`}
+            >
+              <Plus size={16} />
+              <span className="text-[10px] font-semibold uppercase tracking-wide">{messages.ui.addElement}</span>
+            </button>
+            <button
+              data-testid="interaction-mode-toggle-mobile"
+              onClick={handleToggleInteractionMode}
+              aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+              title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
+              className={`min-h-[52px] rounded-xl border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 ${interactionMode === 'delete'
+                ? 'border-red-400/50 bg-red-500/85 text-white'
+                : (isDark ? 'border-white/12 text-zinc-100' : 'border-zinc-300 text-zinc-800')
+              } ${sceneExploreHighlightClass}`}
+            >
+              {interactionMode === 'build' ? <Atom size={16} /> : <Trash2 size={16} />}
+              <span className="text-[10px] font-semibold uppercase tracking-wide">
+                {interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}
+              </span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {!isDesktopViewport && (
+        <div className="pointer-events-auto md:hidden">
+          <ChallengeMode
+            isDrawerLayout={isDrawerLayout}
+            isMobileDrawerOpen={isMobileChallengeOpen}
+            setIsMobileDrawerOpen={setIsMobileChallengeOpen}
+            onStart={handleStartChallenge}
+          />
         </div>
       )}
 
       {isDesktopViewport && (
         <button
           data-testid="interaction-mode-toggle-desktop"
-          onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
+          onClick={handleToggleInteractionMode}
           aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
           title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
           className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass} ${sceneExploreHighlightClass}`}
