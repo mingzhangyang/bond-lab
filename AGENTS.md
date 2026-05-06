@@ -12,8 +12,9 @@ This is a Vite + React + TypeScript app. Keep feature code inside `src/`.
 - `src/main.tsx`: app bootstrap and global CSS import.
 - `src/App.tsx`: top-level page container.
 - `src/components/`: UI and 3D scene components (`Scene`, `UI`, `AtomNode`, `BondNode`, etc.).
-- `src/store.ts`: central Zustand state and actions.
-- `src/physics.ts`, `src/stability.ts`, `src/identifier.ts`: simulation and molecule logic.
+- `src/store.ts`: central Zustand state entry.
+- `src/store/slices/`: modular store slices (`molecule`, `preferences`, `challenge`).
+- `src/physics.ts`, `src/physicsState.ts`, `src/stability.ts`, `src/identifier.ts`: simulation and molecule logic.
 - `src/index.css`: global styles.
 - Root config: `vite.config.ts`, `tsconfig.json`, `package.json`.
 
@@ -23,9 +24,12 @@ This is a Vite + React + TypeScript app. Keep feature code inside `src/`.
 - `npm run build`: create production bundle in `dist/`.
 - `npm run preview`: preview production build locally.
 - `npm run lint`: TypeScript type-check (`tsc --noEmit`).
+- `npm run test`: run unit tests.
+- `npm run test:e2e`: run browser-level Playwright tests.
+- `npm run verify`: run `test`, `lint`, and `build` in sequence.
 - `npm run clean`: remove `dist/`.
 
-Set `GEMINI_API_KEY` in `.env.local` before running locally.
+No environment variable is required for local frontend development.
 
 ## Coding Style & Naming Conventions
 - Use TypeScript and React function components.
@@ -36,13 +40,13 @@ Set `GEMINI_API_KEY` in `.env.local` before running locally.
 - Prefer the configured alias `@` for root-relative imports when it improves readability.
 
 ## Testing Guidelines
-There is no automated test suite configured yet. Minimum validation before a PR:
+Minimum validation before a PR:
 
-- Run `npm run lint`.
-- Run `npm run build`.
-- Manually verify core flows in the browser: add/remove atoms, create/upgrade/remove bonds, and challenge mode behavior.
+- Run `npm run verify`.
+- Run `npm run test:e2e` for UI/navigation/interaction coverage.
+- Manually verify core flows in the browser when changing user interactions.
 
-If you add tests, colocate as `*.test.ts`/`*.test.tsx` near the related module.
+If you add tests, colocate unit tests as `*.test.ts`/`*.test.tsx` near the related module and place Playwright tests under `e2e/`.
 
 ## Commit & Pull Request Guidelines
 Use Conventional Commit style, consistent with repo history:

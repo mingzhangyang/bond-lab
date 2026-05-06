@@ -6,24 +6,11 @@ import { atomPositions, useAtomPositionVersion } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
 import {
   Atom,
-  BookOpenText,
-  Check,
   Trash2,
   X,
   Plus,
-  Sparkles,
-  Sun,
-  Globe,
-  Moon,
-  Shield,
-  Menu,
   ChevronRight,
   ChevronLeft,
-  ChevronDown,
-  ChevronUp,
-  FlaskConical,
-  Zap,
-  Info,
 } from 'lucide-react';
 import { StabilityDisplay } from './StabilityDisplay';
 import {
@@ -31,8 +18,7 @@ import {
   MobileChallengeTrigger,
   MOBILE_CHALLENGE_TRIGGER_RADIUS,
 } from './ChallengeMode';
-import { getMessages, localizeMoleculeName, type Language } from '../i18n';
-import { getPathForRoute, navigateToRoute } from '../routes';
+import { getMessages, localizeMoleculeName } from '../i18n';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
 import {
@@ -54,14 +40,8 @@ import {
   getChallengeCandidateMolecules,
   pickChallengeMolecule,
 } from '../challengeTargets';
-
-const LANGUAGE_OPTIONS: Array<{ code: Language; label: string }> = [
-  { code: 'en', label: 'English' },
-  { code: 'es', label: 'Espanol' },
-  { code: 'zh', label: '中文' },
-  { code: 'fr', label: 'Francais' },
-  { code: 'ja', label: '日本語' },
-];
+import { SettingsMenu } from './ui/SettingsMenu';
+import { MoleculeInspector } from './ui/MoleculeInspector';
 
 function getStoredOnboardingVersion(): string | null {
   if (typeof window === 'undefined') return null;
@@ -98,8 +78,6 @@ export function UI() {
   const challengeTotalTime = useStore((state) => state.challengeTotalTime);
   const startChallenge = useStore((state) => state.startChallenge);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [isSettingsMenuOpen, setIsSettingsMenuOpen] = useState(false);
-  const [isLanguageSubmenuOpen, setIsLanguageSubmenuOpen] = useState(false);
   const [isElementsPanelOpen, setIsElementsPanelOpen] = useState(true);
   const [isDesktopViewport, setIsDesktopViewport] = useState(() => (
     typeof window !== 'undefined'
@@ -309,23 +287,16 @@ export function UI() {
     event.dataTransfer.effectAllowed = 'copy';
   };
 
-  const closeSettingsMenu = () => {
-    setIsSettingsMenuOpen(false);
-    setIsLanguageSubmenuOpen(false);
-  };
-
   const handleDismissOnboarding = () => {
     persistOnboardingSeen();
     setOnboardingStep(null);
   };
 
   const handleStartOnboarding = () => {
-    closeSettingsMenu();
     setOnboardingStep('add-atoms');
   };
 
   const handleReplayOnboarding = () => {
-    closeSettingsMenu();
     setIsDrawerOpen(false);
     if (isDesktopViewport) {
       setIsElementsPanelOpen(true);
@@ -388,136 +359,18 @@ export function UI() {
         </div>
       </div>
 
-      {/* Top Right Menu */}
-      <div
-        className="lab-reveal fixed right-4 top-4 md:right-6 md:top-6 z-[70] pointer-events-auto"
-        style={{ animationDelay: '60ms' }}
-      >
-        <div className="relative">
-          <button
-            className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${softPanelClass} ${ghostButtonClass}`}
-            aria-label={messages.ui.menu}
-            aria-expanded={isSettingsMenuOpen}
-            aria-haspopup="menu"
-            onClick={() => {
-              setIsSettingsMenuOpen((open) => {
-                const nextOpen = !open;
-                if (!nextOpen) {
-                  setIsLanguageSubmenuOpen(false);
-                }
-                return nextOpen;
-              });
-            }}
-          >
-            <Menu size={18} />
-          </button>
-          {isSettingsMenuOpen && (
-            <>
-              <button
-                className="fixed inset-0 z-50 cursor-default"
-                aria-label={messages.ui.close}
-                onClick={() => {
-                  closeSettingsMenu();
-                }}
-              />
-              <div
-                className={`absolute right-0 top-full mt-2 w-52 rounded-xl p-2 shadow-xl z-[60] sm:w-56 ${softPanelClass}`}
-                role="menu"
-              >
-                <button
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={() => {
-                    toggleTheme();
-                    closeSettingsMenu();
-                  }}
-                >
-                  {isDark ? <Sun size={16} /> : <Moon size={16} />}
-                  <span>{themeActionText}</span>
-                </button>
-                <button
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center justify-between ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={() => {
-                    setIsLanguageSubmenuOpen((open) => !open);
-                  }}
-                  aria-haspopup="menu"
-                  aria-expanded={isLanguageSubmenuOpen}
-                >
-                  <span className="flex items-center gap-2">
-                    <Globe size={16} />
-                    {messages.ui.languageToggle}
-                  </span>
-                  <span className="flex items-center text-xs font-bold">
-                    <ChevronRight size={14} className={isLanguageSubmenuOpen ? 'rotate-90 transition-transform' : 'transition-transform'} />
-                  </span>
-                </button>
-                {isLanguageSubmenuOpen && (
-                  <div
-                    className={`mt-1 mb-2 ml-2 rounded-lg border p-1 ${isDark ? 'border-white/10 bg-black/10' : 'border-zinc-200 bg-white/70'
-                      }`}
-                    role="menu"
-                    aria-label={messages.ui.languageToggle}
-                  >
-                    {LANGUAGE_OPTIONS.map((option) => (
-                      <button
-                        key={option.code}
-                        className={`w-full min-h-[36px] px-2 rounded-md text-xs font-medium transition-colors flex items-center justify-between ${option.code === language
-                            ? (isDark ? 'bg-indigo-500/25 text-indigo-100' : 'bg-indigo-100 text-indigo-700')
-                            : settingsItemClass
-                          }`}
-                        role="menuitemradio"
-                        aria-checked={option.code === language}
-                        onClick={() => {
-                          setLanguage(option.code);
-                          closeSettingsMenu();
-                        }}
-                      >
-                        <span>{option.label}</span>
-                        {option.code === language && <Check size={14} />}
-                      </button>
-                    ))}
-                  </div>
-                )}
-                <button
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={handleReplayOnboarding}
-                >
-                  <Sparkles size={16} />
-                  <span>{messages.onboarding.replay}</span>
-                </button>
-                <a
-                  href={getPathForRoute('instructions')}
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    closeSettingsMenu();
-                    navigateToRoute('instructions');
-                  }}
-                >
-                  <BookOpenText size={16} />
-                  <span>{messages.ui.instructions}</span>
-                </a>
-                <a
-                  href={getPathForRoute('privacy')}
-                  className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
-                  role="menuitem"
-                  onClick={(event) => {
-                    event.preventDefault();
-                    closeSettingsMenu();
-                    navigateToRoute('privacy');
-                  }}
-                >
-                  <Shield size={16} />
-                  <span>{messages.ui.privacy}</span>
-                </a>
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      <SettingsMenu
+        messages={messages}
+        isDark={isDark}
+        language={language}
+        themeActionText={themeActionText}
+        softPanelClass={softPanelClass}
+        ghostButtonClass={ghostButtonClass}
+        settingsItemClass={settingsItemClass}
+        onToggleTheme={toggleTheme}
+        onSetLanguage={setLanguage}
+        onReplayOnboarding={handleReplayOnboarding}
+      />
 
       {/* Desktop Left Rail */}
       <div className="hidden md:flex fixed left-0 top-[calc(env(safe-area-inset-top)+5.75rem)] bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] z-40 pointer-events-none">
@@ -559,6 +412,7 @@ export function UI() {
                     return (
                       <button
                         key={el}
+                        data-testid={`element-button-${el}`}
                         draggable={isDesktopViewport}
                         onDragStart={(event) => handleElementDragStart(event, el)}
                         onClick={() => addAtom(el)}
@@ -579,6 +433,7 @@ export function UI() {
 
                 <div className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
                   <button
+                    data-testid="clear-elements-desktop"
                     onClick={clear}
                     className={`w-full min-h-[44px] flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-sm font-medium ${dangerButtonClass}`}
                   >
@@ -627,134 +482,61 @@ export function UI() {
               </div>
             )}
 
-            {molecule && (
-              <div
-                className={`lab-reveal min-h-0 flex-1 rounded-2xl p-6 pointer-events-auto flex flex-col gap-6 overflow-y-auto stealth-scrollbar ${panelClass}`}
-                style={{ animationDelay: '130ms' }}
-              >
-                <div>
-                  <div className={`info-display text-[10px] uppercase tracking-widest mb-2 font-bold ${headingTextClass}`}>
-                    {messages.ui.currentMolecule}
-                  </div>
-                  <h2 className={`info-display font-black text-3xl tracking-tight leading-tight mb-1 ${primaryTextClass}`}>
-                    {moleculeName}
-                  </h2>
-                  <div className="flex items-center gap-2 text-emerald-400 font-mono text-xl">
-                    <FlaskConical size={18} />
-                    <span>{molecule.formula}</span>
-                  </div>
-                </div>
-
-                {moleculeInfo && (
-                  <div className="flex flex-col gap-5">
-                    <div className="space-y-2">
-                      <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                        <Atom size={14} className="opacity-70" />
-                        {structureTitle}
-                      </div>
-                      <div className={`font-mono text-sm p-3 rounded-xl ${isDark ? 'bg-white/5' : 'bg-black/5'} ${primaryTextClass}`}>
-                        {moleculeInfo.structure}
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                        <Info size={14} className="opacity-70" />
-                        {factTitle}
-                      </div>
-                      <div className={`text-sm leading-relaxed ${secondaryTextClass}`}>
-                        {moleculeInfo.fact}
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-auto pt-6 border-t border-white/10 flex flex-col gap-3">
-                  <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
-                    <Zap size={14} className="opacity-70" />
-                    {polarityTitle}
-                  </div>
-                  <div>
-                    <span className={`px-2 py-1 rounded-md text-xs font-bold uppercase tracking-wide inline-block mb-1 ${polarityReport.classification === 'polar'
-                        ? 'bg-amber-500/20 text-amber-400 border border-amber-500/20'
-                        : (polarityReport.classification === 'nonpolar'
-                          ? 'bg-cyan-500/20 text-cyan-400 border border-cyan-500/20'
-                          : 'bg-zinc-500/20 text-zinc-400 border border-zinc-500/20')
-                      }`}>
-                      {polarityLabel}
-                    </span>
-                    <p className={`text-xs leading-normal mt-1 italic ${secondaryTextClass}`}>
-                      {polarityReport.reason}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            )}
+            <MoleculeInspector
+              isDesktopViewport={true}
+              molecule={molecule}
+              moleculeName={moleculeName}
+              moleculeInfo={moleculeInfo}
+              isMobileInfoCollapsed={isMobileInfoCollapsed}
+              setIsMobileInfoCollapsed={setIsMobileInfoCollapsed}
+              panelClass={panelClass}
+              headingTextClass={headingTextClass}
+              primaryTextClass={primaryTextClass}
+              secondaryTextClass={secondaryTextClass}
+              ghostButtonClass={ghostButtonClass}
+              isDark={isDark}
+              structureTitle={structureTitle}
+              factTitle={factTitle}
+              polarityTitle={polarityTitle}
+              polarityLabel={polarityLabel}
+              polarityClassification={polarityReport.classification}
+              polarityReason={polarityReport.reason}
+              messages={messages}
+            />
           </div>
         </div>
       )}
 
       {/* Bottom Section */}
       <div className="flex flex-col items-center gap-4 w-full mt-auto">
-        {!isDesktopViewport && molecule && (
-          isMobileInfoCollapsed ? (
-            <button
-              className={`lab-reveal px-5 py-2.5 rounded-3xl pointer-events-auto flex items-center gap-2.5 touch-manipulation ${panelClass}`}
-              style={{ animationDelay: '130ms' }}
-              onClick={() => setIsMobileInfoCollapsed(false)}
-              aria-expanded={false}
-              aria-label={messages.ui.expand}
-            >
-              <FlaskConical size={14} className="text-emerald-400 shrink-0" />
-              <span className={`info-display font-bold text-base tracking-tight ${primaryTextClass}`}>{moleculeName}</span>
-              <span className="text-emerald-400 font-mono text-sm">{molecule.formula}</span>
-              <ChevronUp size={14} className={`${headingTextClass} shrink-0`} />
-            </button>
-          ) : (
-            <div className={`lab-reveal px-6 py-4 rounded-3xl pointer-events-auto transform transition-all ${panelClass}`} style={{ animationDelay: '130ms' }}>
-              <div className="text-center max-w-sm relative">
-                <button
-                  onClick={() => setIsMobileInfoCollapsed(true)}
-                  className={`absolute -top-1 right-0 p-1 rounded-lg touch-manipulation ${ghostButtonClass}`}
-                  aria-expanded={true}
-                  aria-label={messages.ui.collapse}
-                >
-                  <ChevronDown size={14} />
-                </button>
-
-                <div className={`info-display text-[10px] uppercase tracking-widest mb-1 font-semibold ${headingTextClass}`}>
-                  {messages.ui.currentMolecule}
-                </div>
-                <div className={`info-display font-bold text-2xl tracking-tight ${primaryTextClass}`}>{moleculeName}</div>
-                <div className="text-emerald-400 font-mono text-lg mt-0.5">{molecule.formula}</div>
-
-                {moleculeInfo && (
-                  <div className="mt-3 text-left space-y-3">
-                    <div className="flex flex-col">
-                      <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{structureTitle}</span>
-                      <span className={`font-mono text-xs ${primaryTextClass}`}>{moleculeInfo.structure}</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className={`text-[9px] uppercase tracking-[0.2em] font-bold ${headingTextClass}`}>{factTitle}</span>
-                      <p className={`text-xs leading-relaxed ${secondaryTextClass}`}>{moleculeInfo.fact}</p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
-                  <span className={`text-[9px] uppercase tracking-[0.2em] font-bold mb-1 ${headingTextClass}`}>{polarityTitle}</span>
-                  <span className={`text-sm font-bold ${polarityReport.classification === 'polar' ? 'text-amber-400' : (polarityReport.classification === 'nonpolar' ? 'text-cyan-400' : secondaryTextClass)}`}>
-                    {polarityLabel}
-                  </span>
-                </div>
-              </div>
-            </div>
-          )
+        {!isDesktopViewport && (
+          <MoleculeInspector
+            isDesktopViewport={false}
+            molecule={molecule}
+            moleculeName={moleculeName}
+            moleculeInfo={moleculeInfo}
+            isMobileInfoCollapsed={isMobileInfoCollapsed}
+            setIsMobileInfoCollapsed={setIsMobileInfoCollapsed}
+            panelClass={panelClass}
+            headingTextClass={headingTextClass}
+            primaryTextClass={primaryTextClass}
+            secondaryTextClass={secondaryTextClass}
+            ghostButtonClass={ghostButtonClass}
+            isDark={isDark}
+            structureTitle={structureTitle}
+            factTitle={factTitle}
+            polarityTitle={polarityTitle}
+            polarityLabel={polarityLabel}
+            polarityClassification={polarityReport.classification}
+            polarityReason={polarityReport.reason}
+            messages={messages}
+          />
         )}
 
         {/* Mobile FAB */}
         <div className="md:hidden w-full flex justify-center pointer-events-auto pb-[calc(0.75rem+env(safe-area-inset-bottom))]">
           <button
+            data-testid="open-elements-drawer"
             onClick={() => setIsDrawerOpen(true)}
             className="lab-fab min-h-[48px] text-white px-6 py-3 rounded-full font-bold shadow-lg flex items-center gap-2 transition-transform active:scale-95 touch-manipulation"
           >
@@ -794,6 +576,7 @@ export function UI() {
               return (
                 <button
                   key={el}
+                  data-testid={`mobile-element-button-${el}`}
                   onClick={() => { addAtom(el); setIsDrawerOpen(false); }}
                   className={`lab-tile flex min-h-[96px] flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-colors border touch-manipulation ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}
                 >
@@ -811,6 +594,7 @@ export function UI() {
 
           <div className={`mt-5 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
             <button
+              data-testid="clear-elements-mobile"
               onClick={() => { clear(); setIsDrawerOpen(false); }}
               className={`w-full min-h-[48px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold touch-manipulation ${dangerButtonClass}`}
             >
@@ -839,6 +623,7 @@ export function UI() {
           </div>
 
           <button
+            data-testid="interaction-mode-toggle-mobile"
             onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
             aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
             title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
@@ -851,6 +636,7 @@ export function UI() {
 
       {isDesktopViewport && (
         <button
+          data-testid="interaction-mode-toggle-desktop"
           onClick={() => setInteractionMode(toggleInteractionMode(interactionMode))}
           aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
           title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}

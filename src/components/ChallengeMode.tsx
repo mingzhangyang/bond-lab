@@ -111,6 +111,7 @@ interface ChallengeStartButtonProps {
 function ChallengeStartButton({ messages, onStart }: ChallengeStartButtonProps) {
   return (
     <button
+      data-testid="start-challenge-button"
       onClick={onStart}
       className="lab-fab lab-reveal group relative min-h-[44px] flex items-center justify-center gap-2 text-white px-5 py-3 rounded-2xl transition-all active:scale-95 w-full pointer-events-auto overflow-hidden"
     >

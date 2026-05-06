@@ -1,108 +1,86 @@
 # BondLab Roadmap
 
-This roadmap defines the next implementation priorities for BondLab.
+This roadmap tracks current, not historical, priorities.
 
-## 1. Add More Types of Atom
+## 1. Stabilize Runtime Architecture
 
 ### Goal
-Expand beyond `H`, `C`, `N`, and `O` with additional chemistry-relevant atoms.
+Keep gameplay behavior stable while reducing coupling across state, simulation, and UI modules.
 
 ### Planned Scope
-- Add `S` (Sulfur), `P` (Phosphorus), and common halogens (`F`, `Cl`) first.
-- Extend element metadata in `src/chemistry.ts` for color, valence/max bonds, van der Waals radius, covalent radius, and electronegativity.
-- Update UI atom picker in `src/components/UI.tsx`.
-- Update i18n labels in `src/i18n.ts`.
+- Continue splitting large components into focused modules (`settings`, `element controls`, `molecule inspector`).
+- Keep store logic in dedicated slices (`molecule`, `preferences`, `challenge`) with clear ownership.
+- Maintain compatibility with existing actions used by scene and interaction components.
 
 ### Definition of Done
-- New atoms can be added in the UI.
-- Bonding rules work with valency constraints.
-- Related tests are added/updated before implementation (TDD).
+- No behavior regressions in build/delete/challenge flows.
+- Unit tests pass and cover touched logic.
+- Component/module boundaries are documented in code comments or file naming.
 
-## 2. Add More Molecules to Challenge Mode
+## 2. Expand Browser-Level Coverage
 
 ### Goal
-Increase challenge variety and improve replay value.
+Catch UI and navigation regressions that unit tests cannot detect.
 
 ### Planned Scope
-- Extend known molecule templates in `src/identifier.ts`.
-- Add molecule info cards in `src/moleculeInfo.ts`.
-- Ensure challenge target selection includes new molecules.
-- Tune challenge timer formula for larger molecules.
+- Keep core Playwright flows for route navigation and gameplay state changes.
+- Add tests for add/remove atoms, bond upgrade/removal, challenge start/complete/fail, and mobile drawer behaviors.
+- Run Playwright in CI using Chromium.
 
 ### Definition of Done
-- Challenge mode can target all newly added molecules.
-- Win/loss detection remains accurate for complex topologies.
-- Identification tests cover each newly added challenge molecule.
+- `npm run test:e2e` is green locally and in CI.
+- Critical user paths have deterministic coverage.
+- Failing tests provide actionable diagnostics.
 
-## 3. Add a Privacy Page
+## 3. Improve Bundle Discipline
 
 ### Goal
-Provide a clear, user-facing privacy policy page.
+Reduce risk of bundle-size regressions while keeping startup performance predictable.
 
 ### Planned Scope
-- Create a `Privacy` page component.
-- Add a visible entry point from the UI (or footer/menu).
-- Include sections for data collected/stored, localStorage usage (theme/language/preferences), external service usage (if/when enabled), and contact/update policy.
+- Track bundle output with `npm run bundle:report`.
+- Keep vendor chunking explicit in `vite.config.ts`.
+- Investigate additional code-splitting for heavy chemistry/template data paths.
 
 ### Definition of Done
-- Privacy page is reachable in both desktop and mobile layouts.
-- Content is readable and versioned in the repo.
-- Page is included in build and verified manually.
+- Bundle reports are produced for release candidates.
+- Any chunk growth is reviewed before merge.
+- Large dependency additions include impact notes.
 
-## 4. Enhance the Chemistry
+## 4. Refine Mobile UX
 
 ### Goal
-Improve realism and educational value of simulation and feedback.
+Keep core molecule and challenge interactions comfortable on small touch screens.
 
 ### Planned Scope
-- Improve molecule recognition coverage and topology handling.
-- Refine stability scoring with angle strain weighting plus valency penalties and messaging.
-- Improve polarity model and explanations.
-- Continue bond behavior improvements (rotation limits, constraints).
-- Expand chemistry tests for identifier, stability, polarity, and rotation/bond rules.
+- Tune layout spacing and control density on narrow viewports.
+- Ensure tap targets remain accessible under safe-area constraints.
+- Improve challenge drawer discoverability and completion flow.
 
 ### Definition of Done
-- Existing chemistry features remain stable.
-- New chemistry behavior is covered by tests first (TDD).
-- Manual validation confirms no regression in build/delete/challenge flows.
+- Core interactions remain reachable without overlap/clipping.
+- Manual mobile QA checklist is run for portrait and landscape.
+- E2E tests cover at least one mobile viewport scenario.
 
-## 5. More Rounds of Review
-
-### Goal
-Raise quality through repeated structured reviews.
-
-### Planned Review Cycle
-- Round 1: feature correctness and regressions.
-- Round 2: code quality and modularity.
-- Round 3: UX/content consistency (including i18n and accessibility).
-- Round 4: final release readiness (`test`, `lint`, `build`, manual QA).
-
-### Definition of Done
-- Each round has tracked findings and fixes.
-- High-severity issues are resolved before release.
-- Final checklist is complete: `npm run test`, `npm run lint`, `npm run build`, plus manual verification of core interactions.
-
-## 6. Fine Tune Mobile Browser UI/UX
+## 5. Chemistry and Learning Fidelity
 
 ### Goal
-Improve usability, clarity, and touch interaction quality on mobile browsers.
+Increase educational value while keeping rules understandable and deterministic.
 
 ### Planned Scope
-- Refine layout spacing and hierarchy for small screens in `src/components/UI.tsx` and related CSS.
-- Improve tap target sizes and interaction affordances for core controls (atom add/remove, bond actions, challenge controls).
-- Tune typography and panel behavior to reduce overlap/clipping in portrait mode.
-- Verify interaction flow and readability across common mobile viewport sizes.
+- Expand known molecule coverage and challenge target balance.
+- Improve explanatory text for polarity and stability outcomes.
+- Keep chemical constraints and special cases fully test-backed.
 
 ### Definition of Done
-- Core flows are comfortable to use on mobile: add/remove atoms, create/upgrade/remove bonds, and challenge mode.
-- No major overlap, clipping, or off-screen control issues on tested mobile breakpoints.
-- Manual QA checklist includes mobile browser validation for both portrait and landscape.
+- New chemistry behavior has tests first (TDD).
+- Existing molecule identification and challenge logic remain stable.
+- User-facing copy stays consistent across languages.
 
-## Execution Order
+## Release Checklist
 
-1. Add more atom types.
-2. Extend molecule library and challenge mode.
-3. Deliver privacy page.
-4. Ship chemistry enhancements in iterative slices.
-5. Fine tune mobile browser UI/UX.
-6. Run multiple review rounds before release.
+Before release:
+
+1. `npm run verify`
+2. `npm run test:e2e`
+3. Manual gameplay and mobile sanity check

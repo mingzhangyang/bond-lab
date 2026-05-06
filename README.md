@@ -41,9 +41,12 @@ The `.env.example` file only contains optional placeholders for deployment integ
 
 - `npm run dev`: Start Vite dev server on port `3000`.
 - `npm run build`: Build production assets into `dist/`.
+- `npm run bundle:report`: Print built JS/CSS asset sizes from `dist/assets`.
 - `npm run preview`: Preview the production build.
 - `npm run lint`: Type-check with `tsc --noEmit`.
 - `npm run test`: Run unit tests in `src/*.test.ts`.
+- `npm run test:e2e`: Run Playwright browser-level tests in `e2e/`.
+- `npm run verify`: Run `test`, `lint`, and `build` in sequence.
 - `npm run clean`: Remove `dist/`.
 
 ## Controls
@@ -84,9 +87,8 @@ For the canonical list used by the app, see `src/identifier.ts`.
 Before submitting changes, run:
 
 ```bash
-npm run test
-npm run lint
-npm run build
+npm run verify
+npm run test:e2e
 ```
 
 Then manually verify:

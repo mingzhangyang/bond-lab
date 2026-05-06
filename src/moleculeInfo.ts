@@ -1,4 +1,4 @@
-interface MoleculeInfo {
+export interface MoleculeInfo {
   structure: string;
   fact: string;
 }

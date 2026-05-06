@@ -3,12 +3,14 @@ import * as THREE from 'three';
 import { useFrame } from '@react-three/fiber';
 import { ELEMENTS, useStore } from './store';
 import { computeBondPlacement } from './bondPlacement';
+import { getPhysicsSceneState, resetPhysicsSceneState } from './physicsState';
 
-export const atomPositions: Record<string, THREE.Vector3> = {};
-export const atomVelocities: Record<string, THREE.Vector3> = {};
-export const lonePairs: Record<string, THREE.Vector3[]> = {};
-const atomMeshRefs: Record<string, THREE.Mesh> = {};
-const bondGroupRefs: Record<string, THREE.Group> = {};
+const physicsState = getPhysicsSceneState();
+export const atomPositions = physicsState.atomPositions;
+export const atomVelocities = physicsState.atomVelocities;
+export const lonePairs = physicsState.lonePairs;
+const atomMeshRefs = physicsState.atomMeshRefs;
+const bondGroupRefs = physicsState.bondGroupRefs;
 
 const IDEAL_BOND_LENGTH = 2.0;
 const LONE_PAIR_DIST = 1.0;
@@ -53,6 +55,11 @@ export function useAtomPositionVersion(): number {
     getAtomPositionVersion,
     () => 0,
   );
+}
+
+export function resetPhysicsState(): void {
+  resetPhysicsSceneState();
+  emitAtomPositionChange();
 }
 
 export function setAtomMeshRef(id: string, mesh: THREE.Mesh | null): void {

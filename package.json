@@ -6,12 +6,15 @@
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
     "build": "vite build",
+    "bundle:report": "node scripts/report-bundle.mjs",
     "preview": "vite preview",
     "cf:dev": "npm run build && wrangler dev",
     "cf:deploy": "npm run build && wrangler deploy",
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
-    "test": "node --experimental-strip-types --test src/*.test.ts"
+    "test": "node --experimental-strip-types --test src/*.test.ts",
+    "test:e2e": "playwright test",
+    "verify": "npm run test && npm run lint && npm run build"
   },
   "dependencies": {
     "@react-three/drei": "^10.7.7",
@@ -24,6 +27,7 @@
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.1.14",
+    "@playwright/test": "^1.54.2",
     "@types/node": "^22.14.0",
     "@types/react-dom": "^19.2.3",
     "@types/three": "0.182.0",
