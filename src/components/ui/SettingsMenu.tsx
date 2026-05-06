@@ -11,6 +11,7 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { getPathForRoute, navigateToRoute } from '../../routes';
+import { subscribeToMediaQuery } from '../../mediaQuery';
 import type { Language } from '../../i18n';
 import { getMessages } from '../../i18n';
 
@@ -67,21 +68,21 @@ export function SettingsMenu({
     const mobileMedia = window.matchMedia('(max-width: 767px)');
     const syncViewport = () => setIsMobileViewport(mobileMedia.matches);
     syncViewport();
-    mobileMedia.addEventListener('change', syncViewport);
+    const unsubscribe = subscribeToMediaQuery(mobileMedia, syncViewport);
     return () => {
-      mobileMedia.removeEventListener('change', syncViewport);
+      unsubscribe();
     };
   }, []);
 
   return (
     <div
-      className="lab-reveal fixed right-4 top-4 md:right-6 md:top-6 z-[70] pointer-events-auto"
-      style={{ animationDelay: '60ms' }}
+      className="absolute right-4 top-4 md:right-6 md:top-6 z-[70] pointer-events-auto"
     >
       <div className="relative">
         <button
           data-testid="settings-menu-button"
-          className={`min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${softPanelClass} ${ghostButtonClass}`}
+          className={`lab-reveal min-h-[44px] min-w-[44px] p-2 rounded-xl transition-colors flex items-center justify-center ${softPanelClass} ${ghostButtonClass}`}
+          style={{ animationDelay: '60ms' }}
           aria-label={messages.ui.menu}
           aria-expanded={isOpen}
           aria-haspopup="menu"
@@ -109,7 +110,7 @@ export function SettingsMenu({
             <div
               data-testid={isMobileViewport ? 'settings-menu-sheet' : 'settings-menu-dropdown'}
               className={isMobileViewport
-                ? `fixed inset-x-3 bottom-[calc(0.85rem+env(safe-area-inset-bottom))] z-[60] rounded-2xl border p-3 shadow-2xl ${softPanelClass}`
+                ? `fixed top-0 right-0 bottom-0 w-64 border-l p-4 pt-[max(env(safe-area-inset-top),4rem)] shadow-2xl z-[60] overflow-y-auto lab-slide-in-right ${softPanelClass}`
                 : `absolute right-0 top-full mt-2 w-52 rounded-xl p-2 shadow-xl z-[60] sm:w-56 ${softPanelClass}`}
               role="menu"
             >

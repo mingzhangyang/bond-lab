@@ -33,6 +33,7 @@ import {
 import {
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
+import { subscribeToMediaQuery } from '../mediaQuery';
 import { QuickStartGuide } from './QuickStartGuide';
 import {
   getChallengeCandidateMolecules,
@@ -226,13 +227,13 @@ export function UI() {
       setHasTouchInput(('ontouchstart' in window) || ((window.navigator?.maxTouchPoints ?? 0) > 0));
     };
     updateViewport();
-    desktopMedia.addEventListener('change', updateViewport);
-    narrowMedia.addEventListener('change', updateViewport);
-    coarseMedia.addEventListener('change', updateViewport);
+    const unsubscribeDesktop = subscribeToMediaQuery(desktopMedia, updateViewport);
+    const unsubscribeNarrow = subscribeToMediaQuery(narrowMedia, updateViewport);
+    const unsubscribeCoarse = subscribeToMediaQuery(coarseMedia, updateViewport);
     return () => {
-      desktopMedia.removeEventListener('change', updateViewport);
-      narrowMedia.removeEventListener('change', updateViewport);
-      coarseMedia.removeEventListener('change', updateViewport);
+      unsubscribeDesktop();
+      unsubscribeNarrow();
+      unsubscribeCoarse();
     };
   }, []);
 
