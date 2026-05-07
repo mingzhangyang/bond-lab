@@ -60,6 +60,7 @@ export interface MoleculeActions {
   removeBond: (id: string) => void;
   restoreLastRemovedBond: () => void;
   discardLastRemovedBond: () => void;
+  clearBondTransientState: () => void;
   clear: () => void;
 }
 

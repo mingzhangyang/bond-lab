@@ -165,6 +165,12 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
 
   discardLastRemovedBond: () => set({ lastRemovedBond: null }),
 
+  clearBondTransientState: () => set({
+    lastRemovedBond: null,
+    selectedBond: null,
+    rotatingBond: null,
+  }),
+
   clear: () => set({
     atoms: [],
     bonds: [],

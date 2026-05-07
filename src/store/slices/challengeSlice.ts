@@ -7,26 +7,23 @@ import type {
 
 export type ChallengeSlice = ChallengeState & ChallengeActions;
 
-export const createChallengeSlice: StateCreator<GameState, [], [], ChallengeSlice> = (set) => ({
+export const createChallengeSlice: StateCreator<GameState, [], [], ChallengeSlice> = (set, get) => ({
   challengeActive: false,
   challengeTarget: null,
   challengeTimeLeft: 0,
   challengeTotalTime: 0,
   challengeStatus: 'idle',
 
-  startChallenge: (target, timeLimit) => set({
-    atoms: [],
-    bonds: [],
-    lastRemovedBond: null,
-    selectedAtom: null,
-    selectedBond: null,
-    rotatingBond: null,
-    challengeActive: true,
-    challengeTarget: target,
-    challengeTimeLeft: timeLimit,
-    challengeTotalTime: timeLimit,
-    challengeStatus: 'playing',
-  }),
+  startChallenge: (target, timeLimit) => {
+    get().clear();
+    set({
+      challengeActive: true,
+      challengeTarget: target,
+      challengeTimeLeft: timeLimit,
+      challengeTotalTime: timeLimit,
+      challengeStatus: 'playing',
+    });
+  },
 
   tickChallenge: () => set((state) => {
     if (state.challengeStatus !== 'playing') return state;
@@ -39,12 +36,12 @@ export const createChallengeSlice: StateCreator<GameState, [], [], ChallengeSlic
 
   winChallenge: () => set({ challengeStatus: 'won' }),
 
-  stopChallenge: () => set({
-    challengeActive: false,
-    challengeTarget: null,
-    challengeStatus: 'idle',
-    lastRemovedBond: null,
-    selectedBond: null,
-    rotatingBond: null,
-  }),
+  stopChallenge: () => {
+    get().clearBondTransientState();
+    set({
+      challengeActive: false,
+      challengeTarget: null,
+      challengeStatus: 'idle',
+    });
+  },
 });
