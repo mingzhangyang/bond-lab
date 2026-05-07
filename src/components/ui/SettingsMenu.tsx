@@ -4,6 +4,7 @@ import {
   Check,
   Globe,
   Menu,
+  MessageSquare,
   Moon,
   Shield,
   Sparkles,
@@ -36,6 +37,7 @@ interface SettingsMenuProps {
   onToggleTheme: () => void;
   onSetLanguage: (language: Language) => void;
   onReplayOnboarding: () => void;
+  onOpenFeedback: () => void;
 }
 
 export function SettingsMenu({
@@ -49,6 +51,7 @@ export function SettingsMenu({
   onToggleTheme,
   onSetLanguage,
   onReplayOnboarding,
+  onOpenFeedback,
 }: SettingsMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isLanguageSubmenuOpen, setIsLanguageSubmenuOpen] = useState(false);
@@ -214,6 +217,19 @@ export function SettingsMenu({
                 <Shield size={16} />
                 <span>{messages.ui.privacy}</span>
               </a>
+
+              <button
+                data-testid="menu-button-feedback"
+                className={`w-full min-h-[40px] px-3 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${settingsItemClass}`}
+                role="menuitem"
+                onClick={() => {
+                  closeMenu();
+                  onOpenFeedback();
+                }}
+              >
+                <MessageSquare size={16} />
+                <span>{messages.ui.feedback}</span>
+              </button>
             </div>
           </>
         )}

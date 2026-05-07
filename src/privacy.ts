@@ -26,6 +26,6 @@ export const PRIVACY_POLICY: PrivacyPolicy = {
   ],
   updatesAndContact: [
     'This policy may be updated as features evolve; the version date above reflects the latest change.',
-    'For privacy questions or removal requests, contact project maintainers via the repository issue tracker.',
+    'For privacy questions or removal requests, contact us at contact@orangely.xyz.',
   ],
 };

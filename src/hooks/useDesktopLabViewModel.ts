@@ -62,6 +62,7 @@ interface DesktopHandlers {
   onToggleTheme: () => void;
   onSetLanguage: (language: ComponentProps<typeof SettingsMenu>['language']) => void;
   onReplayOnboarding: () => void;
+  onOpenFeedback: () => void;
   onStartOnboarding: () => void;
   onDismissOnboarding: () => void;
   onOpenElementsFromGuide: () => void;
@@ -133,6 +134,7 @@ export function useDesktopLabViewModel({
     onToggleTheme,
     onSetLanguage,
     onReplayOnboarding,
+    onOpenFeedback,
     onStartOnboarding,
     onDismissOnboarding,
     onOpenElementsFromGuide,
@@ -172,7 +174,8 @@ export function useDesktopLabViewModel({
       settingsItemClass,
       onToggleTheme,
       onSetLanguage,
-      onReplayOnboarding: onReplayOnboarding,
+      onReplayOnboarding,
+      onOpenFeedback,
     } satisfies ComponentProps<typeof SettingsMenu>,
     desktopElementsRailProps: {
       isDesktopViewport,
@@ -282,6 +285,7 @@ export function useDesktopLabViewModel({
     onElementDragStart,
     onOpenElementsFromGuide,
     onOpenElementsPanel,
+    onOpenFeedback,
     onReplayOnboarding,
     onSetLanguage,
     onStartChallenge,

@@ -33,6 +33,7 @@ export function useLabUiController() {
     startChallenge,
   } = useLabStoreSnapshot();
   const [isElementsPanelOpen, setIsElementsPanelOpen] = useState(true);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
   const {
     isDesktopViewport,
     isNarrowViewport,
@@ -212,6 +213,7 @@ export function useLabUiController() {
       onToggleTheme: toggleTheme,
       onSetLanguage: setLanguage,
       onReplayOnboarding: handleReplayOnboarding,
+      onOpenFeedback: () => setIsFeedbackOpen(true),
       onStartOnboarding: handleStartOnboarding,
       onDismissOnboarding: handleDismissOnboarding,
       onOpenElementsFromGuide: () => setIsDrawerOpen(true),
@@ -286,5 +288,13 @@ export function useLabUiController() {
     deleteModeHintProps,
     bondUndoToastProps,
     bondActionBarProps,
+    feedbackModalProps: {
+      isOpen: isFeedbackOpen,
+      onClose: () => setIsFeedbackOpen(false),
+      messages,
+      isDark,
+      softPanelClass,
+      settingsItemClass,
+    },
   };
 }

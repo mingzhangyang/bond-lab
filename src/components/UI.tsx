@@ -1,6 +1,7 @@
 import { useLabUiController } from '../hooks/useLabUiController';
 import { LabDesktopSection } from './ui/LabDesktopSection';
 import { LabMobileSection } from './ui/LabMobileSection';
+import { FeedbackModal } from './ui/FeedbackModal';
 
 export function UI() {
   const {
@@ -22,6 +23,7 @@ export function UI() {
     mobileActionDockProps,
     challengeModeProps,
     isOnboardingVisible,
+    feedbackModalProps,
   } = useLabUiController();
 
   return (
@@ -51,6 +53,8 @@ export function UI() {
         bondUndoToastProps={bondUndoToastProps}
         bondActionBarProps={bondActionBarProps}
       />
+
+      <FeedbackModal {...feedbackModalProps} />
     </div>
   );
 }

@@ -33,6 +33,7 @@ export interface Messages {
     expand: string;
     close: string;
     backToLab: string;
+    feedback: string;
     privacy: string;
     privacyTitle: string;
     privacyVersion: string;
@@ -57,6 +58,16 @@ export interface Messages {
   };
   stability: {
     title: string;
+  };
+  feedback: {
+    title: string;
+    categoryLabel: string;
+    bug: string;
+    suggestion: string;
+    other: string;
+    placeholder: string;
+    submit: string;
+    cancel: string;
   };
   onboarding: {
     menu: string;
@@ -128,6 +139,7 @@ const EN_MESSAGES: Messages = {
     expand: 'Expand',
     close: 'Close',
     backToLab: 'Back to Lab',
+    feedback: 'Feedback',
     privacy: 'Privacy',
     privacyTitle: 'Privacy Policy',
     privacyVersion: 'Version',
@@ -161,6 +173,16 @@ const EN_MESSAGES: Messages = {
   },
   stability: {
     title: 'Stability',
+  },
+  feedback: {
+    title: 'Send Feedback',
+    categoryLabel: 'Category',
+    bug: 'Bug',
+    suggestion: 'Suggestion',
+    other: 'Other',
+    placeholder: 'Describe your feedback…',
+    submit: 'Send',
+    cancel: 'Cancel',
   },
   onboarding: {
     menu: 'Quick Start',
@@ -254,6 +276,7 @@ const ES_MESSAGES: Messages = {
     expand: 'Expandir',
     close: 'Cerrar',
     backToLab: 'Volver al laboratorio',
+    feedback: 'Comentarios',
     privacy: 'Privacidad',
     privacyTitle: 'Politica de privacidad',
     privacyVersion: 'Version',
@@ -287,6 +310,16 @@ const ES_MESSAGES: Messages = {
   },
   stability: {
     title: 'Estabilidad',
+  },
+  feedback: {
+    title: 'Enviar comentarios',
+    categoryLabel: 'Categoria',
+    bug: 'Error',
+    suggestion: 'Sugerencia',
+    other: 'Otro',
+    placeholder: 'Describe tu comentario…',
+    submit: 'Enviar',
+    cancel: 'Cancelar',
   },
   onboarding: {
     menu: 'Inicio rapido',
@@ -380,6 +413,7 @@ const ZH_MESSAGES: Messages = {
     expand: '展开',
     close: '关闭',
     backToLab: '返回实验室',
+    feedback: '反馈',
     privacy: '隐私',
     privacyTitle: '隐私政策',
     privacyVersion: '版本',
@@ -413,6 +447,16 @@ const ZH_MESSAGES: Messages = {
   },
   stability: {
     title: '稳定性',
+  },
+  feedback: {
+    title: '发送反馈',
+    categoryLabel: '类型',
+    bug: '问题',
+    suggestion: '建议',
+    other: '其他',
+    placeholder: '请描述您的反馈…',
+    submit: '发送',
+    cancel: '取消',
   },
   onboarding: {
     menu: '快速上手',
@@ -506,6 +550,7 @@ const FR_MESSAGES: Messages = {
     expand: 'Etendre',
     close: 'Fermer',
     backToLab: 'Retour au labo',
+    feedback: 'Avis',
     privacy: 'Confidentialite',
     privacyTitle: 'Politique de confidentialite',
     privacyVersion: 'Version',
@@ -539,6 +584,16 @@ const FR_MESSAGES: Messages = {
   },
   stability: {
     title: 'Stabilite',
+  },
+  feedback: {
+    title: 'Envoyer un avis',
+    categoryLabel: 'Categorie',
+    bug: 'Bogue',
+    suggestion: 'Suggestion',
+    other: 'Autre',
+    placeholder: 'Decrivez votre avis…',
+    submit: 'Envoyer',
+    cancel: 'Annuler',
   },
   onboarding: {
     menu: 'Demarrage rapide',
@@ -632,6 +687,7 @@ const JA_MESSAGES: Messages = {
     expand: '展開',
     close: '閉じる',
     backToLab: 'ラボに戻る',
+    feedback: 'フィードバック',
     privacy: 'プライバシー',
     privacyTitle: 'プライバシーポリシー',
     privacyVersion: '版',
@@ -665,6 +721,16 @@ const JA_MESSAGES: Messages = {
   },
   stability: {
     title: '安定性',
+  },
+  feedback: {
+    title: 'フィードバックを送る',
+    categoryLabel: 'カテゴリ',
+    bug: 'バグ',
+    suggestion: '提案',
+    other: 'その他',
+    placeholder: 'フィードバックを入力してください…',
+    submit: '送信',
+    cancel: 'キャンセル',
   },
   onboarding: {
     menu: 'クイックスタート',
