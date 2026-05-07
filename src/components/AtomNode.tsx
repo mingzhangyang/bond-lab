@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useStore, ELEMENTS, type ElementType } from '../store';
-import { atomPositions, setAtomMeshRef, setAtomPosition } from '../physics';
+import { atomPositions, setAtomMeshRef, setAtomPosition, IDEAL_BOND_LENGTH } from '../physics';
 import { toNormalizedDeviceCoordinates } from '../drag';
 
 interface AtomNodeProps {
@@ -76,7 +76,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
         const p2 = atomPositions[other.id];
         if (!p2) continue;
 
-        if (p1.distanceTo(p2) < 1.5) {
+        if (p1.distanceTo(p2) < IDEAL_BOND_LENGTH * 0.75) {
           addBondAction(id, other.id);
         }
       }

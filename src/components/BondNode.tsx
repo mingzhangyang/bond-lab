@@ -28,6 +28,38 @@ const ROTATION_START_THRESHOLD_PX = 2;
 const ROTATION_SENSITIVITY = 0.008;
 const ROTATION_MAX_DELTA_PX = 20;
 
+function getBondColor(
+  isRotating: boolean,
+  isSelected: boolean,
+  hovered: boolean,
+  interactionMode: string,
+  shiftPressed: boolean,
+  bondRotatable: boolean,
+): string {
+  if (isRotating) return '#38bdf8';
+  if (isSelected) return '#22c55e';
+  if (!hovered) return '#888888';
+  if (interactionMode === 'delete') return '#ef4444';
+  if (interactionMode === 'build' && shiftPressed) return bondRotatable ? '#f59e0b' : '#f87171';
+  return '#aaaaaa';
+}
+
+function getBondEmissive(
+  isRotating: boolean,
+  isSelected: boolean,
+  hovered: boolean,
+  interactionMode: string,
+  shiftPressed: boolean,
+  bondRotatable: boolean,
+): string {
+  if (isRotating) return '#0c4a6e';
+  if (isSelected) return '#14532d';
+  if (!hovered) return '#000';
+  if (interactionMode === 'delete') return '#330000';
+  if (interactionMode === 'build' && shiftPressed) return bondRotatable ? '#5b3410' : '#450a0a';
+  return '#222';
+}
+
 function BondNodeImpl({ bond }: BondNodeProps) {
   const groupRef = useRef<THREE.Group>(null);
   const [hovered, setHovered] = useState(false);
@@ -200,50 +232,10 @@ function BondNodeImpl({ bond }: BondNodeProps) {
         <mesh key={i} position={[offset, 0, 0]}>
           <cylinderGeometry args={[0.08, 0.08, 1, 16]} />
           <meshStandardMaterial
-            color={
-              isRotating
-                ? '#38bdf8'
-                : (
-                    isSelected
-                      ? '#22c55e'
-                      : (
-                    hovered
-                      ? (
-                          interactionMode === 'delete'
-                            ? '#ef4444'
-                            : (
-                                interactionMode === 'build' && shiftPressed
-                                  ? (bondRotatable ? '#f59e0b' : '#f87171')
-                                  : '#aaaaaa'
-                              )
-                        )
-                      : '#888888'
-                      )
-                  )
-            }
+            color={getBondColor(isRotating, isSelected, hovered, interactionMode, shiftPressed, bondRotatable)}
             roughness={0.4}
             metalness={0.2}
-            emissive={
-              isRotating
-                ? '#0c4a6e'
-                : (
-                    isSelected
-                      ? '#14532d'
-                      : (
-                    hovered
-                      ? (
-                          interactionMode === 'delete'
-                            ? '#330000'
-                            : (
-                                interactionMode === 'build' && shiftPressed
-                                  ? (bondRotatable ? '#5b3410' : '#450a0a')
-                                  : '#222'
-                              )
-                        )
-                      : '#000'
-                      )
-                  )
-            }
+            emissive={getBondEmissive(isRotating, isSelected, hovered, interactionMode, shiftPressed, bondRotatable)}
           />
         </mesh>
       ))}

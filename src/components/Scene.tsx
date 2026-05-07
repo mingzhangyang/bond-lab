@@ -1,4 +1,5 @@
-import { useEffect } from 'react';
+import { Component, useEffect } from 'react';
+import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei/core/OrbitControls';
@@ -7,6 +8,28 @@ import { AtomNode } from './AtomNode';
 import { BondNode } from './BondNode';
 import { PhysicsEngine, TransformSync, setAtomPosition } from '../physics';
 import { getElementFromDragData, hasElementDragData, projectPointerToScenePlane } from '../drag';
+
+class SceneErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
+  constructor(props: { children: ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-400 text-sm">
+          3D scene failed to render. Reload the page to try again.
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 function SceneDropTarget() {
   const addAtom = useStore((state) => state.addAtom);
@@ -65,8 +88,9 @@ export function Scene() {
   const isDark = theme === 'dark';
 
   return (
+    <SceneErrorBoundary>
     <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
-      <Canvas 
+      <Canvas
         camera={{ position: [0, 0, 10], fov: 45 }}
         onPointerMissed={() => {
           useStore.getState().setSelectedAtom(null);
@@ -102,5 +126,6 @@ export function Scene() {
         />
       </Canvas>
     </div>
+    </SceneErrorBoundary>
   );
 }

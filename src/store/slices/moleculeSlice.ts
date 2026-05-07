@@ -101,10 +101,11 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
       };
     }
 
+    const newBondId = createId();
     const nextBonds = [
       ...state.bonds,
       {
-        id: createId(),
+        id: newBondId,
         source,
         target,
         order: 1,
@@ -118,7 +119,7 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
     const chemistry = getBondChemistry(sourceAtom.element, targetAtom.element, 1);
     return {
       bonds: nextBonds.map((bond) => (
-        isSameBondPair(bond, source, target) && bond.order === 1 && !('bondLength' in bond)
+        bond.id === newBondId
           ? {
               ...bond,
               bondLength: chemistry.bondLength,

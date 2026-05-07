@@ -21,6 +21,9 @@ export function getPhysicsSceneState(): PhysicsSceneState {
 }
 
 export function resetPhysicsSceneState(): void {
+  // Must mutate in-place rather than reassign: physics.ts exports direct references to these
+  // objects (e.g. `export const atomPositions = physicsSceneState.atomPositions`). Replacing
+  // the property would break those exported bindings.
   Object.keys(physicsSceneState.atomPositions).forEach((key) => {
     delete physicsSceneState.atomPositions[key];
   });

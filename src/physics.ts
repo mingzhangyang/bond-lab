@@ -12,7 +12,7 @@ export const lonePairs = physicsState.lonePairs;
 const atomMeshRefs = physicsState.atomMeshRefs;
 const bondGroupRefs = physicsState.bondGroupRefs;
 
-const IDEAL_BOND_LENGTH = 2.0;
+export const IDEAL_BOND_LENGTH = 2.0;
 const LONE_PAIR_DIST = 1.0;
 const K_BOND = 25.0;
 const K_VSEPR = 10.0;
@@ -335,7 +335,9 @@ export function PhysicsEngine() {
       if (numDomains > 1) {
         let idealAngle = Math.PI; // 180
         if (numDomains === 3) idealAngle = 2 * Math.PI / 3; // 120
-        else if (numDomains >= 4) idealAngle = Math.acos(-1 / 3); // 109.47
+        else if (numDomains === 4) idealAngle = Math.acos(-1 / 3); // 109.47
+        else if (numDomains === 5) idealAngle = Math.PI / 2; // 90° (trigonal bipyramidal)
+        else if (numDomains >= 6) idealAngle = Math.PI / 2; // 90° (octahedral)
 
         for (let i = 0; i < numDomains; i++) {
           for (let j = i + 1; j < numDomains; j++) {
@@ -357,7 +359,10 @@ export function PhysicsEngine() {
             let currentIdealAngle = idealAngle;
             let repulsionFactor = 1.0;
 
-            if (numDomains >= 4) {
+            if (numDomains >= 5) {
+              // Trigonal bipyramidal / octahedral: uniform 90° geometry
+              repulsionFactor = d1.type === 'lp' || d2.type === 'lp' ? 1.2 : 0.9;
+            } else if (numDomains === 4) {
               if (d1.type === 'lp' && d2.type === 'lp') {
                 currentIdealAngle = 114 * Math.PI / 180;
                 repulsionFactor = 1.5;

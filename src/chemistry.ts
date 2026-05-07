@@ -361,14 +361,14 @@ function getAtomById(atomId: string, atoms: BondingAtom[]): BondingAtom | undefi
   return atoms.find((atom) => atom.id === atomId);
 }
 
-function isTwoAtomCarbonOxygenPair(atoms: BondingAtom[], bonds: BondingBond[]): boolean {
+function isCarbonOxygenPair(atoms: BondingAtom[], bonds: BondingBond[]): boolean {
   if (atoms.length !== 2 || bonds.length !== 1) return false;
   const pair = [...atoms.map((atom) => atom.element)].sort().join('-');
   return pair === 'C-O';
 }
 
 function isCarbonMonoxide(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
-  if (!isTwoAtomCarbonOxygenPair(atoms, bonds)) return false;
+  if (!isCarbonOxygenPair(atoms, bonds)) return false;
   if (bonds[0]?.order !== 3) return false;
   const atom = getAtomById(atomId, atoms);
   return atom?.element === 'C' || atom?.element === 'O';
@@ -377,11 +377,10 @@ function isCarbonMonoxide(atomId: string, atoms: BondingAtom[], bonds: BondingBo
 export function getAtomBondLimit(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
-
-  if (atom.element === 'O' && isTwoAtomCarbonOxygenPair(atoms, bonds)) {
+  // O's default maxBonds is 2, but a C-O diatomic molecule must be able to reach a triple bond (CO)
+  if (atom.element === 'O' && isCarbonOxygenPair(atoms, bonds)) {
     return 3;
   }
-
   return ELEMENTS[atom.element].maxBonds;
 }
 
@@ -392,10 +391,8 @@ export function isAtomBondingValid(atomId: string, atoms: BondingAtom[], bonds: 
 export function getAtomBondTarget(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
-
   if (isCarbonMonoxide(atomId, atoms, bonds)) {
     return 3;
   }
-
   return ELEMENTS[atom.element].maxBonds;
 }
