@@ -55,11 +55,21 @@ The `.env.example` file only contains optional placeholders for deployment integ
 - Build mode: click one atom, then another atom to create or upgrade a bond.
 - Build mode: drag an atom to reposition it.
 - Build mode: release a dragged atom near another atom to auto-create a bond.
+- Build mode: click a bond to select it, then use explicit `Upgrade` / `Delete` actions.
 - Build mode: `Shift + drag` on a single bond to rotate connected geometry.
-- Delete mode: click atoms or bonds to remove them.
-- Delete mode: right-click on an atom or bond to remove it.
+- Delete mode (shortcut): click atoms or bonds to remove them quickly.
+- Delete mode: press `Esc` to return to Build mode.
 - Camera: drag background to orbit.
 - Camera: scroll or pinch to zoom.
+
+## Quick Tutorial
+
+1. Add 2 atoms from the element panel.
+2. Click atom A, then atom B, to create the first bond.
+3. Click the bond once to select it.
+4. Use the floating `Upgrade` button to change bond order.
+5. Use `Delete` in the same action bar to remove only that selected bond.
+6. Use Delete mode only when you want fast cleanup of multiple atoms/bonds.
 
 ## Known Molecules
 

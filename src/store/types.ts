@@ -27,9 +27,11 @@ export interface ChallengeTarget {
 export interface MoleculeState {
   atoms: Atom[];
   bonds: Bond[];
+  lastRemovedBond: Bond | null;
   draggedAtom: string | null;
   rotatingBond: string | null;
   selectedAtom: string | null;
+  selectedBond: string | null;
   interactionMode: InteractionMode;
 }
 
@@ -50,11 +52,14 @@ export interface MoleculeActions {
   setDraggedAtom: (id: string | null) => void;
   setRotatingBond: (id: string | null) => void;
   setSelectedAtom: (id: string | null) => void;
+  setSelectedBond: (id: string | null) => void;
   setInteractionMode: (mode: InteractionMode) => void;
   addAtom: (element: ElementType) => string;
   removeAtom: (id: string) => void;
   addBond: (source: string, target: string) => void;
   removeBond: (id: string) => void;
+  restoreLastRemovedBond: () => void;
+  discardLastRemovedBond: () => void;
   clear: () => void;
 }
 

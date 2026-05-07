@@ -34,11 +34,12 @@ const INTRO_COPY: Record<Language, InstructionCopy> = {
     },
     groupDescriptions: {
       build: 'Start a structure and create bonds between atoms.',
-      edit: 'Modify existing structures and clean up mistakes quickly.',
+      edit: 'Select a bond to use explicit Upgrade/Delete actions, then refine quickly.',
       navigate: 'Adjust camera and zoom to inspect your molecule clearly.',
     },
     quickTips: [
-      'Use Delete mode only when cleaning up; switch back to Build mode immediately after.',
+      'Primary path: tap a bond, then use Upgrade/Delete action buttons.',
+      'Use Delete mode as a fast cleanup shortcut; return to Build mode after.',
       'For precise bond rotation, select a single bond before holding Shift and dragging.',
       'On mobile, use two fingers for zoom and avoid covering atoms while dragging.',
     ],
@@ -54,11 +55,12 @@ const INTRO_COPY: Record<Language, InstructionCopy> = {
     },
     groupDescriptions: {
       build: 'Crea la estructura inicial y conecta atomos.',
-      edit: 'Ajusta enlaces y corrige errores rapidamente.',
+      edit: 'Selecciona un enlace para usar acciones explicitas de Mejorar/Eliminar y ajustar rapido.',
       navigate: 'Controla camara y zoom para inspeccionar mejor.',
     },
     quickTips: [
-      'Usa el modo Eliminar solo para limpiar; vuelve al modo Construir despues.',
+      'Ruta principal: toca un enlace y usa los botones de Mejorar/Eliminar.',
+      'Usa el modo Eliminar como atajo de limpieza y vuelve a Construir despues.',
       'Para rotar con precision, selecciona un enlace simple y luego manten Shift al arrastrar.',
       'En movil, usa dos dedos para zoom y evita tapar los atomos al arrastrar.',
     ],
@@ -74,11 +76,12 @@ const INTRO_COPY: Record<Language, InstructionCopy> = {
     },
     groupDescriptions: {
       build: '先创建原子与键，完成分子骨架。',
-      edit: '对已有结构进行调整并快速修正误操作。',
+      edit: '先选中化学键，再使用升级/删除按钮进行显式编辑。',
       navigate: '通过旋转和缩放检查分子的空间结构。',
     },
     quickTips: [
-      '删除模式建议仅在清理时短暂使用，完成后立即切回构建模式。',
+      '主路径是先选中化学键，再点击升级/删除按钮。',
+      '删除模式作为快速清理捷径，完成后建议切回构建模式。',
       '精确旋转键时，先选中单键，再按住 Shift 拖动。',
       '在移动端请用双指缩放，拖动时尽量避免手指遮挡目标原子。',
     ],
@@ -94,11 +97,12 @@ const INTRO_COPY: Record<Language, InstructionCopy> = {
     },
     groupDescriptions: {
       build: 'Placez les atomes et creez les liaisons de base.',
-      edit: 'Ajustez la structure et corrigez rapidement les erreurs.',
+      edit: 'Selectionnez une liaison puis utilisez Ameliorer/Supprimer pour editer clairement.',
       navigate: 'Controlez camera et zoom pour mieux observer.',
     },
     quickTips: [
-      'Utilisez le mode Supprimer seulement pour nettoyer, puis revenez en mode Construire.',
+      'Flux principal : touchez une liaison puis utilisez les boutons Ameliorer/Supprimer.',
+      'Utilisez le mode Supprimer comme raccourci de nettoyage, puis revenez en mode Construire.',
       'Pour une rotation precise, ciblez une liaison simple avant Shift + glisser.',
       'Sur mobile, zoomez avec deux doigts et evitez de masquer les atomes.',
     ],
@@ -114,11 +118,12 @@ const INTRO_COPY: Record<Language, InstructionCopy> = {
     },
     groupDescriptions: {
       build: '原子を配置し、結合を作って骨格を組み立てます。',
-      edit: '既存構造を調整し、ミスを素早く修正します。',
+      edit: '結合を選択して強化/削除ボタンを使い、意図した編集を行います。',
       navigate: 'カメラ回転とズームで分子を詳しく確認します。',
     },
     quickTips: [
-      '削除モードは整理時のみ使い、終わったら構築モードへ戻してください。',
+      '基本操作は、結合を選んでから強化/削除ボタンを使う流れです。',
+      '削除モードは高速な整理ショートカットとして使い、終わったら構築モードへ戻します。',
       '結合を正確に回転するには、単結合を選んでから Shift を押してドラッグします。',
       'モバイルでは 2 本指でズームし、ドラッグ時は原子を隠さないようにします。',
     ],

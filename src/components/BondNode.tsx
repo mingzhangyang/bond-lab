@@ -35,14 +35,17 @@ function BondNodeImpl({ bond }: BondNodeProps) {
   const suppressClickRef = useRef(false);
   const rotationRef = useRef<RotationState | null>(null);
   const removeBond = useStore((state) => state.removeBond);
-  const addBond = useStore((state) => state.addBond);
   const interactionMode = useStore((state) => state.interactionMode);
   const atoms = useStore((state) => state.atoms);
   const bonds = useStore((state) => state.bonds);
+  const selectedBondId = useStore((state) => state.selectedBond);
+  const setSelectedBond = useStore((state) => state.setSelectedBond);
+  const setSelectedAtom = useStore((state) => state.setSelectedAtom);
   const rotatingBondId = useStore((state) => state.rotatingBond);
   const setRotatingBond = useStore((state) => state.setRotatingBond);
   const { gl } = useThree();
   const isRotating = rotatingBondId === bond.id;
+  const isSelected = selectedBondId === bond.id;
   const bondRotatable = useMemo(() => canRotateBond(bond, bonds), [bond, bonds]);
 
   useEffect(() => {
@@ -181,11 +184,13 @@ function BondNodeImpl({ bond }: BondNodeProps) {
         if (interactionMode === 'build' && e.shiftKey) {
           return;
         }
-        addBond(bond.source, bond.target);
+        setSelectedAtom(null);
+        setSelectedBond(isSelected ? null : bond.id);
       }}
       onContextMenu={(e) => {
         e.nativeEvent.preventDefault();
         e.stopPropagation();
+        if (interactionMode !== 'delete') return;
         removeBond(bond.id);
       }}
       onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
@@ -199,6 +204,9 @@ function BondNodeImpl({ bond }: BondNodeProps) {
               isRotating
                 ? '#38bdf8'
                 : (
+                    isSelected
+                      ? '#22c55e'
+                      : (
                     hovered
                       ? (
                           interactionMode === 'delete'
@@ -210,6 +218,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
                               )
                         )
                       : '#888888'
+                      )
                   )
             }
             roughness={0.4}
@@ -218,6 +227,9 @@ function BondNodeImpl({ bond }: BondNodeProps) {
               isRotating
                 ? '#0c4a6e'
                 : (
+                    isSelected
+                      ? '#14532d'
+                      : (
                     hovered
                       ? (
                           interactionMode === 'delete'
@@ -229,6 +241,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
                               )
                         )
                       : '#000'
+                      )
                   )
             }
           />

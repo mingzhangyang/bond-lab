@@ -22,20 +22,28 @@ function isSameBondPair(bond: Bond, source: string, target: string): boolean {
 export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice> = (set) => ({
   atoms: [],
   bonds: [],
+  lastRemovedBond: null,
   draggedAtom: null,
   rotatingBond: null,
   selectedAtom: null,
+  selectedBond: null,
   interactionMode: 'build',
 
   setDraggedAtom: (id) => set({ draggedAtom: id }),
   setRotatingBond: (id) => set({ rotatingBond: id }),
-  setSelectedAtom: (id) => set({ selectedAtom: id }),
-  setInteractionMode: (interactionMode) => set({ interactionMode }),
+  setSelectedAtom: (id) => set({ selectedAtom: id, selectedBond: null }),
+  setSelectedBond: (id) => set({ selectedBond: id, selectedAtom: null }),
+  setInteractionMode: (interactionMode) => set({
+    interactionMode,
+    selectedAtom: null,
+    selectedBond: null,
+  }),
 
   addAtom: (element) => {
     const id = createId();
     set((state) => ({
       atoms: [...state.atoms, { id, element }],
+      lastRemovedBond: null,
     }));
     return id;
   },
@@ -43,7 +51,9 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
   removeAtom: (id) => set((state) => ({
     atoms: state.atoms.filter((atom) => atom.id !== id),
     bonds: state.bonds.filter((bond) => bond.source !== id && bond.target !== id),
+    lastRemovedBond: null,
     selectedAtom: state.selectedAtom === id ? null : state.selectedAtom,
+    selectedBond: null,
   })),
 
   addBond: (source, target) => set((state) => {
@@ -86,6 +96,8 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
               }
             : bond
         )),
+        lastRemovedBond: null,
+        selectedBond: null,
       };
     }
 
@@ -115,13 +127,50 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
             }
           : bond
       )),
+      lastRemovedBond: null,
+      selectedBond: null,
     };
   }),
 
-  removeBond: (id) => set((state) => ({
-    bonds: state.bonds.filter((bond) => bond.id !== id),
-    rotatingBond: state.rotatingBond === id ? null : state.rotatingBond,
-  })),
+  removeBond: (id) => set((state) => {
+    const removedBond = state.bonds.find((bond) => bond.id === id) ?? null;
+    if (!removedBond) return state;
+    return {
+      bonds: state.bonds.filter((bond) => bond.id !== id),
+      lastRemovedBond: removedBond,
+      rotatingBond: state.rotatingBond === id ? null : state.rotatingBond,
+      selectedBond: state.selectedBond === id ? null : state.selectedBond,
+    };
+  }),
 
-  clear: () => set({ atoms: [], bonds: [], selectedAtom: null, rotatingBond: null }),
+  restoreLastRemovedBond: () => set((state) => {
+    const removedBond = state.lastRemovedBond;
+    if (!removedBond) return state;
+
+    const atomIds = new Set(state.atoms.map((atom) => atom.id));
+    const atomsExist = atomIds.has(removedBond.source) && atomIds.has(removedBond.target);
+    const duplicateBondExists = state.bonds.some((bond) => (
+      isSameBondPair(bond, removedBond.source, removedBond.target)
+    ));
+
+    if (!atomsExist || duplicateBondExists) {
+      return { lastRemovedBond: null };
+    }
+
+    return {
+      bonds: [...state.bonds, removedBond],
+      lastRemovedBond: null,
+    };
+  }),
+
+  discardLastRemovedBond: () => set({ lastRemovedBond: null }),
+
+  clear: () => set({
+    atoms: [],
+    bonds: [],
+    lastRemovedBond: null,
+    selectedAtom: null,
+    selectedBond: null,
+    rotatingBond: null,
+  }),
 });

@@ -1,19 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useStore, ELEMENTS, ELEMENT_DISPLAY_ORDER } from '../store';
+import { useStore, type ElementType } from '../store';
 import { identifyMolecule, KNOWN_MOLECULES } from '../identifier';
 import { calculateMolecularPolarity } from '../polarity';
 import { atomPositions, useAtomPositionVersion } from '../physics';
 import { getMoleculeInfo } from '../moleculeInfo';
-import {
-  Atom,
-  Trophy,
-  Trash2,
-  X,
-  Plus,
-  ChevronRight,
-  ChevronLeft,
-} from 'lucide-react';
-import { StabilityDisplay } from './StabilityDisplay';
 import {
   ChallengeMode,
 } from './ChallengeMode';
@@ -21,44 +11,29 @@ import { getMessages, localizeMoleculeName } from '../i18n';
 import { toggleInteractionMode } from '../preferences';
 import { getLabThemeVars } from '../theme';
 import {
-  advanceOnboardingStep,
-  ONBOARDING_STORAGE_KEY,
-  ONBOARDING_VERSION,
-  shouldShowOnboarding,
-  type OnboardingStep,
-} from '../onboarding';
-import {
   setElementDragData,
 } from '../drag';
 import {
   shouldUseMobileChallengeDrawer,
 } from '../challengeLayout';
-import { subscribeToMediaQuery } from '../mediaQuery';
 import { QuickStartGuide } from './QuickStartGuide';
 import {
   getChallengeCandidateMolecules,
   pickChallengeMolecule,
 } from '../challengeTargets';
 import { SettingsMenu } from './ui/SettingsMenu';
-import { MoleculeInspector } from './ui/MoleculeInspector';
-
-function getStoredOnboardingVersion(): string | null {
-  if (typeof window === 'undefined') return null;
-  try {
-    return window.localStorage.getItem(ONBOARDING_STORAGE_KEY);
-  } catch {
-    return null;
-  }
-}
-
-function persistOnboardingSeen(): void {
-  if (typeof window === 'undefined') return;
-  try {
-    window.localStorage.setItem(ONBOARDING_STORAGE_KEY, ONBOARDING_VERSION);
-  } catch {
-    // No-op when storage is unavailable.
-  }
-}
+import { useLabViewport } from '../hooks/useLabViewport';
+import { useBondActions } from '../hooks/useBondActions';
+import { MobileActionDock } from './ui/MobileActionDock';
+import { InteractionModeFab } from './ui/InteractionModeFab';
+import { DeleteModeHint } from './ui/DeleteModeHint';
+import { BondActionBar } from './ui/BondActionBar';
+import { BondUndoToast } from './ui/BondUndoToast';
+import { DesktopElementsRail } from './ui/DesktopElementsRail';
+import { MobileElementsDrawer } from './ui/MobileElementsDrawer';
+import { useOnboardingGuide } from '../hooks/useOnboardingGuide';
+import { TopBrandHeader } from './ui/TopBrandHeader';
+import { MoleculeInspectorPanels } from './ui/MoleculeInspectorPanels';
 
 export function UI() {
   const atoms = useStore((state) => state.atoms);
@@ -78,38 +53,18 @@ export function UI() {
   const startChallenge = useStore((state) => state.startChallenge);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const [isElementsPanelOpen, setIsElementsPanelOpen] = useState(true);
-  const [isDesktopViewport, setIsDesktopViewport] = useState(() => (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(min-width: 768px)').matches
-  ));
-  const [isNarrowViewport, setIsNarrowViewport] = useState(() => (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(max-width: 1023px)').matches
-  ));
-  const [isCoarsePointer, setIsCoarsePointer] = useState(() => (
-    typeof window !== 'undefined'
-    && typeof window.matchMedia === 'function'
-    && window.matchMedia('(hover: none), (pointer: coarse)').matches
-  ));
-  const [hasTouchInput, setHasTouchInput] = useState(() => (
-    typeof window !== 'undefined'
-    && (
-      ('ontouchstart' in window)
-      || ((window.navigator?.maxTouchPoints ?? 0) > 0)
-    )
-  ));
+  const {
+    isDesktopViewport,
+    isNarrowViewport,
+    isCoarsePointer,
+    hasTouchInput,
+  } = useLabViewport();
   const [isMobileChallengeOpen, setIsMobileChallengeOpen] = useState(false);
   const [isMobileInfoCollapsed, setIsMobileInfoCollapsed] = useState(() => (
     typeof window !== 'undefined'
     && typeof window.matchMedia === 'function'
     && !window.matchMedia('(min-width: 768px)').matches
   ));
-  const [onboardingStep, setOnboardingStep] = useState<OnboardingStep | null>(() => {
-    if (typeof window === 'undefined') return null;
-    return shouldShowOnboarding(getStoredOnboardingVersion()) ? 'welcome' : null;
-  });
   const [mobileStatusChip, setMobileStatusChip] = useState<string | null>(null);
 
   const messages = useMemo(() => getMessages(language), [language]);
@@ -206,7 +161,20 @@ export function UI() {
       ? 'lab-fab bg-red-500 text-white hover:bg-red-600'
       : 'lab-fab bg-red-500 text-white hover:bg-red-600')
     : 'lab-fab text-white';
-  const isOnboardingActive = onboardingStep !== null;
+  const {
+    onboardingStep,
+    isOnboardingActive,
+    handleDismissOnboarding,
+    handleStartOnboarding,
+    handleReplayOnboarding,
+  } = useOnboardingGuide({
+    atomCount: atoms.length,
+    bondCount: bonds.length,
+    isDesktopViewport,
+    isElementsPanelOpen,
+    setIsElementsPanelOpen,
+    closeDrawer: () => setIsDrawerOpen(false),
+  });
   const elementPanelHighlightClass = onboardingStep === 'add-atoms' ? 'lab-onboarding-highlight' : '';
   const sceneExploreHighlightClass = onboardingStep === 'explore' ? 'lab-onboarding-highlight' : '';
   const themeVars = getLabThemeVars(theme);
@@ -214,28 +182,6 @@ export function UI() {
   const mobileChallengeProgress = challengeStatus === 'playing' && challengeTotalTime > 0
     ? Math.max(0, Math.min(1, challengeTimeLeft / challengeTotalTime))
     : null;
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return;
-    const desktopMedia = window.matchMedia('(min-width: 768px)');
-    const narrowMedia = window.matchMedia('(max-width: 1023px)');
-    const coarseMedia = window.matchMedia('(hover: none), (pointer: coarse)');
-    const updateViewport = () => {
-      setIsDesktopViewport(desktopMedia.matches);
-      setIsNarrowViewport(narrowMedia.matches);
-      setIsCoarsePointer(coarseMedia.matches);
-      setHasTouchInput(('ontouchstart' in window) || ((window.navigator?.maxTouchPoints ?? 0) > 0));
-    };
-    updateViewport();
-    const unsubscribeDesktop = subscribeToMediaQuery(desktopMedia, updateViewport);
-    const unsubscribeNarrow = subscribeToMediaQuery(narrowMedia, updateViewport);
-    const unsubscribeCoarse = subscribeToMediaQuery(coarseMedia, updateViewport);
-    return () => {
-      unsubscribeDesktop();
-      unsubscribeNarrow();
-      unsubscribeCoarse();
-    };
-  }, []);
 
   useEffect(() => {
     if (!isDrawerLayout) {
@@ -255,23 +201,6 @@ export function UI() {
   }, [challengeActive, challengeStatus, isDrawerLayout]);
 
   useEffect(() => {
-    if (!onboardingStep || onboardingStep === 'welcome') return;
-    setOnboardingStep((current) => {
-      if (!current || current === 'welcome') return current;
-      return advanceOnboardingStep(current, {
-        atomCount: atoms.length,
-        bondCount: bonds.length,
-      });
-    });
-  }, [atoms.length, bonds.length, onboardingStep]);
-
-  useEffect(() => {
-    if (onboardingStep === 'add-atoms' && isDesktopViewport && !isElementsPanelOpen) {
-      setIsElementsPanelOpen(true);
-    }
-  }, [isDesktopViewport, isElementsPanelOpen, onboardingStep]);
-
-  useEffect(() => {
     if (!mobileStatusChip) return;
     const timeout = window.setTimeout(() => setMobileStatusChip(null), 1200);
     return () => window.clearTimeout(timeout);
@@ -281,6 +210,21 @@ export function UI() {
     if (isDesktopViewport) return;
     setMobileStatusChip(label);
   };
+
+  const {
+    selectedBond,
+    lastRemovedBond,
+    showBondUndoToast,
+    handleUndoBondRemoval,
+    handleUpgradeSelectedBond,
+    handleRemoveSelectedBond,
+  } = useBondActions({
+    bonds,
+    interactionMode,
+    setInteractionMode,
+    showMobileStatusChip,
+    messages,
+  });
 
   const handleStartChallenge = () => {
     const challengePool = getChallengeCandidateMolecules(KNOWN_MOLECULES);
@@ -294,32 +238,15 @@ export function UI() {
     showMobileStatusChip(messages.challenge.title);
   };
 
-  const handleElementDragStart = (event: React.DragEvent<HTMLButtonElement>, element: keyof typeof ELEMENTS) => {
+  const handleElementDragStart = (event: React.DragEvent<HTMLButtonElement>, element: ElementType) => {
     setElementDragData(event.dataTransfer, element);
     event.dataTransfer.effectAllowed = 'copy';
-  };
-
-  const handleDismissOnboarding = () => {
-    persistOnboardingSeen();
-    setOnboardingStep(null);
-  };
-
-  const handleStartOnboarding = () => {
-    setOnboardingStep('add-atoms');
-  };
-
-  const handleReplayOnboarding = () => {
-    setIsDrawerOpen(false);
-    if (isDesktopViewport) {
-      setIsElementsPanelOpen(true);
-    }
-    setOnboardingStep('welcome');
   };
 
   const handleToggleInteractionMode = () => {
     const nextMode = toggleInteractionMode(interactionMode);
     setInteractionMode(nextMode);
-    showMobileStatusChip(nextMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode);
+    showMobileStatusChip(nextMode === 'build' ? messages.ui.buildMode : messages.ui.removeHint);
   };
 
   return (
@@ -346,36 +273,11 @@ export function UI() {
         <div className={`lab-orb absolute -top-20 left-1/4 h-64 w-64 rounded-full blur-3xl ${isDark ? 'bg-indigo-500/20' : 'bg-indigo-200/60'}`} />
         <div className={`lab-orb absolute -bottom-24 right-1/5 h-72 w-72 rounded-full blur-3xl ${isDark ? 'bg-cyan-500/12' : 'bg-cyan-100/70'}`} style={{ animationDelay: '1.5s' }} />
       </div>
-      {/* Top Section */}
-      <div className="lab-reveal relative flex items-start w-full">
-        {/* Top Left */}
-        <div className="flex flex-col gap-4 w-full md:w-64">
-
-          {/* Logo */}
-          <div
-            className={`flex items-center p-3 md:p-4 rounded-2xl pointer-events-auto w-full ${topBarPanelClass}`}
-          >
-            <div className="flex items-center gap-3">
-              <img
-                src="/BondLab-LogoSmall-128x128.svg"
-                alt="BondLab logo"
-                width={32}
-                height={32}
-                className="shrink-0"
-              />
-              <span className={`info-display font-black text-lg sm:text-xl tracking-tight ${primaryTextClass}`}>
-                Bond<span className="text-indigo-400">Lab</span>
-              </span>
-            </div>
-          </div>
-
-          {!isDesktopViewport && (
-            <div className="pointer-events-auto">
-              <StabilityDisplay />
-            </div>
-          )}
-        </div>
-      </div>
+      <TopBrandHeader
+        isDesktopViewport={isDesktopViewport}
+        topBarPanelClass={topBarPanelClass}
+        primaryTextClass={primaryTextClass}
+      />
 
       <SettingsMenu
         messages={messages}
@@ -390,290 +292,95 @@ export function UI() {
         onReplayOnboarding={handleReplayOnboarding}
       />
 
-      {/* Desktop Left Rail */}
-      <div className="hidden md:flex fixed left-0 top-[calc(env(safe-area-inset-top)+5.75rem)] bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] z-40 pointer-events-none">
-        <div className="relative flex h-full flex-col gap-4">
-          <div className={`relative flex-1 min-h-0 w-80 ${elementPanelHighlightClass}`}>
-            {!isElementsPanelOpen && (
-              <button
-                onClick={() => setIsElementsPanelOpen(true)}
-                aria-label={messages.ui.elements}
-                className={`absolute left-0 top-1/2 -translate-y-1/2 z-40 min-h-[56px] px-3 rounded-r-xl border border-l-0 items-center gap-2 pointer-events-auto transition-colors flex ${softPanelClass} ${isDark ? 'text-zinc-200' : 'text-zinc-700'}`}
-              >
-                <ChevronRight size={16} />
-                <span className="info-display text-xs font-semibold uppercase tracking-wide">{messages.ui.elements}</span>
-              </button>
-            )}
+      <DesktopElementsRail
+        isDesktopViewport={isDesktopViewport}
+        isElementsPanelOpen={isElementsPanelOpen}
+        elementPanelHighlightClass={elementPanelHighlightClass}
+        softPanelClass={softPanelClass}
+        panelClass={panelClass}
+        headingTextClass={headingTextClass}
+        ghostButtonClass={ghostButtonClass}
+        inactiveModeClass={inactiveModeClass}
+        primaryTextClass={primaryTextClass}
+        secondaryTextClass={secondaryTextClass}
+        dangerButtonClass={dangerButtonClass}
+        isDark={isDark}
+        sceneExploreHighlightClass={sceneExploreHighlightClass}
+        messages={messages}
+        onOpenPanel={() => setIsElementsPanelOpen(true)}
+        onClosePanel={() => setIsElementsPanelOpen(false)}
+        onElementDragStart={handleElementDragStart}
+        onAddAtom={addAtom}
+        onClear={clear}
+        onStartChallenge={handleStartChallenge}
+      />
 
-            <div
-              className={`lab-reveal flex h-full w-80 rounded-2xl p-4 pointer-events-auto transition-transform duration-300 ${isElementsPanelOpen
-                  ? 'translate-x-0'
-                  : '-translate-x-[calc(100%+2rem)] pointer-events-none'
-                } ${panelClass}`}
-              style={{ animationDelay: '70ms' }}
-            >
-              <div className="flex flex-col h-full w-full min-h-0">
-                <div className="flex items-center justify-between mb-4">
-                  <h1 className={`info-display font-bold text-sm tracking-wider uppercase ${headingTextClass}`}>{messages.ui.elements}</h1>
-                  <button
-                    onClick={() => setIsElementsPanelOpen(false)}
-                    aria-label={messages.ui.collapse}
-                    className={`min-h-[36px] min-w-[36px] rounded-lg transition-colors flex items-center justify-center ${ghostButtonClass}`}
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-                </div>
+      <MoleculeInspectorPanels
+        isDesktopViewport={isDesktopViewport}
+        isMobileChallengeOpen={isMobileChallengeOpen}
+        atomsLength={atoms.length}
+        molecule={molecule}
+        moleculeName={moleculeName}
+        moleculeInfo={moleculeInfo}
+        isMobileInfoCollapsed={isMobileInfoCollapsed}
+        setIsMobileInfoCollapsed={setIsMobileInfoCollapsed}
+        panelClass={panelClass}
+        headingTextClass={headingTextClass}
+        primaryTextClass={primaryTextClass}
+        secondaryTextClass={secondaryTextClass}
+        ghostButtonClass={ghostButtonClass}
+        isDark={isDark}
+        structureTitle={structureTitle}
+        factTitle={factTitle}
+        polarityTitle={polarityTitle}
+        polarityLabel={polarityLabel}
+        polarityClassification={polarityReport.classification}
+        polarityReason={polarityReport.reason}
+        messages={messages}
+      />
 
-                <div className="grid grid-cols-2 gap-3 overflow-y-auto pr-1 flex-1 min-h-0 stealth-scrollbar">
-                  {ELEMENT_DISPLAY_ORDER.map(el => {
-                    const data = ELEMENTS[el];
-                    return (
-                      <button
-                        key={el}
-                        data-testid={`element-button-${el}`}
-                        draggable={isDesktopViewport}
-                        onDragStart={(event) => handleElementDragStart(event, el)}
-                        onClick={() => addAtom(el)}
-                        className={`flex flex-col items-center gap-2 p-3 rounded-xl text-center transition-colors border ${inactiveModeClass}`}
-                      >
-                        <div
-                          className="w-10 h-10 rounded-full shadow-inner flex items-center justify-center text-sm font-bold shrink-0"
-                          style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
-                        >
-                          {data.symbol}
-                        </div>
-                        <div className={`font-medium text-xs leading-tight ${primaryTextClass}`}>{messages.elements[el]}</div>
-                        <div className={`text-[11px] ${secondaryTextClass}`}>{messages.ui.valence}: {data.valence}</div>
-                      </button>
-                    );
-                  })}
-                </div>
+      <MobileElementsDrawer
+        isOpen={isDrawerOpen}
+        isDark={isDark}
+        softPanelClass={softPanelClass}
+        ghostButtonClass={ghostButtonClass}
+        dangerButtonClass={dangerButtonClass}
+        primaryTextClass={primaryTextClass}
+        messages={messages}
+        onClose={() => setIsDrawerOpen(false)}
+        onAddAtom={(el) => {
+          addAtom(el);
+          setIsDrawerOpen(false);
+          showMobileStatusChip(messages.elements[el]);
+        }}
+        onClear={() => {
+          clear();
+          setIsDrawerOpen(false);
+          showMobileStatusChip(messages.ui.clearAll);
+        }}
+      />
 
-                <div className={`mt-4 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
-                  <button
-                    data-testid="clear-elements-desktop"
-                    onClick={clear}
-                    className={`w-full min-h-[44px] flex items-center justify-center gap-2 p-2 rounded-xl transition-colors text-sm font-medium ${dangerButtonClass}`}
-                  >
-                    <Trash2 size={16} /> {messages.ui.clear}
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {isDesktopViewport && (
-            <div className={`pointer-events-auto w-80 ${sceneExploreHighlightClass}`}>
-              <ChallengeMode
-                isDrawerLayout={false}
-                isMobileDrawerOpen={false}
-                setIsMobileDrawerOpen={() => { }}
-                onStart={handleStartChallenge}
-              />
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* Desktop Right Rail */}
-      {isDesktopViewport && (atoms.length > 0 || molecule) && (
-        <div
-          className="hidden md:flex fixed right-6 top-[calc(env(safe-area-inset-top)+5.75rem)] bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] z-40 pointer-events-none"
-        >
-          <div className="flex h-full w-80 flex-col gap-4">
-            {atoms.length > 0 && (
-              <div className="pointer-events-auto shrink-0">
-                <StabilityDisplay />
-              </div>
-            )}
-
-            <MoleculeInspector
-              isDesktopViewport={true}
-              molecule={molecule}
-              moleculeName={moleculeName}
-              moleculeInfo={moleculeInfo}
-              isMobileInfoCollapsed={isMobileInfoCollapsed}
-              setIsMobileInfoCollapsed={setIsMobileInfoCollapsed}
-              panelClass={panelClass}
-              headingTextClass={headingTextClass}
-              primaryTextClass={primaryTextClass}
-              secondaryTextClass={secondaryTextClass}
-              ghostButtonClass={ghostButtonClass}
-              isDark={isDark}
-              structureTitle={structureTitle}
-              factTitle={factTitle}
-              polarityTitle={polarityTitle}
-              polarityLabel={polarityLabel}
-              polarityClassification={polarityReport.classification}
-              polarityReason={polarityReport.reason}
-              messages={messages}
-            />
-          </div>
-        </div>
-      )}
-
-      {/* Bottom Section */}
-      <div className="flex flex-col items-center gap-4 w-full mt-auto">
-        {!isDesktopViewport && !isMobileChallengeOpen && (
-          <MoleculeInspector
-            isDesktopViewport={false}
-            molecule={molecule}
-            moleculeName={moleculeName}
-            moleculeInfo={moleculeInfo}
-            isMobileInfoCollapsed={isMobileInfoCollapsed}
-            setIsMobileInfoCollapsed={setIsMobileInfoCollapsed}
-            panelClass={panelClass}
-            headingTextClass={headingTextClass}
-            primaryTextClass={primaryTextClass}
-            secondaryTextClass={secondaryTextClass}
-            ghostButtonClass={ghostButtonClass}
-            isDark={isDark}
-            structureTitle={structureTitle}
-            factTitle={factTitle}
-            polarityTitle={polarityTitle}
-            polarityLabel={polarityLabel}
-            polarityClassification={polarityReport.classification}
-            polarityReason={polarityReport.reason}
-            messages={messages}
-          />
-        )}
-      </div>
-
-      {/* Drawer Overlay */}
-      {isDrawerOpen && (
-        <div
-          className="lab-drawer-overlay md:hidden fixed inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto z-40"
-          onClick={() => setIsDrawerOpen(false)}
-        />
-      )}
-
-      {/* Mobile Elements Drawer */}
-      <div
-        data-testid="mobile-elements-drawer"
-        className={`md:hidden fixed inset-x-0 bottom-0 border-t shadow-2xl pointer-events-auto transform transition-transform duration-300 ease-in-out ${isDrawerOpen ? 'translate-y-0' : 'translate-y-full'} rounded-t-3xl z-50 ${softPanelClass}`}
-      >
-        <div className="lab-mobile-drawer p-5">
-          <div className={`mx-auto mb-4 h-1.5 w-12 rounded-full ${isDark ? 'bg-zinc-600' : 'bg-zinc-300'}`} />
-          <div className="flex justify-between items-center mb-6">
-            <h2 className={`info-display font-bold text-lg ${primaryTextClass}`}>{messages.ui.selectElement}</h2>
-            <button
-              data-testid="mobile-elements-drawer-close"
-              onClick={() => setIsDrawerOpen(false)}
-              aria-label={messages.ui.close}
-              className={`min-h-[44px] min-w-[44px] p-2 rounded-full transition-colors touch-manipulation ${ghostButtonClass}`}
-            >
-              <X size={20} />
-            </button>
-          </div>
-
-          <div className="lab-mobile-scroll grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[42dvh] overflow-y-auto pr-1 stealth-scrollbar">
-            {ELEMENT_DISPLAY_ORDER.map(el => {
-              const data = ELEMENTS[el];
-              return (
-                <button
-                  key={el}
-                  data-testid={`mobile-element-button-${el}`}
-                  onClick={() => {
-                    addAtom(el);
-                    setIsDrawerOpen(false);
-                    showMobileStatusChip(messages.elements[el]);
-                  }}
-                  className={`lab-tile flex min-h-[96px] flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-colors border touch-manipulation ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}
-                >
-                  <div
-                    className="w-11 h-11 rounded-full shadow-inner flex items-center justify-center text-base font-bold"
-                    style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
-                  >
-                    {data.symbol}
-                  </div>
-                  <div className={`font-medium text-[11px] leading-tight ${primaryTextClass}`}>{messages.elements[el]}</div>
-                </button>
-              );
-            })}
-          </div>
-
-          <div className={`mt-5 pt-4 border-t ${isDark ? 'border-white/10' : 'border-zinc-200'}`}>
-            <button
-              data-testid="clear-elements-mobile"
-              onClick={() => {
-                clear();
-                setIsDrawerOpen(false);
-                showMobileStatusChip(messages.ui.clearAll);
-              }}
-              className={`w-full min-h-[48px] flex items-center justify-center gap-2 p-3 rounded-xl transition-colors text-sm font-bold touch-manipulation ${dangerButtonClass}`}
-            >
-              <Trash2 size={18} /> {messages.ui.clearAll}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {!isDesktopViewport && (
-        <div className="md:hidden fixed inset-x-3 bottom-[calc(0.75rem+env(safe-area-inset-bottom))] z-[60] pointer-events-none">
-          {mobileStatusChip && (
-            <div className="mb-2 flex justify-center">
-              <div className={`lab-reveal rounded-full border px-3 py-1 text-xs font-semibold ${softPanelClass}`}>
-                {mobileStatusChip}
-              </div>
-            </div>
-          )}
-          <div
-            data-testid="mobile-action-dock"
-            className={`pointer-events-auto grid grid-cols-3 gap-2 rounded-2xl border p-2 shadow-2xl ${softPanelClass}`}
-          >
-            <button
-              data-testid="mobile-dock-challenge-button"
-              onClick={challengeActive
-                ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
-                : handleStartChallenge}
-              aria-label={messages.challenge.title}
-              className={`relative min-h-[52px] rounded-xl border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 ${
-                isDark ? 'border-white/12 text-zinc-100' : 'border-zinc-300 text-zinc-800'
-              } ${sceneExploreHighlightClass}`}
-            >
-              <Trophy size={16} />
-              <span className="text-[10px] font-semibold uppercase tracking-wide">{messages.challenge.title}</span>
-              {isDrawerLayout && mobileChallengeProgress !== null && (
-                <span className={`absolute inset-x-2 bottom-1 h-1 overflow-hidden rounded-full ${isDark ? 'bg-zinc-700' : 'bg-zinc-300'}`}>
-                  <span
-                    className={`block h-full rounded-full ${mobileChallengeProgress <= 0.2 ? 'bg-red-500' : 'bg-indigo-500'}`}
-                    style={{ width: `${mobileChallengeProgress * 100}%` }}
-                  />
-                </span>
-              )}
-            </button>
-            <button
-              data-testid="mobile-dock-add-button"
-              onClick={() => {
-                setIsDrawerOpen(true);
-                showMobileStatusChip(messages.ui.addElement);
-              }}
-              aria-label={messages.ui.addElement}
-              className={`lab-fab min-h-[52px] rounded-xl text-white transition-transform active:scale-95 touch-manipulation flex flex-col items-center justify-center gap-0.5 ${
-                onboardingStep === 'add-atoms' ? 'lab-onboarding-highlight' : ''
-              }`}
-            >
-              <Plus size={16} />
-              <span className="text-[10px] font-semibold uppercase tracking-wide">{messages.ui.addElement}</span>
-            </button>
-            <button
-              data-testid="interaction-mode-toggle-mobile"
-              onClick={handleToggleInteractionMode}
-              aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-              title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-              className={`min-h-[52px] rounded-xl border transition-colors touch-manipulation flex flex-col items-center justify-center gap-0.5 ${interactionMode === 'delete'
-                ? 'border-red-400/50 bg-red-500/85 text-white'
-                : (isDark ? 'border-white/12 text-zinc-100' : 'border-zinc-300 text-zinc-800')
-              } ${sceneExploreHighlightClass}`}
-            >
-              {interactionMode === 'build' ? <Atom size={16} /> : <Trash2 size={16} />}
-              <span className="text-[10px] font-semibold uppercase tracking-wide">
-                {interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}
-              </span>
-            </button>
-          </div>
-        </div>
-      )}
+      <MobileActionDock
+        isDesktopViewport={isDesktopViewport}
+        mobileStatusChip={mobileStatusChip}
+        softPanelClass={softPanelClass}
+        isDark={isDark}
+        challengeActive={challengeActive}
+        mobileChallengeProgress={mobileChallengeProgress}
+        isDrawerLayout={isDrawerLayout}
+        sceneExploreHighlightClass={sceneExploreHighlightClass}
+        onboardingStep={onboardingStep}
+        interactionMode={interactionMode}
+        messages={messages}
+        onChallengeClick={challengeActive
+          ? () => setIsMobileChallengeOpen((isOpen) => !isOpen)
+          : handleStartChallenge}
+        onAddClick={() => {
+          setIsDrawerOpen(true);
+          showMobileStatusChip(messages.ui.addElement);
+        }}
+        onToggleInteractionMode={handleToggleInteractionMode}
+      />
 
       {!isDesktopViewport && (
         <div className="pointer-events-auto md:hidden">
@@ -686,17 +393,40 @@ export function UI() {
         </div>
       )}
 
-      {isDesktopViewport && (
-        <button
-          data-testid="interaction-mode-toggle-desktop"
-          onClick={handleToggleInteractionMode}
-          aria-label={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-          title={`${messages.ui.interactionMode}: ${interactionMode === 'build' ? messages.ui.buildMode : messages.ui.deleteMode}`}
-          className={`fixed right-4 bottom-[calc(1rem+env(safe-area-inset-bottom))] md:right-6 md:bottom-6 z-50 w-14 h-14 rounded-full shadow-xl pointer-events-auto transition-colors flex items-center justify-center touch-manipulation ${interactionBubbleClass} ${sceneExploreHighlightClass}`}
-        >
-          {interactionMode === 'build' ? <Atom size={22} /> : <Trash2 size={20} />}
-        </button>
-      )}
+      <InteractionModeFab
+        isDesktopViewport={isDesktopViewport}
+        interactionMode={interactionMode}
+        onToggle={handleToggleInteractionMode}
+        interactionBubbleClass={interactionBubbleClass}
+        sceneExploreHighlightClass={sceneExploreHighlightClass}
+        messages={messages}
+      />
+
+      <DeleteModeHint
+        interactionMode={interactionMode}
+        messages={messages}
+        softPanelClass={softPanelClass}
+      />
+
+      <BondUndoToast
+        showBondUndoToast={showBondUndoToast}
+        lastRemovedBond={lastRemovedBond}
+        onUndo={handleUndoBondRemoval}
+        softPanelClass={softPanelClass}
+        isDark={isDark}
+        messages={messages}
+      />
+
+      <BondActionBar
+        interactionMode={interactionMode}
+        selectedBond={selectedBond}
+        onUpgrade={handleUpgradeSelectedBond}
+        onDelete={handleRemoveSelectedBond}
+        softPanelClass={softPanelClass}
+        secondaryTextClass={secondaryTextClass}
+        isDark={isDark}
+        messages={messages}
+      />
     </div>
   );
 }

@@ -17,7 +17,9 @@ export const createChallengeSlice: StateCreator<GameState, [], [], ChallengeSlic
   startChallenge: (target, timeLimit) => set({
     atoms: [],
     bonds: [],
+    lastRemovedBond: null,
     selectedAtom: null,
+    selectedBond: null,
     rotatingBond: null,
     challengeActive: true,
     challengeTarget: target,
@@ -41,6 +43,8 @@ export const createChallengeSlice: StateCreator<GameState, [], [], ChallengeSlic
     challengeActive: false,
     challengeTarget: null,
     challengeStatus: 'idle',
+    lastRemovedBond: null,
+    selectedBond: null,
     rotatingBond: null,
   }),
 });

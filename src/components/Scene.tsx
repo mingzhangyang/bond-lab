@@ -68,7 +68,10 @@ export function Scene() {
     <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
       <Canvas 
         camera={{ position: [0, 0, 10], fov: 45 }}
-        onPointerMissed={() => useStore.getState().setSelectedAtom(null)}
+        onPointerMissed={() => {
+          useStore.getState().setSelectedAtom(null);
+          useStore.getState().setSelectedBond(null);
+        }}
       >
         <color attach="background" args={[isDark ? '#18181b' : '#e2e8f0']} />
         <ambientLight intensity={isDark ? 0.6 : 0.85} />

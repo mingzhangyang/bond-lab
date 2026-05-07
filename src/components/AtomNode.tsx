@@ -18,6 +18,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const targetRef = useRef(new THREE.Vector3());
   const data = ELEMENTS[element];
   const setDraggedAtom = useStore((state) => state.setDraggedAtom);
+  const setSelectedBond = useStore((state) => state.setSelectedBond);
   const isDragged = useStore((state) => state.draggedAtom === id);
   const isSelected = useStore((state) => state.selectedAtom === id);
   const setSelectedAtom = useStore((state) => state.setSelectedAtom);
@@ -102,6 +103,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       onPointerDown={(e) => {
         e.stopPropagation();
         if (interactionMode === 'build') {
+          setSelectedBond(null);
           setDraggedAtom(id);
         }
       }}
@@ -126,6 +128,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       onContextMenu={(e) => {
         e.nativeEvent.preventDefault();
         e.stopPropagation();
+        if (interactionMode !== 'delete') return;
         removeAtom(id);
       }}
     >
