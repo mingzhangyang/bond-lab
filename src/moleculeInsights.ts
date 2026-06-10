@@ -21,7 +21,7 @@ const POLARITY_TITLES: Record<Language, string> = {
   en: 'Polarity',
   es: 'Polaridad',
   zh: '极性',
-  fr: 'Polarite',
+  fr: 'Polarité',
   ja: '極性',
 };
 
@@ -38,7 +38,7 @@ const FACT_TITLES: Record<Language, string> = {
   es: 'Dato',
   zh: '小知识',
   fr: 'Info',
-  ja: '豆知识',
+  ja: '豆知識',
 };
 
 export interface MoleculeInsights {

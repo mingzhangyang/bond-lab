@@ -194,59 +194,59 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   es: {
     meta: {
-      titleSuffix: 'Constructor 3D de Moleculas para Aprender Quimica',
+      titleSuffix: 'Constructor 3D de Moléculas para Aprender Química',
       description:
-        'BondLab es una aplicacion educativa de quimica 3D para construir moleculas, probar ordenes de enlace y explorar estructura molecular, polaridad y estabilidad en tiempo real.',
+        'BondLab es una aplicación educativa de química 3D para construir moléculas, probar órdenes de enlace y explorar estructura molecular, polaridad y estabilidad en tiempo real.',
       keywords:
-        'constructor 3D de moleculas, simulador de quimica, geometria molecular, orden de enlace, electrones de valencia, educacion cientifica',
+        'constructor 3D de moléculas, simulador de química, geometría molecular, orden de enlace, electrones de valencia, educación científica',
       ogDescription:
-        'Construye moleculas en 3D, ajusta el orden de enlace y explora polaridad, geometria y estabilidad con BondLab.',
+        'Construye moléculas en 3D, ajusta el orden de enlace y explora polaridad, geometría y estabilidad con BondLab.',
       twitterDescription:
-        'Aplicacion 3D interactiva de quimica para construir moleculas y analizar propiedades moleculares.',
+        'Aplicación 3D interactiva de química para construir moléculas y analizar propiedades moleculares.',
     },
     content: {
-      heading: 'BondLab Laboratorio Interactivo de Quimica',
+      heading: 'BondLab Laboratorio Interactivo de Química',
       intro:
-        'BondLab ayuda a los estudiantes a comprender quimica construyendo moleculas atomo por atomo y observando como cambian sus propiedades y enlaces.',
-      featureHeading: 'Que puedes hacer en BondLab',
+        'BondLab ayuda a los estudiantes a comprender química construyendo moléculas átomo por átomo y observando cómo cambian sus propiedades y enlaces.',
+      featureHeading: 'Qué puedes hacer en BondLab',
       features: [
-        'Construir moleculas con hidrogeno, carbono, nitrogeno y oxigeno.',
+        'Construir moléculas con hidrógeno, carbono, nitrógeno y oxígeno.',
         'Crear, mejorar y eliminar enlaces para explorar conectividad simple, doble y triple.',
-        'Consultar moleculas identificadas, formulas, estructura y datos rapidos.',
+        'Consultar moléculas identificadas, fórmulas, estructura y datos rápidos.',
         'Analizar polaridad molecular y estabilidad en tiempo real.',
-        'Practicar en modo desafio recreando moleculas objetivo contra reloj.',
+        'Practicar en modo desafío recreando moléculas objetivo contra reloj.',
       ],
       useCasesHeading: 'Mejores usos de BondLab',
       useCases: [
         'Usar BondLab en clase para introducir estructura molecular y orden de enlace de forma visual.',
-        'Practicar la construccion de moleculas pequenas mientras revisas pistas de polaridad y estabilidad.',
-        'Explorar como cambiar un enlace simple a doble modifica la interpretacion de la estructura.',
+        'Practicar la construcción de moléculas pequeñas mientras revisas pistas de polaridad y estabilidad.',
+        'Explorar cómo cambiar un enlace simple a doble modifica la interpretación de la estructura.',
       ],
-      audienceHeading: 'Para quien es BondLab',
+      audienceHeading: 'Para quién es BondLab',
       audiences: [
-        'Estudiantes que aprenden quimica introductoria y estructura molecular.',
-        'Docentes que buscan una herramienta visual rapida para demostraciones.',
-        'Personas curiosas que quieren explorar quimica de forma interactiva en la web.',
+        'Estudiantes que aprenden química introductoria y estructura molecular.',
+        'Docentes que buscan una herramienta visual rápida para demostraciones.',
+        'Personas curiosas que quieren explorar química de forma interactiva en la web.',
       ],
       disclaimerHeading: 'Aviso sobre el modelo educativo',
       disclaimer:
-        'BondLab esta pensado para divulgacion cientifica, demostraciones en clase y exploracion. La identificacion molecular, la estabilidad y la polaridad son ayudas simplificadas y no sustituyen un analisis quimico riguroso.',
-      faqHeading: 'Temas de quimica cubiertos en BondLab',
+        'BondLab está pensado para divulgación científica, demostraciones en clase y exploración. La identificación molecular, la estabilidad y la polaridad son ayudas simplificadas y no sustituyen un análisis químico riguroso.',
+      faqHeading: 'Temas de química cubiertos en BondLab',
       faqs: [
         {
-          question: 'Como ensena BondLab la estructura molecular?',
+          question: '¿Cómo enseña BondLab la estructura molecular?',
           answer:
-            'BondLab muestra atomos y enlaces en 3D para entender geometria y conectividad mejor que con diagramas estaticos.',
+            'BondLab muestra átomos y enlaces en 3D para entender geometría y conectividad mejor que con diagramas estáticos.',
         },
         {
-          question: 'Se puede practicar valencia y orden de enlace?',
+          question: '¿Se puede practicar valencia y orden de enlace?',
           answer:
-            'Si. Puedes agregar atomos, cambiar el orden de enlace y comparar al instante con el comportamiento de valencia esperado.',
+            'Sí. Puedes agregar átomos, cambiar el orden de enlace y comparar al instante con el comportamiento de valencia esperado.',
         },
         {
-          question: 'Incluye reconocimiento de moleculas y pistas de polaridad?',
+          question: '¿Incluye reconocimiento de moléculas y pistas de polaridad?',
           answer:
-            'Si. La aplicacion identifica moleculas compatibles y muestra clasificacion de polaridad con una breve explicacion.',
+            'Sí. La aplicación identifica moléculas compatibles y muestra clasificación de polaridad con una breve explicación.',
         },
       ],
     },
@@ -257,9 +257,9 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Web',
       description:
-        'Constructor interactivo de moleculas para aprender quimica con retroalimentacion de estructura, polaridad y estabilidad.',
+        'Constructor interactivo de moléculas para aprender química con retroalimentación de estructura, polaridad y estabilidad.',
       image: SEO_IMAGE_URL,
-      keywords: 'quimica, constructor de moleculas, estructura molecular, orden de enlace, polaridad, estabilidad',
+      keywords: 'química, constructor de moléculas, estructura molecular, orden de enlace, polaridad, estabilidad',
       inLanguage: 'es',
       offers: {
         '@type': 'Offer',
@@ -273,26 +273,26 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       mainEntity: [
         {
           '@type': 'Question',
-          name: 'Como ensena BondLab la estructura molecular?',
+          name: '¿Cómo enseña BondLab la estructura molecular?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'BondLab muestra atomos y enlaces en 3D para entender geometria y conectividad mejor que con diagramas estaticos.',
+            text: 'BondLab muestra átomos y enlaces en 3D para entender geometría y conectividad mejor que con diagramas estáticos.',
           },
         },
         {
           '@type': 'Question',
-          name: 'Se puede practicar valencia y orden de enlace?',
+          name: '¿Se puede practicar valencia y orden de enlace?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Si. Puedes agregar atomos, cambiar el orden de enlace y comparar al instante con el comportamiento de valencia esperado.',
+            text: 'Sí. Puedes agregar átomos, cambiar el orden de enlace y comparar al instante con el comportamiento de valencia esperado.',
           },
         },
         {
           '@type': 'Question',
-          name: 'Incluye reconocimiento de moleculas y pistas de polaridad?',
+          name: '¿Incluye reconocimiento de moléculas y pistas de polaridad?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Si. La aplicacion identifica moleculas compatibles y muestra clasificacion de polaridad con una breve explicacion.',
+            text: 'Sí. La aplicación identifica moléculas compatibles y muestra clasificación de polaridad con una breve explicación.',
           },
         },
       ],
@@ -402,59 +402,59 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
   },
   fr: {
     meta: {
-      titleSuffix: 'Constructeur Moleculaire 3D pour Apprendre la Chimie',
+      titleSuffix: 'Constructeur Moléculaire 3D pour Apprendre la Chimie',
       description:
-        'BondLab est une application educative de chimie 3D pour construire des molecules, tester les ordres de liaison et explorer structure moleculaire, polarite et stabilite en temps reel.',
+        'BondLab est une application éducative de chimie 3D pour construire des molécules, tester les ordres de liaison et explorer structure moléculaire, polarité et stabilité en temps réel.',
       keywords:
-        'constructeur 3D de molecules, simulateur de chimie, geometrie moleculaire, ordre de liaison, electrons de valence, education scientifique',
+        'constructeur 3D de molécules, simulateur de chimie, géométrie moléculaire, ordre de liaison, électrons de valence, éducation scientifique',
       ogDescription:
-        'Construisez des molecules en 3D, ajustez les liaisons et explorez polarite, geometrie et stabilite avec BondLab.',
+        'Construisez des molécules en 3D, ajustez les liaisons et explorez polarité, géométrie et stabilité avec BondLab.',
       twitterDescription:
-        'Application 3D de chimie interactive pour construire des molecules et analyser leurs proprietes.',
+        'Application 3D de chimie interactive pour construire des molécules et analyser leurs propriétés.',
     },
     content: {
       heading: 'BondLab Laboratoire de Chimie Interactif',
       intro:
-        'BondLab aide les apprenants a comprendre la chimie en construisant des molecules atome par atome et en observant les effets des liaisons.',
+        'BondLab aide les apprenants à comprendre la chimie en construisant des molécules atome par atome et en observant les effets des liaisons.',
       featureHeading: 'Ce que vous pouvez faire dans BondLab',
       features: [
-        'Construire des molecules avec hydrogene, carbone, azote et oxygene.',
-        'Creer, ameliorer et supprimer des liaisons simples, doubles et triples.',
-        'Consulter molecules identifiees, formules, structures et informations rapides.',
-        'Analyser polarite moleculaire et stabilite en temps reel.',
-        'S entrainer avec le mode defi pour reconstruire des molecules cibles.',
+        'Construire des molécules avec hydrogène, carbone, azote et oxygène.',
+        'Créer, améliorer et supprimer des liaisons simples, doubles et triples.',
+        'Consulter molécules identifiées, formules, structures et informations rapides.',
+        'Analyser polarité moléculaire et stabilité en temps réel.',
+        "S'entraîner avec le mode défi pour reconstruire des molécules cibles.",
       ],
       useCasesHeading: 'Meilleurs usages de BondLab',
       useCases: [
-        'Presenter visuellement la structure moleculaire et l ordre de liaison en cours de chimie.',
-        'S exercer a construire de petites molecules avec des indices de polarite et de stabilite.',
-        'Comparer l effet d une liaison simple, double ou triple sur la lecture de la structure.',
+        "Présenter visuellement la structure moléculaire et l'ordre de liaison en cours de chimie.",
+        "S'exercer à construire de petites molécules avec des indices de polarité et de stabilité.",
+        "Comparer l'effet d'une liaison simple, double ou triple sur la lecture de la structure.",
       ],
       audienceHeading: 'Pour qui est BondLab',
       audiences: [
-        'Les eleves qui apprennent la chimie introductive et la structure moleculaire.',
-        'Les enseignants qui veulent un outil visuel rapide pour leurs demonstrations.',
-        'Les curieux qui souhaitent explorer la chimie de facon ludique sur le web.',
+        'Les élèves qui apprennent la chimie introductive et la structure moléculaire.',
+        'Les enseignants qui veulent un outil visuel rapide pour leurs démonstrations.',
+        'Les curieux qui souhaitent explorer la chimie de façon ludique sur le web.',
       ],
-      disclaimerHeading: 'Note sur le modele educatif',
+      disclaimerHeading: 'Note sur le modèle éducatif',
       disclaimer:
-        'BondLab est concu pour la vulgarisation scientifique, les demonstrations en classe et l exploration. Les resultats de stabilite, de polarite et d identification des molecules sont simplifies et ne remplacent pas une analyse chimique rigoureuse.',
+        "BondLab est conçu pour la vulgarisation scientifique, les démonstrations en classe et l'exploration. Les résultats de stabilité, de polarité et d'identification des molécules sont simplifiés et ne remplacent pas une analyse chimique rigoureuse.",
       faqHeading: 'Sujets de chimie couverts par BondLab',
       faqs: [
         {
-          question: 'Comment BondLab enseigne la structure moleculaire ?',
+          question: 'Comment BondLab enseigne la structure moléculaire ?',
           answer:
-            'BondLab visualise atomes et liaisons en 3D pour mieux comprendre geometrie et connectivite.',
+            'BondLab visualise atomes et liaisons en 3D pour mieux comprendre géométrie et connectivité.',
         },
         {
           question: 'Peut-on pratiquer valence et ordre de liaison ?',
           answer:
-            'Oui. Vous ajoutez des atomes, modifiez les liaisons et comparez immediatement au comportement attendu.',
+            'Oui. Vous ajoutez des atomes, modifiez les liaisons et comparez immédiatement au comportement attendu.',
         },
         {
-          question: 'BondLab propose-t-il identification et polarite ?',
+          question: 'BondLab propose-t-il identification et polarité ?',
           answer:
-            'Oui. L application reconnait les molecules prises en charge et affiche une classification de polarite.',
+            "Oui. L'application reconnaît les molécules prises en charge et affiche une classification de polarité.",
         },
       ],
     },
@@ -465,9 +465,9 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       applicationCategory: 'EducationalApplication',
       operatingSystem: 'Web',
       description:
-        'Constructeur interactif de molecules pour apprendre la chimie avec retour en temps reel sur structure, polarite et stabilite.',
+        'Constructeur interactif de molécules pour apprendre la chimie avec retour en temps réel sur structure, polarité et stabilité.',
       image: SEO_IMAGE_URL,
-      keywords: 'chimie, constructeur de molecules, structure moleculaire, ordre de liaison, polarite, stabilite',
+      keywords: 'chimie, constructeur de molécules, structure moléculaire, ordre de liaison, polarité, stabilité',
       inLanguage: 'fr',
       offers: {
         '@type': 'Offer',
@@ -481,10 +481,10 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
       mainEntity: [
         {
           '@type': 'Question',
-          name: 'Comment BondLab enseigne la structure moleculaire ?',
+          name: 'Comment BondLab enseigne la structure moléculaire ?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'BondLab visualise atomes et liaisons en 3D pour mieux comprendre geometrie et connectivite.',
+            text: 'BondLab visualise atomes et liaisons en 3D pour mieux comprendre géométrie et connectivité.',
           },
         },
         {
@@ -492,15 +492,15 @@ const SEO_BY_LANGUAGE: Record<Language, SeoBundle> = {
           name: 'Peut-on pratiquer valence et ordre de liaison ?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Oui. Vous ajoutez des atomes, modifiez les liaisons et comparez immediatement au comportement attendu.',
+            text: 'Oui. Vous ajoutez des atomes, modifiez les liaisons et comparez immédiatement au comportement attendu.',
           },
         },
         {
           '@type': 'Question',
-          name: 'BondLab propose-t-il identification et polarite ?',
+          name: 'BondLab propose-t-il identification et polarité ?',
           acceptedAnswer: {
             '@type': 'Answer',
-            text: 'Oui. L application reconnait les molecules prises en charge et affiche une classification de polarite.',
+            text: "Oui. L'application reconnaît les molécules prises en charge et affiche une classification de polarité.",
           },
         },
       ],
@@ -632,16 +632,16 @@ const SEO_PAGE_COPY: Record<Language, Record<Exclude<AppRoute, 'lab'>, SeoPageCo
     instructions: {
       title: 'Instrucciones',
       description:
-        'Consulta la guia de uso de BondLab para aprender controles de construccion molecular, edicion de enlaces y navegacion de la vista.',
+        'Consulta la guía de uso de BondLab para aprender controles de construcción molecular, edición de enlaces y navegación de la vista.',
       keywords:
-        'instrucciones BondLab, guia de moleculas, tutorial de quimica, ayuda de enlaces, aprendizaje de estructura molecular',
+        'instrucciones BondLab, guía de moléculas, tutorial de química, ayuda de enlaces, aprendizaje de estructura molecular',
     },
     privacy: {
-      title: 'Politica de privacidad',
+      title: 'Política de privacidad',
       description:
-        'Revisa la politica de privacidad de BondLab para conocer el uso de almacenamiento local, preferencias guardadas y tratamiento de datos.',
+        'Revisa la política de privacidad de BondLab para conocer el uso de almacenamiento local, preferencias guardadas y tratamiento de datos.',
       keywords:
-        'privacidad BondLab, politica de privacidad, almacenamiento local, datos de aplicacion educativa',
+        'privacidad BondLab, política de privacidad, almacenamiento local, datos de aplicación educativa',
     },
   },
   zh: {
@@ -664,16 +664,16 @@ const SEO_PAGE_COPY: Record<Language, Record<Exclude<AppRoute, 'lab'>, SeoPageCo
     instructions: {
       title: 'Instructions',
       description:
-        'Consultez le guide BondLab pour apprendre les controles de construction moleculaire, l edition des liaisons et la navigation dans la vue.',
+        "Consultez le guide BondLab pour apprendre les contrôles de construction moléculaire, l'édition des liaisons et la navigation dans la vue.",
       keywords:
-        'instructions BondLab, guide de molecules, tutoriel de chimie, aide sur les liaisons, apprentissage structure moleculaire',
+        'instructions BondLab, guide de molécules, tutoriel de chimie, aide sur les liaisons, apprentissage structure moléculaire',
     },
     privacy: {
-      title: 'Politique de confidentialite',
+      title: 'Politique de confidentialité',
       description:
-        'Consultez la politique de confidentialite de BondLab pour comprendre le stockage local, les preferences sauvegardees et le traitement des donnees.',
+        'Consultez la politique de confidentialité de BondLab pour comprendre le stockage local, les préférences sauvegardées et le traitement des données.',
       keywords:
-        'confidentialite BondLab, politique de confidentialite, stockage local, donnees application educative',
+        'confidentialité BondLab, politique de confidentialité, stockage local, données application éducative',
     },
   },
   ja: {
