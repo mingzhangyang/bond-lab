@@ -17,7 +17,7 @@ test('deriveMoleculeInsights returns localized labels and empty molecule payload
   assert.equal(insights.polarityLabel, '不明');
   assert.equal(insights.polarityTitle, '極性');
   assert.equal(insights.structureTitle, '構造式');
-  assert.equal(insights.factTitle, '豆知识');
+  assert.equal(insights.factTitle, '豆知識');
 });
 
 test('deriveMoleculeInsights identifies known molecules and formats localized metadata', () => {
@@ -45,7 +45,7 @@ test('deriveMoleculeInsights identifies known molecules and formats localized me
   assert.match(insights.moleculeInfo?.fact ?? '', /nonpolar/i);
   assert.equal(insights.polarityReport.classification, 'nonpolar');
   assert.equal(insights.polarityLabel, 'Apolaire');
-  assert.equal(insights.polarityTitle, 'Polarite');
+  assert.equal(insights.polarityTitle, 'Polarité');
   assert.equal(insights.structureTitle, 'Structure');
   assert.equal(insights.factTitle, 'Info');
 });

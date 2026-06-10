@@ -26,7 +26,7 @@ test('getMessages returns English defaults', () => {
 test('getMessages returns Spanish copy', () => {
   const es = getMessages('es');
   assert.equal(es.ui.addElement, 'Agregar elemento');
-  assert.equal(es.challenge.title, 'Desafio');
+  assert.equal(es.challenge.title, 'Desafío');
 });
 
 test('getMessages returns Chinese, French, and Japanese copy', () => {
@@ -42,10 +42,10 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
   assert.ok(zh.ui.controlsList.includes('点击键先选中，再用升级/删除按钮操作'));
 
   const fr = getMessages('fr');
-  assert.equal(fr.ui.addElement, 'Ajouter un element');
-  assert.equal(fr.onboarding.menu, 'Demarrage rapide');
-  assert.equal(fr.ui.educationalDisclaimerTitle, 'A propos de la science dans BondLab');
-  assert.equal(fr.challenge.title, 'Defi');
+  assert.equal(fr.ui.addElement, 'Ajouter un élément');
+  assert.equal(fr.onboarding.menu, 'Démarrage rapide');
+  assert.equal(fr.ui.educationalDisclaimerTitle, 'À propos de la science dans BondLab');
+  assert.equal(fr.challenge.title, 'Défi');
 
   const ja = getMessages('ja');
   assert.equal(ja.ui.addElement, '元素を追加');
@@ -58,12 +58,12 @@ test('getMessages returns Chinese, French, and Japanese copy', () => {
 
 test('localizeMoleculeName translates known names and falls back for unknown ones', () => {
   assert.equal(localizeMoleculeName('es', 'Water'), 'Agua');
-  assert.equal(localizeMoleculeName('es', 'Unknown Molecule'), 'Molecula desconocida');
-  assert.equal(localizeMoleculeName('es', 'Sulfur Dioxide'), 'Dioxido de azufre');
+  assert.equal(localizeMoleculeName('es', 'Unknown Molecule'), 'Molécula desconocida');
+  assert.equal(localizeMoleculeName('es', 'Sulfur Dioxide'), 'Dióxido de azufre');
   assert.equal(localizeMoleculeName('zh', 'Water'), '水');
   assert.equal(localizeMoleculeName('zh', 'Phosphorus Trichloride'), '三氯化磷');
   assert.equal(localizeMoleculeName('fr', 'Water'), 'Eau');
-  assert.equal(localizeMoleculeName('fr', 'Hydrogen Chloride'), 'Chlorure d hydrogene');
+  assert.equal(localizeMoleculeName('fr', 'Hydrogen Chloride'), "Chlorure d'hydrogène");
   assert.equal(localizeMoleculeName('ja', 'Water'), '水');
   assert.equal(localizeMoleculeName('ja', 'Hydrogen Sulfide'), '硫化水素');
   assert.equal(localizeMoleculeName('es', 'Custom Name'), 'Custom Name');
@@ -76,7 +76,7 @@ test('translateStabilityIssue localizes valency issue strings', () => {
 
   assert.equal(
     translateStabilityIssue('es', exceeded),
-    'O excedio su valencia maxima (3/2 enlaces).',
+    'O excedió su valencia máxima (3/2 enlaces).',
   );
   assert.equal(
     translateStabilityIssue('es', unsatisfied),
@@ -84,6 +84,6 @@ test('translateStabilityIssue localizes valency issue strings', () => {
   );
   assert.equal(
     translateStabilityIssue('es', metalExceeded),
-    'Fe excedio su valencia maxima (5/2 enlaces).',
+    'Fe excedió su valencia máxima (5/2 enlaces).',
   );
 });

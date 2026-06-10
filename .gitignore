@@ -9,3 +9,7 @@ coverage/
 
 screenshot*.png
 .codex
+
+vite-debug.exit
+test-results/
+playwright-report/
