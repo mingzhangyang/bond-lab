@@ -1,5 +1,7 @@
 import { Trash2, X } from 'lucide-react';
+import type { CSSProperties } from 'react';
 import { ELEMENTS, ELEMENT_DISPLAY_ORDER, type ElementType } from '../../store';
+import { getReadableTextColor } from '../../sceneArt';
 import type { Messages } from '../../i18n';
 
 interface MobileElementsDrawerProps {
@@ -65,8 +67,8 @@ export function MobileElementsDrawer({
                   className={`lab-tile flex min-h-[96px] flex-col items-center justify-center gap-2 p-3 rounded-2xl transition-colors border touch-manipulation ${isDark ? 'text-zinc-100' : 'text-zinc-800'}`}
                 >
                   <div
-                    className="w-11 h-11 rounded-full shadow-inner flex items-center justify-center text-base font-bold"
-                    style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
+                    className="w-11 h-11 rounded-full element-orb flex items-center justify-center text-base font-bold"
+                    style={{ '--orb-color': data.color, color: getReadableTextColor(data.color) } as CSSProperties}
                   >
                     {data.symbol}
                   </div>

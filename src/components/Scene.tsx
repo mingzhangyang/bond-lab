@@ -3,11 +3,22 @@ import type { ReactNode } from 'react';
 import { Canvas } from '@react-three/fiber';
 import { useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei/core/OrbitControls';
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js';
 import { useStore } from '../store';
 import { AtomNode } from './AtomNode';
 import { BondNode } from './BondNode';
 import { PhysicsEngine, TransformSync, setAtomPosition } from '../physics';
 import { getElementFromDragData, hasElementDragData, projectPointerToScenePlane } from '../drag';
+import { getSceneLighting } from '../sceneArt';
+import { SceneBackdrop } from './SceneBackdrop';
+
+const GL_OPTIONS = {
+  antialias: true,
+  alpha: true,
+  toneMapping: THREE.NeutralToneMapping,
+  toneMappingExposure: 1.05,
+};
 
 class SceneErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
   constructor(props: { children: ReactNode }) {
@@ -79,31 +90,57 @@ function SceneDropTarget() {
   return null;
 }
 
+function SceneEnvironment({ intensity }: { intensity: number }) {
+  const { gl, scene } = useThree();
+
+  useEffect(() => {
+    const pmrem = new THREE.PMREMGenerator(gl);
+    const room = new RoomEnvironment();
+    const envTarget = pmrem.fromScene(room, 0.04);
+    scene.environment = envTarget.texture;
+
+    return () => {
+      scene.environment = null;
+      envTarget.dispose();
+      room.dispose();
+      pmrem.dispose();
+    };
+  }, [gl, scene]);
+
+  useEffect(() => {
+    scene.environmentIntensity = intensity;
+  }, [scene, intensity]);
+
+  return null;
+}
+
 export function Scene() {
   const atoms = useStore(state => state.atoms);
   const bonds = useStore(state => state.bonds);
   const theme = useStore(state => state.theme);
   const draggedAtom = useStore(state => state.draggedAtom);
   const rotatingBond = useStore(state => state.rotatingBond);
-  const isDark = theme === 'dark';
+  const lighting = getSceneLighting(theme);
 
   return (
     <SceneErrorBoundary>
-    <div className={`w-full h-full ${isDark ? 'bg-zinc-900' : 'bg-slate-200'}`}>
+    <div className="relative w-full h-full">
+      <SceneBackdrop />
       <Canvas
+        style={{ position: 'absolute', inset: 0 }}
         camera={{ position: [0, 0, 10], fov: 45 }}
+        dpr={[1, 2]}
+        gl={GL_OPTIONS}
         onPointerMissed={() => {
           useStore.getState().setSelectedAtom(null);
           useStore.getState().setSelectedBond(null);
         }}
       >
-        <color attach="background" args={[isDark ? '#18181b' : '#e2e8f0']} />
-        <ambientLight intensity={isDark ? 0.6 : 0.85} />
-        <hemisphereLight
-          args={[isDark ? '#6b7280' : '#e2e8f0', isDark ? '#1f2937' : '#94a3b8', isDark ? 0.25 : 0.3]}
-        />
-        <directionalLight position={[10, 10, 5]} intensity={isDark ? 0.9 : 0.7} />
-        <directionalLight position={[-10, -10, -5]} intensity={isDark ? 0.5 : 0.35} />
+        <SceneEnvironment intensity={lighting.environmentIntensity} />
+        <ambientLight intensity={lighting.ambient} />
+        <directionalLight position={[6, 8, 10]} intensity={lighting.key} color="#fff7ed" />
+        <directionalLight position={[-8, -4, 6]} intensity={lighting.fill} color="#e0e7ff" />
+        <directionalLight position={[-4, 6, -10]} intensity={lighting.rimIntensity} color={lighting.rimColor} />
         
         <PhysicsEngine />
         <TransformSync />
