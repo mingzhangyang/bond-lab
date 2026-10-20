@@ -1,31 +1,15 @@
-import React, { Suspense, lazy } from 'react';
+import { Suspense, lazy } from 'react';
 import { useStore } from '../store';
 import { getMessages } from '../i18n';
 import { getSeo } from '../seo';
 import { getAppShellTheme } from '../appShell';
+import { SceneBackdrop } from './SceneBackdrop';
 import { getPathForRoute, navigateToRoute } from '../routes';
 
 const Scene = lazy(async () => {
   const module = await import('./Scene');
   return { default: module.Scene };
 });
-
-function SceneFallback() {
-  const theme = useStore((state) => state.theme);
-  const shellTheme = getAppShellTheme(theme);
-
-  return (
-    <div
-      className="lab-scene-fallback"
-      style={{ '--lab-shell-bg': shellTheme.canvasBackground } as React.CSSProperties}
-      aria-hidden="true"
-    >
-      <div className="lab-scene-grid" />
-      <div className="lab-scene-glow lab-scene-glow-primary" />
-      <div className="lab-scene-glow lab-scene-glow-secondary" />
-    </div>
-  );
-}
 
 const UI = lazy(async () => {
   const module = await import('./UI');
@@ -63,7 +47,7 @@ export function LabPage() {
         color: shellTheme.text,
       }}
     >
-      <Suspense fallback={<SceneFallback />}>
+      <Suspense fallback={<SceneBackdrop />}>
         <Scene />
       </Suspense>
       <Suspense fallback={<UIFallback />}>

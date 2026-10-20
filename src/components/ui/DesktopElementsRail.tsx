@@ -1,6 +1,7 @@
 import { ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
-import type { DragEvent } from 'react';
+import type { CSSProperties, DragEvent } from 'react';
 import { ELEMENTS, ELEMENT_DISPLAY_ORDER, type ElementType } from '../../store';
+import { getReadableTextColor } from '../../sceneArt';
 import { ChallengeMode } from '../ChallengeMode';
 import type { Messages } from '../../i18n';
 
@@ -96,8 +97,8 @@ export function DesktopElementsRail({
                       className={`flex flex-col items-center gap-2 p-3 rounded-xl text-center transition-colors border ${inactiveModeClass}`}
                     >
                       <div
-                        className="w-10 h-10 rounded-full shadow-inner flex items-center justify-center text-sm font-bold shrink-0"
-                        style={{ backgroundColor: data.color, color: el === 'H' ? 'black' : 'white' }}
+                        className="w-10 h-10 rounded-full element-orb flex items-center justify-center text-sm font-bold shrink-0"
+                        style={{ '--orb-color': data.color, color: getReadableTextColor(data.color) } as CSSProperties}
                       >
                         {data.symbol}
                       </div>

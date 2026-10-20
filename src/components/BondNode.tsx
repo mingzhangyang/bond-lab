@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { type Bond, useStore } from '../store';
+import { type Bond, ELEMENTS, useStore } from '../store';
 import { atomPositions, notifyAtomPositionsChanged, setBondGroupRef } from '../physics';
 import { useShiftPressed } from '../keyboard';
 import {
@@ -9,6 +9,7 @@ import {
   getRotationGroupAtomIds,
   rotateAtomPositionsAroundAxis,
 } from '../rotation';
+import { getBondHighlight } from '../sceneArt';
 
 interface BondNodeProps {
   bond: Bond;
@@ -27,38 +28,8 @@ interface RotationState {
 const ROTATION_START_THRESHOLD_PX = 2;
 const ROTATION_SENSITIVITY = 0.008;
 const ROTATION_MAX_DELTA_PX = 20;
-
-function getBondColor(
-  isRotating: boolean,
-  isSelected: boolean,
-  hovered: boolean,
-  interactionMode: string,
-  shiftPressed: boolean,
-  bondRotatable: boolean,
-): string {
-  if (isRotating) return '#38bdf8';
-  if (isSelected) return '#22c55e';
-  if (!hovered) return '#888888';
-  if (interactionMode === 'delete') return '#ef4444';
-  if (interactionMode === 'build' && shiftPressed) return bondRotatable ? '#f59e0b' : '#f87171';
-  return '#aaaaaa';
-}
-
-function getBondEmissive(
-  isRotating: boolean,
-  isSelected: boolean,
-  hovered: boolean,
-  interactionMode: string,
-  shiftPressed: boolean,
-  bondRotatable: boolean,
-): string {
-  if (isRotating) return '#0c4a6e';
-  if (isSelected) return '#14532d';
-  if (!hovered) return '#000';
-  if (interactionMode === 'delete') return '#330000';
-  if (interactionMode === 'build' && shiftPressed) return bondRotatable ? '#5b3410' : '#450a0a';
-  return '#222';
-}
+const BOND_RADIUS_BY_ORDER: Record<number, number> = { 1: 0.1, 2: 0.075, 3: 0.065 };
+const NEUTRAL_BOND_COLOR = '#9ca3af';
 
 function BondNodeImpl({ bond }: BondNodeProps) {
   const groupRef = useRef<THREE.Group>(null);
@@ -79,6 +50,15 @@ function BondNodeImpl({ bond }: BondNodeProps) {
   const isRotating = rotatingBondId === bond.id;
   const isSelected = selectedBondId === bond.id;
   const bondRotatable = useMemo(() => canRotateBond(bond, bonds), [bond, bonds]);
+  const highlight = getBondHighlight({ isRotating, isSelected, hovered, interactionMode, shiftPressed, bondRotatable });
+  const sourceElement = atoms.find((atom) => atom.id === bond.source)?.element;
+  const targetElement = atoms.find((atom) => atom.id === bond.target)?.element;
+  // Each half takes its atom's color (CPK ball-and-stick); highlights tint the whole bond.
+  const halves = [
+    { y: -0.25, color: highlight?.color ?? (sourceElement ? ELEMENTS[sourceElement].color : NEUTRAL_BOND_COLOR) },
+    { y: 0.25, color: highlight?.color ?? (targetElement ? ELEMENTS[targetElement].color : NEUTRAL_BOND_COLOR) },
+  ];
+  const bondRadius = BOND_RADIUS_BY_ORDER[bond.order] ?? BOND_RADIUS_BY_ORDER[1];
 
   useEffect(() => {
     if (!groupRef.current) return;
@@ -229,15 +209,19 @@ function BondNodeImpl({ bond }: BondNodeProps) {
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
     >
       {offsets.map((offset, i) => (
-        <mesh key={i} position={[offset, 0, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 1, 16]} />
-          <meshStandardMaterial
-            color={getBondColor(isRotating, isSelected, hovered, interactionMode, shiftPressed, bondRotatable)}
-            roughness={0.4}
-            metalness={0.2}
-            emissive={getBondEmissive(isRotating, isSelected, hovered, interactionMode, shiftPressed, bondRotatable)}
-          />
-        </mesh>
+        <group key={i} position={[offset, 0, 0]}>
+          {halves.map((half) => (
+            <mesh key={half.y} position={[0, half.y, 0]}>
+              <cylinderGeometry args={[bondRadius, bondRadius, 0.5, 20, 1, true]} />
+              <meshStandardMaterial
+                color={half.color}
+                roughness={0.38}
+                metalness={0.05}
+                emissive={highlight?.emissive ?? '#000'}
+              />
+            </mesh>
+          ))}
+        </group>
       ))}
     </group>
   );
