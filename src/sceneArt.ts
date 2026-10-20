@@ -1,6 +1,6 @@
 import type { Theme } from './preferences.ts';
 
-const DARK_TEXT = '#0f172a';
+const DARK_TEXT = '#020617';
 const LIGHT_TEXT = '#ffffff';
 
 function parseHex(hex: string): [number, number, number] | null {
@@ -24,14 +24,20 @@ function contrastRatio(a: number, b: number): number {
   return (lighter + 0.05) / (darker + 0.05);
 }
 
-// Element symbols are short bold labels, so white is kept while it meets the
-// WCAG 3:1 large-text contrast; paler swatches switch to dark text.
-const MIN_LABEL_CONTRAST = 3;
+export function getContrastRatio(foreground: string, background: string): number {
+  const fg = parseHex(foreground);
+  const bg = parseHex(background);
+  if (!fg || !bg) return Number.NaN;
+  return contrastRatio(relativeLuminance(fg), relativeLuminance(bg));
+}
 
+// Element symbols are 14-16px bold, below WCAG's large-text size, so the label
+// takes whichever color gives the higher contrast (all swatches reach 4.5:1).
 export function getReadableTextColor(background: string): string {
-  const rgb = parseHex(background);
-  if (!rgb) return LIGHT_TEXT;
-  return contrastRatio(relativeLuminance(rgb), 1) >= MIN_LABEL_CONTRAST ? LIGHT_TEXT : DARK_TEXT;
+  if (!parseHex(background)) return LIGHT_TEXT;
+  return getContrastRatio(DARK_TEXT, background) >= getContrastRatio(LIGHT_TEXT, background)
+    ? DARK_TEXT
+    : LIGHT_TEXT;
 }
 
 export interface AtomHalo {

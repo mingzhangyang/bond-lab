@@ -1,7 +1,9 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { ELEMENTS } from './chemistry.ts';
 import {
   easeOutBack,
+  getContrastRatio,
   getAtomHalo,
   getBondHighlight,
   getReadableTextColor,
@@ -9,17 +11,30 @@ import {
 } from './sceneArt.ts';
 
 test('getReadableTextColor picks dark text on light swatches and light text on dark swatches', () => {
-  assert.equal(getReadableTextColor('#FFFFFF'), '#0f172a');
-  assert.equal(getReadableTextColor('#FFC857'), '#0f172a');
-  assert.equal(getReadableTextColor('#8DE969'), '#0f172a');
+  assert.equal(getReadableTextColor('#FFFFFF'), '#020617');
+  assert.equal(getReadableTextColor('#FFC857'), '#020617');
+  assert.equal(getReadableTextColor('#8DE969'), '#020617');
+  assert.equal(getReadableTextColor('#FF2222'), '#020617');
   assert.equal(getReadableTextColor('#444444'), '#ffffff');
   assert.equal(getReadableTextColor('#2244FF'), '#ffffff');
-  assert.equal(getReadableTextColor('#FF2222'), '#ffffff');
+});
+
+test('getReadableTextColor meets WCAG normal-text contrast (4.5:1) for every element swatch', () => {
+  for (const [element, data] of Object.entries(ELEMENTS)) {
+    const ratio = getContrastRatio(data.color, getReadableTextColor(data.color));
+    assert.ok(ratio >= 4.5, `${element} label contrast ${ratio.toFixed(2)} is below 4.5:1`);
+  }
 });
 
 test('getReadableTextColor accepts short hex and falls back to white for invalid input', () => {
-  assert.equal(getReadableTextColor('#fff'), '#0f172a');
+  assert.equal(getReadableTextColor('#fff'), '#020617');
   assert.equal(getReadableTextColor('not-a-color'), '#ffffff');
+});
+
+test('getContrastRatio matches known WCAG reference values', () => {
+  assert.ok(Math.abs(getContrastRatio('#000000', '#ffffff') - 21) < 1e-9);
+  assert.equal(getContrastRatio('#123456', '#123456'), 1);
+  assert.ok(Number.isNaN(getContrastRatio('nope', '#ffffff')));
 });
 
 test('getAtomHalo is hidden for idle atoms', () => {

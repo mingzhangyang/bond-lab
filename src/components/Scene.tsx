@@ -96,12 +96,12 @@ function SceneEnvironment({ intensity }: { intensity: number }) {
   useEffect(() => {
     const pmrem = new THREE.PMREMGenerator(gl);
     const room = new RoomEnvironment();
-    const envMap = pmrem.fromScene(room, 0.04).texture;
-    scene.environment = envMap;
+    const envTarget = pmrem.fromScene(room, 0.04);
+    scene.environment = envTarget.texture;
 
     return () => {
       scene.environment = null;
-      envMap.dispose();
+      envTarget.dispose();
       room.dispose();
       pmrem.dispose();
     };
