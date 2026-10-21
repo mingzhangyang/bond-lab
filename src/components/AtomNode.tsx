@@ -5,6 +5,7 @@ import { useStore, ELEMENTS, type ElementType } from '../store';
 import { atomPositions, setAtomMeshRef, setAtomPosition, IDEAL_BOND_LENGTH } from '../physics';
 import { toNormalizedDeviceCoordinates } from '../drag';
 import { startPointerSession } from '../pointerSession';
+import { applyAtomTap } from '../atomTap';
 import { easeOutBack, getAtomHalo, type AtomHalo } from '../sceneArt';
 
 const SPAWN_DURATION_S = 0.35;
@@ -76,15 +77,12 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const setDraggedAtom = useStore((state) => state.setDraggedAtom);
   const setSelectedBond = useStore((state) => state.setSelectedBond);
   const isSelected = useStore((state) => state.selectedAtom === id);
-  const setSelectedAtom = useStore((state) => state.setSelectedAtom);
-  const addBond = useStore((state) => state.addBond);
   const removeAtom = useStore((state) => state.removeAtom);
   const interactionMode = useStore((state) => state.interactionMode);
   const [hovered, setHovered] = useState(false);
   const { camera, gl, raycaster } = useThree();
   const spawnProgressRef = useRef(prefersReducedMotion() ? 1 : 0);
-  const cancelDragRef = useRef<(() => void) | null>(null);
-  const suppressClickRef = useRef(false);
+  const cancelPointerRef = useRef<(() => void) | null>(null);
   const radius = data.vdwRadius * 0.4;
   const halo = getAtomHalo({ isSelected, hovered, interactionMode });
 
@@ -101,22 +99,22 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
     return () => setAtomMeshRef(id, null);
   }, [id]);
 
-  useEffect(() => () => cancelDragRef.current?.(), []);
+  useEffect(() => () => cancelPointerRef.current?.(), []);
 
-  const startDrag = (pointerId: number, startX: number, startY: number) => {
-    cancelDragRef.current?.();
-    // Replacing a session on the same atom must not suppress the new tap.
-    suppressClickRef.current = false;
-    setDraggedAtom(id);
+  const startAtomPointerSession = (pointerId: number, startX: number, startY: number) => {
+    cancelPointerRef.current?.();
+    const startedMode = useStore.getState().interactionMode;
+    if (startedMode === 'build') setDraggedAtom(id);
     let didDrag = false;
 
     const handlePointerMove = (e: PointerEvent) => {
       if (!didDrag) {
-        // A press or a little finger jitter is a click, not a proximity drag.
+        // A small involuntary finger movement is still a tap.
         didDrag = Math.hypot(e.clientX - startX, e.clientY - startY) >= DRAG_START_THRESHOLD_PX;
         if (!didDrag) return;
       }
-      if (!atomPositions[id]) return;
+      // In Delete mode, movement cancels the tap but never moves an atom.
+      if (startedMode !== 'build' || !atomPositions[id]) return;
 
       const rect = gl.domElement.getBoundingClientRect();
       const ndc = toNormalizedDeviceCoordinates(
@@ -139,42 +137,48 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       }
     };
 
-    const finishDrag = (completed: boolean) => {
-      cancelDragRef.current = null;
-      if (useStore.getState().draggedAtom === id) setDraggedAtom(null);
-      // A cancelled pointer or a real drag must never become click-to-bond.
-      // A fresh pointerdown resets this marker even if the browser skipped click.
-      if (!completed || didDrag) suppressClickRef.current = true;
-      if (!completed || !didDrag || useStore.getState().interactionMode !== 'build') return;
+    const finishInteraction = (completed: boolean) => {
+      cancelPointerRef.current = null;
+      const state = useStore.getState();
+      if (startedMode === 'build' && state.draggedAtom === id) setDraggedAtom(null);
+      if (!completed || state.interactionMode !== startedMode) return;
+
+      if (!didDrag) {
+        // A completed tap commits on the matching pointerup, not a later
+        // synthetic click (which iOS Safari can omit on a WebGL canvas).
+        applyAtomTap(id, useStore.getState());
+        return;
+      }
+      if (startedMode !== 'build') return;
 
       const p1 = atomPositions[id];
       if (!p1) return;
 
-      const state = useStore.getState();
+      const updatedState = useStore.getState();
       let foundNearbyAtom = false;
-      for (const other of state.atoms) {
+      for (const other of updatedState.atoms) {
         if (other.id === id) continue;
         const p2 = atomPositions[other.id];
         if (!p2) continue;
 
         if (p1.distanceTo(p2) < IDEAL_BOND_LENGTH * 0.75) {
-          state.addBond(id, other.id);
+          updatedState.addBond(id, other.id);
           foundNearbyAtom = true;
         }
       }
       if (foundNearbyAtom) useStore.getState().setSelectedAtom(null);
     };
 
-    cancelDragRef.current = startPointerSession(window, {
+    // Registered synchronously on pointerdown, filtered by pointerId.
+    // Both mouse clicks and touch taps complete exactly once on pointerup.
+    cancelPointerRef.current = startPointerSession(window, {
       pointerId,
       onMove: handlePointerMove,
-      onFinish: finishDrag,
+      onFinish: finishInteraction,
       subscribeToCancel: (cancel) => useStore.subscribe((state) => {
-        // Store notifications are synchronous: a second touch takes ownership
-        // before the old finger gets a chance to move the first atom again.
-        if (state.draggedAtom !== id
-          || state.interactionMode !== 'build'
-          || !state.atoms.some((atom) => atom.id === id)) {
+        if (state.interactionMode !== startedMode
+          || !state.atoms.some((atom) => atom.id === id)
+          || (startedMode === 'build' && state.draggedAtom !== id)) {
           cancel();
         }
       }),
@@ -187,38 +191,16 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
       onPointerDown={(e) => {
+        if (e.button !== 0) return;
         e.stopPropagation();
-        suppressClickRef.current = false;
-        if (interactionMode === 'build') {
-          // Selecting a bond clears the atom selection in the store. Do not
-          // clear it again on the second atom's pointerdown: it is the source
-          // of the bond that the following click is meant to create.
-          if (useStore.getState().selectedBond !== null) setSelectedBond(null);
-          startDrag(e.pointerId, e.clientX, e.clientY);
+        if (interactionMode === 'build' && useStore.getState().selectedBond !== null) {
+          setSelectedBond(null);
         }
+        startAtomPointerSession(e.pointerId, e.clientX, e.clientY);
       }}
-      onClick={(e) => {
-        e.stopPropagation();
-        if (suppressClickRef.current) {
-          suppressClickRef.current = false;
-          return;
-        }
-        if (interactionMode === 'delete') {
-          removeAtom(id);
-          setSelectedAtom(null);
-          return;
-        }
-
-        const selectedAtom = useStore.getState().selectedAtom;
-        if (selectedAtom === null) {
-          setSelectedAtom(id);
-        } else if (selectedAtom === id) {
-          setSelectedAtom(null);
-        } else {
-          addBond(selectedAtom, id);
-          setSelectedAtom(null);
-        }
-      }}
+      // Tap actions are already committed by pointerup. Retain an inert click
+      // handler to stop 3D event propagation without double-applying the tap.
+      onClick={(e) => e.stopPropagation()}
       onContextMenu={(e) => {
         e.nativeEvent.preventDefault();
         e.stopPropagation();
