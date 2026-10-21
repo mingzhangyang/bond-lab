@@ -236,15 +236,18 @@ function formatUnknownFormula(counts: Record<ElementType, number>): string {
 }
 
 export function identifyMolecule(atoms: Atom[], bonds: Bond[]): { name: string, formula: string } | null {
-  if (atoms.length === 0) return null;
+  // An inventory of atoms is not a molecule. Every atom must belong to one
+  // valid, connected bond graph before a molecular name/formula can be shown.
+  // This excludes standalone atoms, unbonded collections and partial builds.
+  if (atoms.length < 2 || bonds.length === 0
+    || !isValidMoleculeGraph(atoms, bonds)
+    || !isConnectedMoleculeGraph(atoms, bonds)) {
+    return null;
+  }
 
   const counts = getElementCounts(atoms.map((atom) => atom.element));
   const formula = formatUnknownFormula(counts);
   if (formula === '') return null;
-
-  if (!isValidMoleculeGraph(atoms, bonds) || !isConnectedMoleculeGraph(atoms, bonds)) {
-    return { name: 'Unknown Molecule', formula };
-  }
 
   for (const molecule of KNOWN_MOLECULES) {
     if (matchesGraph(molecule, atoms, bonds)) {

@@ -20,6 +20,28 @@ test('deriveMoleculeInsights returns localized labels and empty molecule payload
   assert.equal(insights.factTitle, '豆知識');
 });
 
+test('deriveMoleculeInsights exposes no molecule identity until all atoms are bonded together', () => {
+  const atoms = [
+    { id: 'o', element: 'O' as const },
+    { id: 'h1', element: 'H' as const },
+    { id: 'h2', element: 'H' as const },
+  ];
+  const firstBond = { id: 'b1', source: 'o', target: 'h1', order: 1 };
+  const secondBond = { id: 'b2', source: 'o', target: 'h2', order: 1 };
+
+  for (const bonds of [[], [firstBond]]) {
+    const insights = deriveMoleculeInsights({ atoms, bonds, language: 'en' });
+    assert.equal(insights.molecule, null);
+    assert.equal(insights.moleculeName, null);
+    assert.equal(insights.moleculeInfo, null);
+  }
+
+  const water = deriveMoleculeInsights({ atoms, bonds: [firstBond, secondBond], language: 'en' });
+  assert.equal(water.molecule?.name, 'Water');
+  assert.equal(water.molecule?.formula, 'H₂O');
+  assert.equal(water.moleculeName, 'Water');
+});
+
 test('deriveMoleculeInsights identifies known molecules and formats localized metadata', () => {
   const insights = deriveMoleculeInsights({
     atoms: [

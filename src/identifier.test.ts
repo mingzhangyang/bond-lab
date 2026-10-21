@@ -17,6 +17,33 @@ test('identifyMolecule identifies known molecules by element and bond counts', (
   assert.deepEqual(identifyMolecule(atoms, bonds), { name: 'Water', formula: 'H₂O' });
 });
 
+test('identifyMolecule does not label disconnected atoms as a molecule', () => {
+  const atoms: Atom[] = [
+    { id: 'o1', element: 'O' },
+    { id: 'h1', element: 'H' },
+    { id: 'h2', element: 'H' },
+  ];
+  const firstBond: Bond = { id: 'b1', source: 'o1', target: 'h1', order: 1 };
+  const secondBond: Bond = { id: 'b2', source: 'o1', target: 'h2', order: 1 };
+
+  assert.equal(identifyMolecule([], []), null);
+  assert.equal(identifyMolecule([atoms[0]], []), null);
+  assert.equal(identifyMolecule(atoms, []), null);
+  assert.equal(identifyMolecule(atoms, [firstBond]), null);
+  assert.deepEqual(identifyMolecule(atoms, [firstBond, secondBond]), { name: 'Water', formula: 'H₂O' });
+  // Removing a bond must revoke the molecule label immediately.
+  assert.equal(identifyMolecule(atoms, [secondBond]), null);
+});
+
+test('identifyMolecule rejects an invalid bond graph instead of exposing its atom-count formula', () => {
+  const atoms: Atom[] = [{ id: 'c', element: 'C' }, { id: 'o', element: 'O' }];
+  const duplicateBonds: Bond[] = [
+    { id: 'b1', source: 'c', target: 'o', order: 1 },
+    { id: 'b2', source: 'o', target: 'c', order: 1 },
+  ];
+  assert.equal(identifyMolecule(atoms, duplicateBonds), null);
+});
+
 test('identifyMolecule returns generic formula when molecule is unknown', () => {
   const atoms: Atom[] = [
     { id: 'c1', element: 'C' },
