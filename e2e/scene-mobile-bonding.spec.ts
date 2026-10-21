@@ -59,6 +59,10 @@ for (const suppressSyntheticClick of [false, true]) {
       });
       expect(ids).toHaveLength(3);
       await expect.poll(async () => atomCenter(page, ids[2])).not.toBe(null);
+      const moleculePanel = page.locator('[data-testid="mobile-molecule-pill"], [data-testid="mobile-molecule-sheet"]');
+      // Three loose atoms have the right elemental inventory for water, but
+      // are not yet a molecule and must not be labelled H₂O.
+      await expect(moleculePanel).toHaveCount(0);
 
       const tap = async (id: string) => {
         const point = await atomCenter(page, id);
@@ -73,6 +77,7 @@ for (const suppressSyntheticClick of [false, true]) {
       await tap(ids[1]);
       await expect.poll(orders).toEqual([1]);
       await expect.poll(selection).toBe(null);
+      await expect(moleculePanel).toHaveCount(0);
 
       await tap(ids[0]);
       await expect.poll(selection).toBe(ids[0]);
@@ -87,6 +92,15 @@ for (const suppressSyntheticClick of [false, true]) {
         return identifyMolecule(state.atoms, state.bonds);
       });
       expect(molecule).toEqual({ name: 'Water', formula: 'H₂O' });
+      await expect(moleculePanel).toHaveCount(1);
+      await expect(moleculePanel).toContainText('Water');
+
+      // Removing either O-H bond must hide the molecule identity again.
+      await page.evaluate(() => {
+        const state = window.__bondlabStore!.getState();
+        state.removeBond(state.bonds[0].id);
+      });
+      await expect(moleculePanel).toHaveCount(0);
       expect(errors).toEqual([]);
     } finally {
       await context.close();
