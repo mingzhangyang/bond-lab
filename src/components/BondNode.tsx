@@ -10,6 +10,7 @@ import {
   rotateAtomPositionsAroundAxis,
 } from '../rotation';
 import { getBondHighlight } from '../sceneArt';
+import { startPointerSession } from '../pointerSession';
 
 interface BondNodeProps {
   bond: Bond;
@@ -37,6 +38,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
   const shiftPressed = useShiftPressed();
   const suppressClickRef = useRef(false);
   const rotationRef = useRef<RotationState | null>(null);
+  const cancelRotationRef = useRef<(() => void) | null>(null);
   const removeBond = useStore((state) => state.removeBond);
   const interactionMode = useStore((state) => state.interactionMode);
   const atoms = useStore((state) => state.atoms);
@@ -68,6 +70,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
 
   useEffect(() => {
     return () => {
+      cancelRotationRef.current?.();
       if (useStore.getState().rotatingBond === bond.id) {
         useStore.getState().setRotatingBond(null);
       }
@@ -102,7 +105,8 @@ function BondNodeImpl({ bond }: BondNodeProps) {
   if (bond.order === 2) offsets.push(-0.15, 0.15);
   if (bond.order === 3) offsets.push(-0.2, 0, 0.2);
 
-  const startRotation = (clientX: number) => {
+  const startRotation = (clientX: number, pointerId: number) => {
+    cancelRotationRef.current?.();
     const anchorAtomId = bond.source;
     const pivotAtomId = bond.target;
     const anchorPos = atomPositions[anchorAtomId];
@@ -159,17 +163,14 @@ function BondNodeImpl({ bond }: BondNodeProps) {
         suppressClickRef.current = true;
       }
       rotationRef.current = null;
-      setRotatingBond(null);
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', stopRotation);
-      window.removeEventListener('pointercancel', stopRotation);
-      window.removeEventListener('blur', stopRotation);
+      if (useStore.getState().rotatingBond === bond.id) setRotatingBond(null);
     };
 
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', stopRotation);
-    window.addEventListener('pointercancel', stopRotation);
-    window.addEventListener('blur', stopRotation);
+    cancelRotationRef.current = startPointerSession(window, {
+      pointerId,
+      onMove: handlePointerMove,
+      onFinish: stopRotation,
+    });
   };
 
   return (
@@ -181,7 +182,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
         e.stopPropagation();
 
         if (!bondRotatable) return;
-        startRotation(e.clientX);
+        startRotation(e.clientX, e.pointerId);
       }}
       onClick={(e) => {
         e.stopPropagation();

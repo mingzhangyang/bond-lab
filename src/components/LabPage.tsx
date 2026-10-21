@@ -4,6 +4,7 @@ import { getMessages } from '../i18n';
 import { getSeo } from '../seo';
 import { getAppShellTheme } from '../appShell';
 import { SceneBackdrop } from './SceneBackdrop';
+import { SceneErrorBoundary } from './SceneErrorBoundary';
 import { getPathForRoute, navigateToRoute } from '../routes';
 
 const Scene = lazy(async () => {
@@ -47,9 +48,11 @@ export function LabPage() {
         color: shellTheme.text,
       }}
     >
-      <Suspense fallback={<SceneBackdrop />}>
-        <Scene />
-      </Suspense>
+      <SceneErrorBoundary>
+        <Suspense fallback={<SceneBackdrop />}>
+          <Scene />
+        </Suspense>
+      </SceneErrorBoundary>
       <Suspense fallback={<UIFallback />}>
         <UI />
       </Suspense>

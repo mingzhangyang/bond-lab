@@ -4,6 +4,7 @@ import * as THREE from 'three';
 import { useStore, ELEMENTS, type ElementType } from '../store';
 import { atomPositions, setAtomMeshRef, setAtomPosition, IDEAL_BOND_LENGTH } from '../physics';
 import { toNormalizedDeviceCoordinates } from '../drag';
+import { startPointerSession } from '../pointerSession';
 import { easeOutBack, getAtomHalo, type AtomHalo } from '../sceneArt';
 
 const SPAWN_DURATION_S = 0.35;
@@ -73,7 +74,6 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const data = ELEMENTS[element];
   const setDraggedAtom = useStore((state) => state.setDraggedAtom);
   const setSelectedBond = useStore((state) => state.setSelectedBond);
-  const isDragged = useStore((state) => state.draggedAtom === id);
   const isSelected = useStore((state) => state.selectedAtom === id);
   const setSelectedAtom = useStore((state) => state.setSelectedAtom);
   const addBond = useStore((state) => state.addBond);
@@ -82,6 +82,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const [hovered, setHovered] = useState(false);
   const { camera, gl, raycaster } = useThree();
   const spawnProgressRef = useRef(prefersReducedMotion() ? 1 : 0);
+  const cancelDragRef = useRef<(() => void) | null>(null);
   const radius = data.vdwRadius * 0.4;
   const halo = getAtomHalo({ isSelected, hovered, interactionMode });
 
@@ -98,9 +99,11 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
     return () => setAtomMeshRef(id, null);
   }, [id]);
 
-  useEffect(() => {
-    if (!isDragged) return;
+  useEffect(() => () => cancelDragRef.current?.(), []);
 
+  const startDrag = (pointerId: number) => {
+    cancelDragRef.current?.();
+    setDraggedAtom(id);
     const handlePointerMove = (e: PointerEvent) => {
       if (!atomPositions[id]) return;
 
@@ -125,9 +128,9 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       }
     };
 
-    const finishDrag = () => {
-      setDraggedAtom(null);
-      if (useStore.getState().interactionMode !== 'build') return;
+    const finishDrag = (completed: boolean) => {
+      if (useStore.getState().draggedAtom === id) setDraggedAtom(null);
+      if (!completed || useStore.getState().interactionMode !== 'build') return;
 
       const p1 = atomPositions[id];
       if (!p1) return;
@@ -146,18 +149,12 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       }
     };
 
-    window.addEventListener('pointermove', handlePointerMove);
-    window.addEventListener('pointerup', finishDrag);
-    window.addEventListener('pointercancel', finishDrag);
-    window.addEventListener('blur', finishDrag);
-
-    return () => {
-      window.removeEventListener('pointermove', handlePointerMove);
-      window.removeEventListener('pointerup', finishDrag);
-      window.removeEventListener('pointercancel', finishDrag);
-      window.removeEventListener('blur', finishDrag);
-    };
-  }, [isDragged, id, camera, gl, raycaster, setDraggedAtom]);
+    cancelDragRef.current = startPointerSession(window, {
+      pointerId,
+      onMove: handlePointerMove,
+      onFinish: finishDrag,
+    });
+  };
 
   return (
     <mesh
@@ -167,8 +164,11 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       onPointerDown={(e) => {
         e.stopPropagation();
         if (interactionMode === 'build') {
-          setSelectedBond(null);
-          setDraggedAtom(id);
+          // Selecting a bond clears the atom selection in the store. Do not
+          // clear it again on the second atom's pointerdown: it is the source
+          // of the bond that the following click is meant to create.
+          if (useStore.getState().selectedBond !== null) setSelectedBond(null);
+          startDrag(e.pointerId);
         }
       }}
       onClick={(e) => {

@@ -1,20 +1,18 @@
 import { expect, test } from '@playwright/test';
 
-type BondLabStore = {
-  getState: () => {
-    atoms: Array<{ id: string }>;
-    bonds: Array<{ id: string }>;
-    interactionMode: 'build' | 'delete';
-    addBond: (source: string, target: string) => void;
-    clear: () => void;
-  };
-};
+import type { GameState } from '../src/store/types';
+
+type BondLabStore = { getState: () => GameState };
 
 declare global {
   interface Window {
     __bondlabStore?: BondLabStore;
   }
 }
+
+test.beforeEach(async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('bondlab-onboarding-version', '2026-03-quickstart-v1'));
+});
 
 test('settings menu routes to instructions and privacy pages', async ({ page }) => {
   await page.goto('/');
@@ -80,7 +78,7 @@ test('mobile dock opens element drawer and toggles interaction mode', async ({ p
   await expect(page.getByTestId('mobile-elements-drawer')).toBeVisible();
 
   await page.getByTestId('mobile-elements-drawer-close').click();
-  await expect(page.getByTestId('mobile-elements-drawer')).not.toBeVisible();
+  await expect(page.getByTestId('mobile-elements-drawer')).not.toBeInViewport();
 
   await page.getByTestId('interaction-mode-toggle-mobile').click();
   const interactionMode = await page.evaluate(() => window.__bondlabStore?.getState().interactionMode);
@@ -93,6 +91,6 @@ test('settings uses bottom sheet layout on mobile', async ({ page }) => {
 
   await page.getByTestId('settings-menu-button').click();
   await expect(page.getByTestId('settings-menu-sheet')).toBeVisible();
-  await page.getByTestId('settings-menu-backdrop').click();
+  await page.getByTestId('settings-menu-backdrop').click({ position: { x: 20, y: 200 } });
   await expect(page.getByTestId('settings-menu-sheet')).not.toBeVisible();
 });

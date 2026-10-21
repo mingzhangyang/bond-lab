@@ -1,6 +1,4 @@
-import { Component, useEffect } from 'react';
-import type { ReactNode } from 'react';
-import { Canvas } from '@react-three/fiber';
+import { useEffect } from 'react';
 import { useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei/core/OrbitControls';
 import * as THREE from 'three';
@@ -12,35 +10,7 @@ import { PhysicsEngine, TransformSync, setAtomPosition } from '../physics';
 import { getElementFromDragData, hasElementDragData, projectPointerToScenePlane } from '../drag';
 import { getSceneLighting } from '../sceneArt';
 import { SceneBackdrop } from './SceneBackdrop';
-
-const GL_OPTIONS = {
-  antialias: true,
-  alpha: true,
-  toneMapping: THREE.NeutralToneMapping,
-  toneMappingExposure: 1.05,
-};
-
-class SceneErrorBoundary extends Component<{ children: ReactNode }, { hasError: boolean }> {
-  constructor(props: { children: ReactNode }) {
-    super(props);
-    this.state = { hasError: false };
-  }
-
-  static getDerivedStateFromError() {
-    return { hasError: true };
-  }
-
-  render() {
-    if (this.state.hasError) {
-      return (
-        <div className="w-full h-full flex items-center justify-center bg-zinc-900 text-zinc-400 text-sm">
-          3D scene failed to render. Reload the page to try again.
-        </div>
-      );
-    }
-    return this.props.children;
-  }
-}
+import { SceneCanvas } from './SceneCanvas';
 
 function SceneDropTarget() {
   const addAtom = useStore((state) => state.addAtom);
@@ -96,14 +66,20 @@ function SceneEnvironment({ intensity }: { intensity: number }) {
   useEffect(() => {
     const pmrem = new THREE.PMREMGenerator(gl);
     const room = new RoomEnvironment();
-    const envTarget = pmrem.fromScene(room, 0.04);
+    let envTarget: THREE.WebGLRenderTarget;
+    try {
+      envTarget = pmrem.fromScene(room, 0.04);
+    } finally {
+      // These are generation scratch resources; only the output target is
+      // needed by the live scene.
+      room.dispose();
+      pmrem.dispose();
+    }
     scene.environment = envTarget.texture;
 
     return () => {
-      scene.environment = null;
+      if (scene.environment === envTarget.texture) scene.environment = null;
       envTarget.dispose();
-      room.dispose();
-      pmrem.dispose();
     };
   }, [gl, scene]);
 
@@ -114,7 +90,7 @@ function SceneEnvironment({ intensity }: { intensity: number }) {
   return null;
 }
 
-export function Scene() {
+function SceneContents() {
   const atoms = useStore(state => state.atoms);
   const bonds = useStore(state => state.bonds);
   const theme = useStore(state => state.theme);
@@ -123,46 +99,47 @@ export function Scene() {
   const lighting = getSceneLighting(theme);
 
   return (
-    <SceneErrorBoundary>
+    <>
+      <SceneEnvironment intensity={lighting.environmentIntensity} />
+      <ambientLight intensity={lighting.ambient} />
+      <directionalLight position={[6, 8, 10]} intensity={lighting.key} color="#fff7ed" />
+      <directionalLight position={[-8, -4, 6]} intensity={lighting.fill} color="#e0e7ff" />
+      <directionalLight position={[-4, 6, -10]} intensity={lighting.rimIntensity} color={lighting.rimColor} />
+
+      <PhysicsEngine />
+      <TransformSync />
+      <SceneDropTarget />
+
+      <group>
+        {atoms.map(atom => (
+          <AtomNode key={atom.id} id={atom.id} element={atom.element} />
+        ))}
+        {bonds.map(bond => (
+          <BondNode key={bond.id} bond={bond} />
+        ))}
+      </group>
+
+      <OrbitControls
+        makeDefault
+        enablePan={false}
+        enableZoom={true}
+        enabled={draggedAtom === null && rotatingBond === null}
+      />
+    </>
+  );
+}
+
+const sceneContents = <SceneContents />;
+const clearSelection = () => {
+  useStore.getState().setSelectedAtom(null);
+  useStore.getState().setSelectedBond(null);
+};
+
+export function Scene() {
+  return (
     <div className="relative w-full h-full">
       <SceneBackdrop />
-      <Canvas
-        style={{ position: 'absolute', inset: 0 }}
-        camera={{ position: [0, 0, 10], fov: 45 }}
-        dpr={[1, 2]}
-        gl={GL_OPTIONS}
-        onPointerMissed={() => {
-          useStore.getState().setSelectedAtom(null);
-          useStore.getState().setSelectedBond(null);
-        }}
-      >
-        <SceneEnvironment intensity={lighting.environmentIntensity} />
-        <ambientLight intensity={lighting.ambient} />
-        <directionalLight position={[6, 8, 10]} intensity={lighting.key} color="#fff7ed" />
-        <directionalLight position={[-8, -4, 6]} intensity={lighting.fill} color="#e0e7ff" />
-        <directionalLight position={[-4, 6, -10]} intensity={lighting.rimIntensity} color={lighting.rimColor} />
-        
-        <PhysicsEngine />
-        <TransformSync />
-        <SceneDropTarget />
-        
-        <group>
-          {atoms.map(atom => (
-            <AtomNode key={atom.id} id={atom.id} element={atom.element} />
-          ))}
-          {bonds.map(bond => (
-            <BondNode key={bond.id} bond={bond} />
-          ))}
-        </group>
-
-        <OrbitControls
-          makeDefault
-          enablePan={false}
-          enableZoom={true}
-          enabled={draggedAtom === null && rotatingBond === null}
-        />
-      </Canvas>
+      <SceneCanvas onPointerMissed={clearSelection}>{sceneContents}</SceneCanvas>
     </div>
-    </SceneErrorBoundary>
   );
 }
