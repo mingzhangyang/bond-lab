@@ -107,3 +107,65 @@ for (const suppressSyntheticClick of [false, true]) {
     }
   });
 }
+
+for (const secondTouchOnAtom of [false, true]) {
+  test(`pinch in Delete mode does not remove a stationary atom (second touch ${secondTouchOnAtom ? 'on atom' : 'on background'})`, async ({ browser }) => {
+    test.setTimeout(60_000);
+    const context = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      isMobile: true,
+      hasTouch: true,
+      reducedMotion: 'reduce',
+    });
+    try {
+      await context.addInitScript(() => {
+        localStorage.setItem('bondlab-onboarding-version', '2026-03-quickstart-v1');
+      });
+      const page = await context.newPage();
+      const errors: string[] = [];
+      page.on('pageerror', (error) => errors.push(error.message));
+      await page.goto('/');
+      await page.getByTestId('mobile-dock-add-button').click();
+      await page.getByTestId('mobile-element-button-O').click();
+
+      const id = await page.evaluate(() => window.__bondlabStore!.getState().atoms[0]?.id);
+      if (!id) throw new Error('No atom was added');
+      await page.evaluate(async (atomId) => {
+        const path = '/src/physics.ts';
+        const { setAtomPosition } = await import(/* @vite-ignore */ path);
+        setAtomPosition(atomId, { x: 0, y: 0, z: 0 });
+      }, id);
+      await expect.poll(() => atomCenter(page, id)).not.toBe(null);
+      await page.getByTestId('interaction-mode-toggle-mobile').click();
+      await expect.poll(() => page.evaluate(() => window.__bondlabStore!.getState().interactionMode)).toBe('delete');
+
+      const point = await atomCenter(page, id);
+      if (!point) throw new Error('Atom mesh was not ready');
+      const first = { x: point.x, y: point.y, id: 1 };
+      const second = secondTouchOnAtom
+        ? { x: point.x + 12, y: point.y + 10, id: 2 }
+        : { x: Math.max(35, point.x - 140), y: point.y + 80, id: 2 };
+      const cdp = await context.newCDPSession(page);
+      const atomCount = () => page.evaluate(() => window.__bondlabStore!.getState().atoms.length);
+
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [first] });
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [first, second] });
+      // Finger 1 stays stationary over the atom; finger 2 moves to pinch.
+      await cdp.send('Input.dispatchTouchEvent', {
+        type: 'touchMove',
+        touchPoints: [first, { ...second, x: second.x + 55, y: second.y + 20 }],
+      });
+      await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
+      await expect.poll(atomCount).toBe(1);
+
+      // A fresh, genuine single-finger tap must still remove the atom.
+      const afterPinch = await atomCenter(page, id);
+      if (!afterPinch) throw new Error('Atom missing after pinch');
+      await page.touchscreen.tap(afterPinch.x, afterPinch.y);
+      await expect.poll(atomCount).toBe(0);
+      expect(errors).toEqual([]);
+    } finally {
+      await context.close();
+    }
+  });
+}
