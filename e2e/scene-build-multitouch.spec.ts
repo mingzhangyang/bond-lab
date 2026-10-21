@@ -55,7 +55,8 @@ for (const atomFirst of [true, false]) {
       await page.touchscreen.tap(source.x, source.y);
       await expect.poll(() => page.evaluate(() => window.__bondlabStore!.getState().selectedAtom)).toBe(ids[0]);
       const atomTouch = { x: target.x, y: target.y, id: atomFirst ? 1 : 2 };
-      const bgTouch = { x: 35, y: 450, id: atomFirst ? 2 : 1 };
+      // Keep both the background contact and its movement path clear of atom meshes.
+      const bgTouch = { x: 35, y: 300, id: atomFirst ? 2 : 1 };
       const first = atomFirst ? atomTouch : bgTouch;
       const second = atomFirst ? bgTouch : atomTouch;
       const cdp = await context.newCDPSession(page);
