@@ -140,7 +140,8 @@ test('second touch cancels the old atom drag before either finger moves again', 
     expect(Math.hypot(after[0] - before[0], after[1] - before[1], after[2] - before[2])).toBeLessThan(0.3);
     expect(await draggedId()).toBe(pair[1].id);
 
-    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [movedFirst] });
+    // CDP touchEnd names the released contact; finger 1 stays down.
+    await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [second] });
     await expect.poll(draggedId).toBe(null);
     const afterRelease = await atomPosition(pair[0].id);
     await cdp.send('Input.dispatchTouchEvent', {

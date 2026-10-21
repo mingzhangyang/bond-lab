@@ -106,7 +106,8 @@ test('a second Shift+touch rotation cancels the first bond pointer session', asy
 
     // Releasing B must clear the owner, without resurrecting the stale A session.
     await cdp.send('Input.dispatchTouchEvent', {
-      type: 'touchEnd', touchPoints: [movedA], modifiers: shift,
+      // DevTools touchEnd lists the touch being lifted, not the remaining touches.
+      type: 'touchEnd', touchPoints: [movedB], modifiers: shift,
     });
     await expect.poll(rotationOwner).toBe(null);
     // Pause the unrelated force simulation again for an exact stale-pointer check.
