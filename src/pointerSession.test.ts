@@ -36,3 +36,64 @@ test('unmount, pointer cancellation and blur finish once and remove listeners', 
     assert.deepEqual(finishes, [false]);
   }
 });
+
+test('replacing an active pointer owner cancels stale listeners synchronously', () => {
+  const target = new EventTarget();
+  let owner = 'first';
+  let ownerChanged = () => {};
+  let unsubscribed = 0;
+  let firstMoves = 0;
+  let secondMoves = 0;
+  const firstFinishes: boolean[] = [];
+  const secondFinishes: boolean[] = [];
+
+  const cancelFirst = startPointerSession(target, {
+    pointerId: 1,
+    onMove: () => firstMoves++,
+    onFinish: (done) => firstFinishes.push(done),
+    subscribeToCancel: (cancel) => {
+      ownerChanged = () => { if (owner !== 'first') cancel(); };
+      return () => { ownerChanged = () => {}; unsubscribed++; };
+    },
+  });
+
+  owner = 'second';
+  ownerChanged();
+  startPointerSession(target, {
+    pointerId: 2,
+    onMove: () => secondMoves++,
+    onFinish: (done) => secondFinishes.push(done),
+  });
+
+  target.dispatchEvent(pointer('pointermove', 1));
+  target.dispatchEvent(pointer('pointermove', 2));
+  target.dispatchEvent(pointer('pointerup', 1));
+  target.dispatchEvent(pointer('pointerup', 2));
+  cancelFirst();
+
+  assert.deepEqual(firstFinishes, [false]);
+  assert.equal(firstMoves, 0);
+  assert.deepEqual(secondFinishes, [true]);
+  assert.equal(secondMoves, 1);
+  assert.equal(unsubscribed, 1);
+});
+
+test('ownership subscriptions clean up when cancellation happens during registration', () => {
+  const target = new EventTarget();
+  const finishes: boolean[] = [];
+  let unsubscribed = 0;
+  startPointerSession(target, {
+    pointerId: 1,
+    onMove: () => assert.fail('listener leaked'),
+    onFinish: (done) => finishes.push(done),
+    subscribeToCancel: (cancel) => {
+      cancel();
+      return () => { unsubscribed++; };
+    },
+  });
+
+  target.dispatchEvent(pointer('pointermove'));
+  target.dispatchEvent(pointer('pointerup'));
+  assert.deepEqual(finishes, [false]);
+  assert.equal(unsubscribed, 1);
+});

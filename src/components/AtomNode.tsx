@@ -8,6 +8,7 @@ import { startPointerSession } from '../pointerSession';
 import { easeOutBack, getAtomHalo, type AtomHalo } from '../sceneArt';
 
 const SPAWN_DURATION_S = 0.35;
+const DRAG_START_THRESHOLD_PX = 5;
 const ignoreRaycast = () => null;
 
 function prefersReducedMotion(): boolean {
@@ -83,6 +84,7 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
   const { camera, gl, raycaster } = useThree();
   const spawnProgressRef = useRef(prefersReducedMotion() ? 1 : 0);
   const cancelDragRef = useRef<(() => void) | null>(null);
+  const suppressClickRef = useRef(false);
   const radius = data.vdwRadius * 0.4;
   const halo = getAtomHalo({ isSelected, hovered, interactionMode });
 
@@ -101,10 +103,17 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
 
   useEffect(() => () => cancelDragRef.current?.(), []);
 
-  const startDrag = (pointerId: number) => {
+  const startDrag = (pointerId: number, startX: number, startY: number) => {
     cancelDragRef.current?.();
     setDraggedAtom(id);
+    let didDrag = false;
+
     const handlePointerMove = (e: PointerEvent) => {
+      if (!didDrag) {
+        // A press or a little finger jitter is a click, not a proximity drag.
+        didDrag = Math.hypot(e.clientX - startX, e.clientY - startY) >= DRAG_START_THRESHOLD_PX;
+        if (!didDrag) return;
+      }
       if (!atomPositions[id]) return;
 
       const rect = gl.domElement.getBoundingClientRect();
@@ -129,30 +138,44 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
     };
 
     const finishDrag = (completed: boolean) => {
+      cancelDragRef.current = null;
       if (useStore.getState().draggedAtom === id) setDraggedAtom(null);
-      if (!completed || useStore.getState().interactionMode !== 'build') return;
+      // A cancelled pointer or a real drag must never become click-to-bond.
+      // A fresh pointerdown resets this marker even if the browser skipped click.
+      if (!completed || didDrag) suppressClickRef.current = true;
+      if (!completed || !didDrag || useStore.getState().interactionMode !== 'build') return;
 
       const p1 = atomPositions[id];
       if (!p1) return;
 
-      const atoms = useStore.getState().atoms;
-      const addBondAction = useStore.getState().addBond;
-
-      for (const other of atoms) {
+      const state = useStore.getState();
+      let foundNearbyAtom = false;
+      for (const other of state.atoms) {
         if (other.id === id) continue;
         const p2 = atomPositions[other.id];
         if (!p2) continue;
 
         if (p1.distanceTo(p2) < IDEAL_BOND_LENGTH * 0.75) {
-          addBondAction(id, other.id);
+          state.addBond(id, other.id);
+          foundNearbyAtom = true;
         }
       }
+      if (foundNearbyAtom) useStore.getState().setSelectedAtom(null);
     };
 
     cancelDragRef.current = startPointerSession(window, {
       pointerId,
       onMove: handlePointerMove,
       onFinish: finishDrag,
+      subscribeToCancel: (cancel) => useStore.subscribe((state) => {
+        // Store notifications are synchronous: a second touch takes ownership
+        // before the old finger gets a chance to move the first atom again.
+        if (state.draggedAtom !== id
+          || state.interactionMode !== 'build'
+          || !state.atoms.some((atom) => atom.id === id)) {
+          cancel();
+        }
+      }),
     });
   };
 
@@ -163,16 +186,21 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
       onPointerDown={(e) => {
         e.stopPropagation();
+        suppressClickRef.current = false;
         if (interactionMode === 'build') {
           // Selecting a bond clears the atom selection in the store. Do not
           // clear it again on the second atom's pointerdown: it is the source
           // of the bond that the following click is meant to create.
           if (useStore.getState().selectedBond !== null) setSelectedBond(null);
-          startDrag(e.pointerId);
+          startDrag(e.pointerId, e.clientX, e.clientY);
         }
       }}
       onClick={(e) => {
         e.stopPropagation();
+        if (suppressClickRef.current) {
+          suppressClickRef.current = false;
+          return;
+        }
         if (interactionMode === 'delete') {
           removeAtom(id);
           setSelectedAtom(null);
