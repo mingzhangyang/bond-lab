@@ -158,6 +158,7 @@ function BondNodeImpl({ bond }: BondNodeProps) {
     };
 
     const stopRotation = () => {
+      cancelRotationRef.current = null;
       const rotationState = rotationRef.current;
       if (rotationState?.didRotate) {
         suppressClickRef.current = true;
@@ -170,6 +171,15 @@ function BondNodeImpl({ bond }: BondNodeProps) {
       pointerId,
       onMove: handlePointerMove,
       onFinish: stopRotation,
+      subscribeToCancel: (cancel) => useStore.subscribe((state) => {
+        // Rotation is exclusive across bonds. A second pointer can replace the
+        // owner without releasing the first, so cancel its listeners now.
+        if (state.rotatingBond !== bond.id
+          || state.interactionMode !== 'build'
+          || !state.bonds.some((candidate) => candidate.id === bond.id)) {
+          cancel();
+        }
+      }),
     });
   };
 
