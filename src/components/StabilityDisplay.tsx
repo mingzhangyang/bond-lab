@@ -36,19 +36,19 @@ export function StabilityDisplay() {
   if (collapsed) {
     return (
       <button
-        className={`lab-reveal px-4 py-3 rounded-2xl border pointer-events-auto w-full flex items-center justify-between gap-2 touch-manipulation ${panelClass}`}
+        className={`lab-reveal px-4 py-3 rounded-2xl border pointer-events-auto w-full flex flex-wrap items-center justify-between gap-2 touch-manipulation ${panelClass}`}
         style={{ animationDelay: '120ms' }}
         onClick={() => setCollapsed(false)}
         aria-expanded={false}
         aria-label={messages.stability.title}
       >
-        <div className="flex items-center gap-2.5 min-w-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <h2 className={`info-display font-bold text-sm uppercase tracking-wider shrink-0 ${headingTextClass}`}>
             {messages.stability.title}
           </h2>
           <span className={`font-bold text-xl ${color}`}>{report.score}/100</span>
         </div>
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="ml-auto flex items-center gap-2 shrink-0">
           <span className={`text-xs font-mono font-bold ${report.energy > 0 ? 'text-emerald-400' : 'text-red-400'}`}>
             {report.energy > 0 ? '+' : ''}{report.energy} kJ/mol
           </span>

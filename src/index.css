@@ -444,6 +444,7 @@ button:hover > .element-orb {
   .lab-reveal,
   .lab-orb,
   .lab-drawer-overlay,
+  .lab-slide-in-right,
   .lab-scene-glow,
   .lab-ui-skeleton::after,
   .lab-onboarding-highlight,
@@ -455,7 +456,8 @@ button:hover > .element-orb {
   .lab-tile,
   .lab-ghost,
   .lab-fab,
-  .element-orb {
+  .element-orb,
+  .lab-ui-root .transition-transform {
     transition: none;
   }
 }

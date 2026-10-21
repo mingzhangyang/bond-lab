@@ -1,0 +1,5578 @@
+{
+  "live-matrix": [
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "light",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js"
+      ]
+    },
+    {
+      "width": 1440,
+      "height": 900,
+      "theme": "dark",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "light",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js"
+      ]
+    },
+    {
+      "width": 390,
+      "height": 844,
+      "theme": "dark",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js"
+      ]
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "light",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js"
+      ]
+    },
+    {
+      "width": 320,
+      "height": 568,
+      "theme": "dark",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js"
+      ]
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "theme": "light",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js"
+      ]
+    },
+    {
+      "width": 844,
+      "height": 390,
+      "theme": "dark",
+      "errors": [],
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 7,
+            "Framebuffer": 5,
+            "Renderbuffer": 1,
+            "Buffer": 49,
+            "Program": 7,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ],
+      "overflow": {
+        "x": false,
+        "y": false
+      },
+      "assets": [
+        "https://bondlab.orangely.xyz/assets/index-DsvG0Uqc.js",
+        "https://bondlab.orangely.xyz/assets/index-DHb3oxkM.css",
+        "https://bondlab.orangely.xyz/assets/app-vendor-Dv8lZ1vN.js",
+        "https://bondlab.orangely.xyz/assets/LabPage-BxqQye3C.js",
+        "https://bondlab.orangely.xyz/assets/Scene-DP_sDFvK.js",
+        "https://bondlab.orangely.xyz/assets/three-vendor-DSlaiY5J.js",
+        "https://bondlab.orangely.xyz/assets/three-core-ClgNrJLz.js",
+        "https://bondlab.orangely.xyz/assets/three-examples-sCasSRJ7.js",
+        "https://bondlab.orangely.xyz/assets/sceneArt-C2zT7-lG.js",
+        "https://bondlab.orangely.xyz/assets/UI-BPr2dbKe.js",
+        "https://bondlab.orangely.xyz/assets/theme-B7LroNzg.js"
+      ]
+    }
+  ],
+  "live-lifecycle": {
+    "samples": [
+      {
+        "cycle": 0,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": false,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 0,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 1,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 1,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 8,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 8,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 8,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 7,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 11,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 11,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 7,
+              "Framebuffer": 5,
+              "Renderbuffer": 1,
+              "Buffer": 49,
+              "Program": 8,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "local-lifecycle": {
+    "samples": [
+      {
+        "cycle": 0,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 0,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 1,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 1,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 2,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 3,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 4,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 5,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 6,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 7,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 8,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 9,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 10,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 11,
+        "phase": "exit",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      },
+      {
+        "cycle": 11,
+        "phase": "enter",
+        "gpu": [
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": false,
+            "lost": true,
+            "counts": {
+              "Texture": 5,
+              "Framebuffer": 3,
+              "Renderbuffer": 0,
+              "Buffer": 1,
+              "Program": 0,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          },
+          {
+            "connected": true,
+            "lost": false,
+            "counts": {
+              "Texture": 6,
+              "Framebuffer": 4,
+              "Renderbuffer": 1,
+              "Buffer": 9,
+              "Program": 1,
+              "Shader": 0
+            },
+            "shaderErrors": []
+          }
+        ]
+      }
+    ],
+    "errors": []
+  },
+  "contrast": [
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "H",
+      "min": 19.186022415894964,
+      "count": 76
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "C",
+      "min": 9.416796706830045,
+      "count": 57
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "N",
+      "min": 6.1787849144309,
+      "count": 87
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "O",
+      "min": 5.250775736792699,
+      "count": 80
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "F",
+      "min": 13.211845409061192,
+      "count": 48
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Na",
+      "min": 6.297124313401223,
+      "count": 137
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Mg",
+      "min": 5.749631075268103,
+      "count": 175
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Al",
+      "min": 7.222198868753493,
+      "count": 98
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "P",
+      "min": 9.825157390299058,
+      "count": 66
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "S",
+      "min": 13.113630298503486,
+      "count": 66
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Cl",
+      "min": 10.868039339605229,
+      "count": 92
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "K",
+      "min": 4.57652753872848,
+      "count": 68
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Ca",
+      "min": 6.143145438413042,
+      "count": 123
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Fe",
+      "min": 6.726180491277134,
+      "count": 111
+    },
+    {
+      "width": 1440,
+      "theme": "light",
+      "el": "Cu",
+      "min": 4.591726489105696,
+      "count": 116
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "H",
+      "min": 19.186022415894964,
+      "count": 76
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "C",
+      "min": 9.416796706830045,
+      "count": 57
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "N",
+      "min": 6.1787849144309,
+      "count": 87
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "O",
+      "min": 5.250775736792699,
+      "count": 80
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "F",
+      "min": 13.211845409061192,
+      "count": 48
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Na",
+      "min": 6.297124313401223,
+      "count": 137
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Mg",
+      "min": 5.749631075268103,
+      "count": 175
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Al",
+      "min": 7.222198868753493,
+      "count": 98
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "P",
+      "min": 9.825157390299058,
+      "count": 66
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "S",
+      "min": 13.113630298503486,
+      "count": 66
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Cl",
+      "min": 10.868039339605229,
+      "count": 92
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "K",
+      "min": 4.57652753872848,
+      "count": 68
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Ca",
+      "min": 6.143145438413042,
+      "count": 123
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Fe",
+      "min": 6.726180491277134,
+      "count": 111
+    },
+    {
+      "width": 1440,
+      "theme": "dark",
+      "el": "Cu",
+      "min": 4.591726489105696,
+      "count": 116
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "H",
+      "min": 20.172843484025293,
+      "count": 105
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "C",
+      "min": 9.739769120526205,
+      "count": 75
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "N",
+      "min": 6.2830724569078376,
+      "count": 111
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "O",
+      "min": 5.28711940353576,
+      "count": 103
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "F",
+      "min": 13.440967336455813,
+      "count": 66
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Na",
+      "min": 6.297124313401223,
+      "count": 184
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Mg",
+      "min": 5.599053870883803,
+      "count": 223
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Al",
+      "min": 7.222198868753493,
+      "count": 127
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "P",
+      "min": 9.825157390299058,
+      "count": 87
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "S",
+      "min": 13.113630298503486,
+      "count": 88
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Cl",
+      "min": 10.868039339605229,
+      "count": 121
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "K",
+      "min": 4.57652753872848,
+      "count": 86
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Ca",
+      "min": 6.143145438413042,
+      "count": 147
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Fe",
+      "min": 6.726180491277134,
+      "count": 139
+    },
+    {
+      "width": 390,
+      "theme": "light",
+      "el": "Cu",
+      "min": 4.591726489105696,
+      "count": 134
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "H",
+      "min": 20.172843484025293,
+      "count": 105
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "C",
+      "min": 9.739769120526205,
+      "count": 75
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "N",
+      "min": 6.2830724569078376,
+      "count": 111
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "O",
+      "min": 5.28711940353576,
+      "count": 103
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "F",
+      "min": 13.440967336455813,
+      "count": 66
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Na",
+      "min": 6.297124313401223,
+      "count": 184
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Mg",
+      "min": 5.599053870883803,
+      "count": 223
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Al",
+      "min": 7.222198868753493,
+      "count": 127
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "P",
+      "min": 9.825157390299058,
+      "count": 87
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "S",
+      "min": 13.113630298503486,
+      "count": 88
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Cl",
+      "min": 10.868039339605229,
+      "count": 121
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "K",
+      "min": 4.57652753872848,
+      "count": 86
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Ca",
+      "min": 6.143145438413042,
+      "count": 147
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Fe",
+      "min": 6.726180491277134,
+      "count": 139
+    },
+    {
+      "width": 390,
+      "theme": "dark",
+      "el": "Cu",
+      "min": 4.591726489105696,
+      "count": 134
+    }
+  ],
+  "theme-toggle": [
+    {
+      "theme": "dark",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "dark",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    },
+    {
+      "theme": "light",
+      "gpu": [
+        {
+          "connected": true,
+          "lost": false,
+          "counts": {
+            "Texture": 6,
+            "Framebuffer": 4,
+            "Renderbuffer": 1,
+            "Buffer": 5,
+            "Program": 1,
+            "Shader": 0
+          },
+          "shaderErrors": []
+        }
+      ]
+    }
+  ]
+}
