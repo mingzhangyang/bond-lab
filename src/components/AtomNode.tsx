@@ -105,6 +105,8 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
 
   const startDrag = (pointerId: number, startX: number, startY: number) => {
     cancelDragRef.current?.();
+    // Replacing a session on the same atom must not suppress the new tap.
+    suppressClickRef.current = false;
     setDraggedAtom(id);
     let didDrag = false;
 

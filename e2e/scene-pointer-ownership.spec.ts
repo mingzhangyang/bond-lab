@@ -61,6 +61,28 @@ test('a selected pair within bonding distance produces one single bond per click
   expect(await bondOrders(page)).toEqual([1]);
 });
 
+test('two stationary touches create a single bond rather than upgrading it', async ({ browser }) => {
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    isMobile: true,
+    hasTouch: true,
+    reducedMotion: 'reduce',
+  });
+  try {
+    const page = await context.newPage();
+    const pair = await setupPair(page, 1.25);
+    await page.touchscreen.tap(pair[0].x, pair[0].y);
+    await expect.poll(() => page.evaluate(() => window.__bondlabStore!.getState().selectedAtom)).toBe(pair[0].id);
+    const updated = await centers(page);
+    await page.touchscreen.tap(updated[1].x, updated[1].y);
+    await expect.poll(() => bondOrders(page)).toEqual([1]);
+    await page.waitForTimeout(100);
+    expect(await bondOrders(page)).toEqual([1]);
+  } finally {
+    await context.close();
+  }
+});
+
 test('a real proximity drag bonds once and does not consume the next deliberate click', async ({ page }) => {
   const pair = await setupPair(page, 1.25);
   await page.mouse.click(pair[0].x, pair[0].y);
@@ -93,7 +115,8 @@ test('second touch cancels the old atom drag before either finger moves again', 
   });
   try {
     const page = await context.newPage();
-    const pair = await setupPair(page, 4.4);
+    // Keep both atom centers inside the narrow mobile camera frustum.
+    const pair = await setupPair(page, 2.8);
     const cdp = await context.newCDPSession(page);
     const first = { x: pair[0].x, y: pair[0].y, id: 1 };
     const second = { x: pair[1].x, y: pair[1].y, id: 2 };
@@ -105,7 +128,7 @@ test('second touch cancels the old atom drag before either finger moves again', 
     }, id);
 
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [first] });
-    await expect.poll(draggedId).toBe(first.id === 1 ? pair[0].id : pair[1].id);
+    await expect.poll(draggedId).toBe(pair[0].id);
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [first, second] });
     await expect.poll(draggedId).toBe(pair[1].id);
 
