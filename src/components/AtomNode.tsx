@@ -101,11 +101,14 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
 
   useEffect(() => () => cancelPointerRef.current?.(), []);
 
-  const startAtomPointerSession = (pointerId: number, startX: number, startY: number, touch: boolean) => {
+  const startAtomPointerSession = (pointerId: number, startX: number, startY: number, touch: boolean, primaryTouch: boolean) => {
     cancelPointerRef.current?.();
     const startedMode = useStore.getState().interactionMode;
     if (startedMode === 'build') setDraggedAtom(id);
     let didDrag = false;
+    // A secondary touch can start on an atom after another finger has already
+    // pressed the background. It may drag, but must never count as a tap.
+    let tapEligible = !touch || primaryTouch;
 
     const handlePointerMove = (e: PointerEvent) => {
       if (!didDrag) {
@@ -144,9 +147,9 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       if (!completed || state.interactionMode !== startedMode) return;
 
       if (!didDrag) {
-        // A completed tap commits on the matching pointerup, not a later
-        // synthetic click (which iOS Safari can omit on a WebGL canvas).
-        applyAtomTap(id, useStore.getState());
+        // Pointerup commits a *single-finger* tap; multi-touch gestures must
+        // not accidentally create or upgrade chemical bonds.
+        if (tapEligible) applyAtomTap(id, useStore.getState());
         return;
       }
       if (startedMode !== 'build') return;
@@ -175,9 +178,12 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
       pointerId,
       onMove: handlePointerMove,
       onFinish: finishInteraction,
-      // Delete mode commits an irreversible tap on release. If another finger
-      // joins the gesture, cancel the session before any atom can be removed.
-      cancelOnAdditionalTouch: touch && startedMode === 'delete',
+      // Tap eligibility is separate from drag ownership. Keep Build pointer
+      // handoff intact, but cancel Delete sessions when a pinch begins.
+      onAdditionalTouch: touch ? (cancel) => {
+        tapEligible = false;
+        if (startedMode === 'delete') cancel();
+      } : undefined,
       subscribeToCancel: (cancel) => useStore.subscribe((state) => {
         if (state.interactionMode !== startedMode
           || !state.atoms.some((atom) => atom.id === id)
@@ -199,10 +205,12 @@ function AtomNodeImpl({ id, element }: AtomNodeProps) {
         // Secondary fingers are part of a gesture, not separate delete taps.
         // Preserve existing multi-pointer Build-mode drag ownership behavior.
         if (interactionMode === 'delete' && e.pointerType === 'touch' && e.isPrimary === false) return;
-        if (interactionMode === 'build' && useStore.getState().selectedBond !== null) {
+        if (interactionMode === 'build'
+          && (e.pointerType !== 'touch' || e.isPrimary)
+          && useStore.getState().selectedBond !== null) {
           setSelectedBond(null);
         }
-        startAtomPointerSession(e.pointerId, e.clientX, e.clientY, e.pointerType === 'touch');
+        startAtomPointerSession(e.pointerId, e.clientX, e.clientY, e.pointerType === 'touch', e.isPrimary);
       }}
       // Tap actions are already committed by pointerup. Retain an inert click
       // handler to stop 3D event propagation without double-applying the tap.

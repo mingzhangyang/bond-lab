@@ -104,7 +104,7 @@ test('an additional touch cancels a stationary tap and removes every listener', 
   let moves = 0;
   const cancel = startPointerSession(target, {
     pointerId: 1,
-    cancelOnAdditionalTouch: true,
+    onAdditionalTouch: (cancel) => cancel(),
     onMove: () => moves++,
     onFinish: (completed) => finishes.push(completed),
   });
@@ -133,7 +133,7 @@ test('Safari multi-touch touchstart fallback cancels, but a single touch still c
   const finishes: boolean[] = [];
   startPointerSession(target, {
     pointerId: 1,
-    cancelOnAdditionalTouch: true,
+    onAdditionalTouch: (cancel) => cancel(),
     onMove: () => {},
     onFinish: (completed) => finishes.push(completed),
   });
@@ -145,11 +145,54 @@ test('Safari multi-touch touchstart fallback cancels, but a single touch still c
 
   startPointerSession(target, {
     pointerId: 3,
-    cancelOnAdditionalTouch: true,
+    onAdditionalTouch: (cancel) => cancel(),
     onMove: () => {},
     onFinish: (completed) => finishes.push(completed),
   });
   target.dispatchEvent(pointer('pointerup', 3));
   target.dispatchEvent(Object.assign(new Event('touchstart'), { touches: [{}, {}] }));
   assert.deepEqual(finishes, [false, true]);
+});
+
+test('Build multi-touch invalidates only tap eligibility, not the drag pointer owner', () => {
+  const target = new EventTarget();
+  const finishes: boolean[] = [];
+  let moved = 0;
+  let invalidations = 0;
+  let tapEligible = true;
+  startPointerSession(target, {
+    pointerId: 1,
+    onMove: () => moved++,
+    onFinish: (completed) => finishes.push(completed),
+    onAdditionalTouch: () => {
+      tapEligible = false;
+      invalidations++;
+    },
+  });
+
+  const second = Object.assign(new Event('pointerdown'), { pointerId: 2, pointerType: 'touch' });
+  target.dispatchEvent(second);
+  target.dispatchEvent(Object.assign(new Event('touchstart'), { touches: [{}, {}] }));
+  assert.equal(invalidations, 1, 'touchstart and pointerdown are one additional touch');
+  target.dispatchEvent(pointer('pointermove', 1));
+  target.dispatchEvent(pointer('pointerup', 1));
+  assert.deepEqual(finishes, [true], 'original Build pointer may finish normally');
+  assert.equal(moved, 1, 'drag movement still works');
+  assert.equal(tapEligible, false, 'a Build gesture with two fingers is never a tap');
+  target.dispatchEvent(second);
+  assert.equal(invalidations, 1, 'no listener remains after completion');
+});
+
+test('a second mouse pointer does not invalidate a single touch tap', () => {
+  const target = new EventTarget();
+  let tapEligible = true;
+  startPointerSession(target, {
+    pointerId: 1,
+    onMove: () => {},
+    onFinish: (completed) => assert.equal(completed, true),
+    onAdditionalTouch: () => { tapEligible = false; },
+  });
+  target.dispatchEvent(Object.assign(new Event('pointerdown'), { pointerId: 2, pointerType: 'mouse' }));
+  target.dispatchEvent(pointer('pointerup', 1));
+  assert.equal(tapEligible, true);
 });
