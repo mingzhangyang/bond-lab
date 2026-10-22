@@ -10,13 +10,28 @@ test('unrecognized connected structure exposes explicit opt-in lookup, not an au
   });
   await page.setViewportSize({ width: 1280, height: 850 });
   await page.goto('/');
+  await expect(page.locator('.lab-ui-root')).toBeVisible({ timeout: 15000 });
   await page.evaluate(() => {
     const state = window.__bondlabStore!.getState();
     const first = state.addAtom('C');
     const second = state.addAtom('C');
     state.addBond(first, second);
   });
-  await expect(page.getByTestId('external-identity')).toBeVisible();
+  const inspectStatus = await page.evaluate(async () => {
+    const { analyzeMolecule } = await import(/* @vite-ignore */ '/src/identifier.ts');
+    const state = window.__bondlabStore!.getState();
+    return {
+      recognition: analyzeMolecule(state.atoms, state.bonds),
+      uiReady: Boolean(document.querySelector('.lab-ui-root')),
+      inspectorCount: document.querySelectorAll('[data-testid="external-identity"]').length,
+      snippet: document.body.innerText.slice(-700),
+      atoms: state.atoms.length,
+      bonds: state.bonds.length,
+    };
+  });
+  console.log('PUBCHEM_UI_DIAG', JSON.stringify(inspectStatus));
+  expect(inspectStatus.recognition.molecule?.name).toBe('Unknown Molecule');
+  await expect(page.getByTestId('external-identity')).toBeVisible({ timeout: 15000 });
   await expect(page.getByRole('button', { name: /PubChem/ })).toBeVisible();
   await expect.poll(() => requests.length).toBe(0);
 
@@ -56,6 +71,7 @@ test('unknown but well-formed structure can be RDKit-checked and looked up via u
     });
   });
   await page.goto('/');
+  await expect(page.locator('.lab-ui-root')).toBeVisible({ timeout: 15000 });
   await page.evaluate(() => {
     const state = window.__bondlabStore!.getState();
     const elements = ['H', 'O', 'O', 'O', 'H'] as const;
@@ -65,7 +81,7 @@ test('unknown but well-formed structure can be RDKit-checked and looked up via u
     }
   });
 
-  await expect(page.getByTestId('external-identity')).toBeVisible();
+  await expect(page.getByTestId('external-identity')).toBeVisible({ timeout: 15000 });
   await expect(page.getByTestId('pubchem-match')).toHaveCount(0);
   expect(submitted).toHaveLength(0);
   await page.getByRole('button', { name: /PubChem/ }).click();

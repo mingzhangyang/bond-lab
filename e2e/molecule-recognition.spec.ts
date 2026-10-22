@@ -11,6 +11,7 @@ for (const width of [390, 1280]) {
       const errors: string[] = [];
       page.on('pageerror', (error) => errors.push(error.message));
       await page.goto('/');
+      await expect(page.locator('.lab-ui-root')).toBeVisible({ timeout: 15000 });
       await page.waitForFunction(() => Boolean(window.__bondlabStore));
       const ids = await page.evaluate((locale) => {
         const state = window.__bondlabStore!.getState();

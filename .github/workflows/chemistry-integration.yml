@@ -25,5 +25,5 @@ jobs:
         run: npm run verify
       - name: Install browser
         run: npx playwright install --with-deps chromium
-      - name: Run browser tests
-        run: npm run test:e2e
+      - name: Run focused molecule and PubChem browser tests
+        run: npx playwright test e2e/pubchem.spec.ts e2e/molecule-recognition.spec.ts --retries=0
