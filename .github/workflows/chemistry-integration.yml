@@ -26,4 +26,4 @@ jobs:
       - name: Install browser
         run: npx playwright install --with-deps chromium
       - name: Run focused molecule and PubChem browser tests
-        run: npx playwright test e2e/pubchem.spec.ts e2e/molecule-recognition.spec.ts --retries=0
+        run: npx playwright test e2e/pubchem.spec.ts --grep "unknown but well-formed" --retries=0

@@ -85,7 +85,15 @@ test('unknown but well-formed structure can be RDKit-checked and looked up via u
   await expect(page.getByTestId('external-identity')).toBeVisible({ timeout: 15000 });
   await expect(page.getByTestId('pubchem-match')).toHaveCount(0);
   expect(submitted).toHaveLength(0);
+  const browserMessages: string[] = [];
+  page.on('pageerror', (error) => browserMessages.push(error.message));
+  page.on('console', (message) => {
+    if (message.type() === 'error' || message.type() === 'warning') browserMessages.push(message.text());
+  });
   await page.getByRole('button', { name: /PubChem/ }).click();
+  await page.waitForTimeout(7000);
+  const debugText = await page.getByTestId('external-identity').innerText();
+  console.log('RDKIT_FLOW_DIAG', JSON.stringify({ debugText, submitted, browserMessages }));
   await expect(page.getByTestId('pubchem-match')).toContainText('trioxidane', { timeout: 30_000 });
   await expect(page.getByTestId('pubchem-match').getByRole('link')).toHaveAttribute(
     'href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890',

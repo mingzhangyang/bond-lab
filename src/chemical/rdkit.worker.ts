@@ -31,7 +31,8 @@ self.onmessage = async (event: MessageEvent<CheckRequest>) => {
     } finally {
       mol.delete();
     }
-  } catch {
+  } catch (error) {
+    if (import.meta.env.DEV) console.warn('RDKit worker initialization or sanitization failed', error);
     initialized = null;
     self.postMessage({ id, status: 'unavailable' });
   }
