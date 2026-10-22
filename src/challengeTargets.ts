@@ -13,14 +13,14 @@ export interface ChallengeRound {
 }
 
 export function getChallengeCandidateMolecules(
-  molecules: ChallengeMolecule[],
+  molecules: readonly ChallengeMolecule[],
   maxAtomCount = MAX_CHALLENGE_ATOM_COUNT,
 ): ChallengeMolecule[] {
-  return molecules.filter((molecule) => molecule.atomCount <= maxAtomCount);
+  return molecules.filter((molecule) => molecule.buildable && molecule.atomCount <= maxAtomCount);
 }
 
 export function pickChallengeMolecule(
-  molecules: ChallengeMolecule[],
+  molecules: readonly ChallengeMolecule[],
   randomValue = Math.random(),
 ): ChallengeMolecule | null {
   if (molecules.length === 0) return null;
@@ -39,14 +39,12 @@ export function getChallengeTimeLimit(
 }
 
 export function createChallengeRound(
-  molecules: ChallengeMolecule[],
+  molecules: readonly ChallengeMolecule[],
   randomValue = Math.random(),
 ): ChallengeRound | null {
-  if (molecules.length === 0) return null;
-
-  const challengePool = getChallengeCandidateMolecules(molecules);
-  const picked = pickChallengeMolecule(challengePool, randomValue) ?? molecules[0];
-
+  const picked = pickChallengeMolecule(getChallengeCandidateMolecules(molecules), randomValue);
+  // An empty eligible pool must not fall back to an unbuildable/oversized task.
+  if (!picked) return null;
   return {
     name: picked.name,
     formula: picked.formula,

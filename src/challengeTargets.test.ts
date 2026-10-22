@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { KNOWN_MOLECULES } from './identifier.ts';
+import { createMoleculeRecognizer } from './moleculeRecognition.ts';
 import {
   createChallengeRound,
   getChallengeCandidateMolecules,
@@ -14,7 +15,7 @@ test('getChallengeCandidateMolecules excludes oversized molecules from challenge
   assert.ok(pool.length > 0);
   assert.ok(pool.length < KNOWN_MOLECULES.length);
   assert.equal(
-    pool.every((molecule) => molecule.atomCount <= MAX_CHALLENGE_ATOM_COUNT),
+    pool.every((molecule) => molecule.buildable && molecule.atomCount <= MAX_CHALLENGE_ATOM_COUNT),
     true,
   );
 });
@@ -51,13 +52,25 @@ test('createChallengeRound returns a target and derived time limit', () => {
   assert.equal(round?.timeLimit, getChallengeTimeLimit(picked?.atomCount ?? 0));
 });
 
-test('createChallengeRound falls back to the first molecule when all candidates are oversized', () => {
+test('createChallengeRound returns null rather than selecting an oversized target', () => {
   const oversizedOnly = KNOWN_MOLECULES.filter((molecule) => molecule.atomCount > MAX_CHALLENGE_ATOM_COUNT);
   assert.ok(oversizedOnly.length > 0);
+  assert.equal(createChallengeRound(oversizedOnly, 0.2), null);
+  assert.equal(createChallengeRound([], 0.2), null);
+});
 
-  const round = createChallengeRound(oversizedOnly, 0.2);
+test('future templates blocked by editor rules are never issued as challenges', () => {
+  const { knownMolecules } = createMoleculeRecognizer([{
+    name: 'Unbuildable test fixture', formula: 'H2O', atoms: ['O', 'H', 'H'],
+    bonds: [{ a: 0, b: 1, order: 2 }, { a: 0, b: 2, order: 1 }],
+  }]);
+  assert.equal(knownMolecules[0].buildable, false);
+  assert.deepEqual(getChallengeCandidateMolecules(knownMolecules), []);
+  assert.equal(createChallengeRound(knownMolecules), null);
+});
 
-  assert.equal(round?.name, oversizedOnly[0].name);
-  assert.equal(round?.formula, oversizedOnly[0].formula);
-  assert.equal(round?.timeLimit, getChallengeTimeLimit(oversizedOnly[0].atomCount));
+test('calcium hydroxide and ozone are eligible after the shared rules are applied', () => {
+  const names = new Set(getChallengeCandidateMolecules(KNOWN_MOLECULES).map((molecule) => molecule.name));
+  assert.equal(names.has('Calcium Hydroxide'), true);
+  assert.equal(names.has('Ozone'), true);
 });

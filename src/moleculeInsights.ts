@@ -1,6 +1,7 @@
-import { identifyMolecule } from './identifier.ts';
-import { localizeMoleculeName, type Language } from './i18n.ts';
-import { getMoleculeInfo } from './moleculeInfo.ts';
+import { analyzeMolecule } from './identifier.ts';
+import type { Language } from './i18n.ts';
+import { getMoleculeDefinition } from './moleculeCatalog.ts';
+import { getCompoundModelNote, getMoleculeInfo, localizeMoleculeName } from './moleculeDisplay.ts';
 import {
   calculateMolecularPolarity,
   type PolarityClass,
@@ -15,6 +16,10 @@ const POLARITY_LABELS: Record<Language, Record<PolarityClass, string>> = {
   zh: { polar: '极性', nonpolar: '非极性', unknown: '未知' },
   fr: { polar: 'Polaire', nonpolar: 'Apolaire', unknown: 'Inconnu' },
   ja: { polar: '極性', nonpolar: '無極性', unknown: '不明' },
+};
+
+const NOT_APPLICABLE_LABELS: Record<Language, string> = {
+  en: 'Not applicable', es: 'No aplicable', zh: '不适用', fr: 'Sans objet', ja: '対象外',
 };
 
 const POLARITY_TITLES: Record<Language, string> = {
@@ -65,17 +70,23 @@ export function deriveMoleculeInsights({
   language,
   positions,
 }: DeriveMoleculeInsightsParams): MoleculeInsights {
-  const molecule = identifyMolecule(atoms, bonds);
+  const recognition = analyzeMolecule(atoms, bonds);
+  const molecule = recognition.molecule;
+  const definition = molecule ? getMoleculeDefinition(molecule.name) : undefined;
+  const isFormulaUnit = definition !== undefined && definition.representation !== 'bond-graph';
   const moleculeName = molecule ? localizeMoleculeName(language, molecule.name) : null;
-  const moleculeInfo = molecule ? getMoleculeInfo(molecule.name) : null;
-  const polarityReport = calculateMolecularPolarity(atoms, bonds, positions);
+  const moleculeInfo = molecule ? getMoleculeInfo(molecule.name, language) : null;
+  const polarityReport: PolarityReport = isFormulaUnit
+    ? { classification: 'unknown', netDipole: 0, reason: getCompoundModelNote(language) }
+    : molecule ? calculateMolecularPolarity(atoms, bonds, positions)
+      : { classification: 'unknown', netDipole: 0, reason: 'A single valid connected structure is required.' };
 
   return {
     molecule,
     moleculeName,
     moleculeInfo,
     polarityReport,
-    polarityLabel: POLARITY_LABELS[language][polarityReport.classification],
+    polarityLabel: isFormulaUnit ? NOT_APPLICABLE_LABELS[language] : POLARITY_LABELS[language][polarityReport.classification],
     polarityTitle: POLARITY_TITLES[language],
     structureTitle: STRUCTURE_TITLES[language],
     factTitle: FACT_TITLES[language],
