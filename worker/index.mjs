@@ -93,7 +93,7 @@ export async function handleIdentity(request, env, dependencies = {}) {
   }
   const smiles = body?.smiles;
   if (typeof smiles !== 'string' || smiles.length < 3 || smiles.length > 1200
-    || !VALID_SMILES.test(smiles)) {
+    || smiles.includes('://') || !VALID_SMILES.test(smiles)) {
     return json({ status: 'error', reason: 'invalid_structure_encoding' }, 400);
   }
 
