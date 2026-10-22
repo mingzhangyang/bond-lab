@@ -6,6 +6,7 @@ import {defineConfig} from 'vite';
 export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
+    assetsInclude: ['**/*.wasm'],
     build: {
       // Keep warnings active for oversized bundles so regressions are visible in CI/local builds.
       chunkSizeWarningLimit: 700,
