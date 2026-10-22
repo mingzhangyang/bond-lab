@@ -32,3 +32,56 @@ test('unrecognized connected structure exposes explicit opt-in lookup, not an au
   await expect(page.getByTestId('external-identity')).toHaveCount(0);
   await expect.poll(() => requests.length).toBe(0);
 });
+
+
+test('unknown but well-formed structure can be RDKit-checked and looked up via user opt-in', async ({ page }) => {
+  test.setTimeout(90_000);
+  await page.addInitScript(() => {
+    localStorage.setItem('bondlab-onboarding-version', '2026-03-quickstart-v1');
+  });
+  await page.setViewportSize({ width: 1280, height: 850 });
+  const submitted: string[] = [];
+  await page.route('**/api/pubchem/identity', async (route) => {
+    const request = route.request();
+    submitted.push(request.postDataJSON().smiles);
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        status: 'matched',
+        cid: 7890,
+        iupacName: 'trioxidane',
+        molecularFormula: 'H2O3',
+      }),
+    });
+  });
+  await page.goto('/');
+  await page.evaluate(() => {
+    const state = window.__bondlabStore!.getState();
+    const elements = ['H', 'O', 'O', 'O', 'H'] as const;
+    const ids = elements.map((element) => state.addAtom(element));
+    for (let i = 0; i < ids.length - 1; i++) {
+      state.addBond(ids[i], ids[i + 1]);
+    }
+  });
+
+  await expect(page.getByTestId('external-identity')).toBeVisible();
+  await expect(page.getByTestId('pubchem-match')).toHaveCount(0);
+  expect(submitted).toHaveLength(0);
+  await page.getByRole('button', { name: /PubChem/ }).click();
+  await expect(page.getByTestId('pubchem-match')).toContainText('trioxidane', { timeout: 30_000 });
+  await expect(page.getByTestId('pubchem-match').getByRole('link')).toHaveAttribute(
+    'href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890',
+  );
+  expect(submitted).toHaveLength(1);
+  expect(submitted[0]).toContain('O');
+  // A network identity is supplemental: no mutation or override of the editor's
+  // native unknown recognition status.
+  const { name } = await page.evaluate(async () => {
+    const path = '/src/identifier.ts';
+    const { identifyMolecule } = await import(/* @vite-ignore */ path);
+    const state = window.__bondlabStore!.getState();
+    return identifyMolecule(state.atoms, state.bonds)!;
+  });
+  expect(name).toBe('Unknown Molecule');
+});
