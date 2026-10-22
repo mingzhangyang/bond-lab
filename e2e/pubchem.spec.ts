@@ -90,10 +90,18 @@ test('unknown but well-formed structure can be RDKit-checked and looked up via u
   page.on('console', (message) => {
     if (message.type() === 'error' || message.type() === 'warning') browserMessages.push(message.text());
   });
+  const navigations: string[] = [];
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) navigations.push(frame.url());
+  });
   await page.getByRole('button', { name: /PubChem/ }).click();
-  await page.waitForTimeout(7000);
-  const debugText = await page.getByTestId('external-identity').innerText();
-  console.log('RDKIT_FLOW_DIAG', JSON.stringify({ debugText, submitted, browserMessages }));
+  await page.waitForTimeout(4500);
+  const debug = await page.evaluate(() => ({
+    inspectorText: document.querySelector('[data-testid="external-identity"]')?.textContent ?? null,
+    atoms: window.__bondlabStore?.getState().atoms.length,
+    ready: Boolean(document.querySelector('.lab-ui-root')),
+  }));
+  console.log('RDKIT_FLOW_DIAG', JSON.stringify({ debug, submitted, browserMessages, navigations }));
   await expect(page.getByTestId('pubchem-match')).toContainText('trioxidane', { timeout: 30_000 });
   await expect(page.getByTestId('pubchem-match').getByRole('link')).toHaveAttribute(
     'href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890',

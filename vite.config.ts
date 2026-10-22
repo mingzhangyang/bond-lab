@@ -7,6 +7,11 @@ export default defineConfig(() => {
   return {
     plugins: [react(), tailwindcss()],
     assetsInclude: ['**/*.wasm'],
+    optimizeDeps: {
+      // Vite's late discovery of RDKit inside a lazy worker otherwise causes
+      // a full-page reload, destroying the editor's in-progress molecule.
+      include: ['@rdkit/rdkit'],
+    },
     build: {
       // Keep warnings active for oversized bundles so regressions are visible in CI/local builds.
       chunkSizeWarningLimit: 700,
