@@ -54,9 +54,12 @@ test('challenge slice does not directly mutate molecule slice fields', () => {
   assert.doesNotMatch(source, /\brotatingBond\s*:/);
 });
 
-test('identifier keeps molecule templates in a dedicated data module', () => {
-  const source = readFileSync('src/identifier.ts', 'utf8');
+test('recognizer resolves templates only through the shared molecular catalog', () => {
+  const identifier = readFileSync('src/identifier.ts', 'utf8');
+  const catalog = readFileSync('src/moleculeCatalog.ts', 'utf8');
 
-  assert.doesNotMatch(source, /const MOLECULE_TEMPLATES:\s*MoleculeTemplate\[\]\s*=/);
-  assert.match(source, /from '\.\/data\/moleculeTemplates\.ts'/);
+  assert.doesNotMatch(identifier, /const MOLECULE_TEMPLATES:\s*MoleculeTemplate\[\]\s*=/);
+  assert.match(identifier, /from '\.\/moleculeCatalog\.ts'/);
+  assert.match(catalog, /from '\.\/data\/moleculeTemplates\.ts'/);
+  assert.match(catalog, /from '\.\/data\/hydroxides\.ts'/);
 });
