@@ -18,7 +18,8 @@ test('unrecognized connected structure exposes explicit opt-in lookup, not an au
     state.addBond(first, second);
   });
   const inspectStatus = await page.evaluate(async () => {
-    const { analyzeMolecule } = await import(/* @vite-ignore */ '/src/identifier.ts');
+    const path = '/src/identifier.ts';
+    const { analyzeMolecule } = await import(/* @vite-ignore */ path);
     const state = window.__bondlabStore!.getState();
     return {
       recognition: analyzeMolecule(state.atoms, state.bonds),
