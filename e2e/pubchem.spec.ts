@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test, type Locator } from '@playwright/test';
 
 async function openLab(page: import('@playwright/test').Page): Promise<void> {
   await page.addInitScript(() => {
@@ -7,6 +7,54 @@ async function openLab(page: import('@playwright/test').Page): Promise<void> {
   await page.setViewportSize({ width: 1280, height: 850 });
   await page.goto('/');
   await expect(page.locator('.lab-ui-root')).toBeVisible({ timeout: 15000 });
+}
+
+// Measure actual browser colors, including the button's translucent background
+// and Tailwind's OKLCH colors. Require an opaque ancestor instead of guessing
+// the backdrop. This helper is deliberately scoped to the solid light panel.
+async function lightTextContrast(control: Locator): Promise<number> {
+  return control.evaluate((element) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = canvas.height = 1;
+    const context = canvas.getContext('2d', { willReadFrequently: true });
+    if (!context) throw new Error('Canvas color conversion is unavailable');
+    const backgrounds: string[] = [];
+    let opaque = false;
+    for (let node: Element | null = element; node; node = node.parentElement) {
+      const style = getComputedStyle(node);
+      if (style.backgroundImage !== 'none' || Number(style.opacity) !== 1) {
+        throw new Error('Contrast helper requires solid backgrounds without group opacity');
+      }
+      backgrounds.push(style.backgroundColor);
+      context.clearRect(0, 0, 1, 1);
+      context.fillStyle = style.backgroundColor;
+      context.fillRect(0, 0, 1, 1);
+      if (context.getImageData(0, 0, 1, 1).data[3] === 255) {
+        opaque = true;
+        break;
+      }
+    }
+    if (!opaque) throw new Error('No opaque background found for contrast calculation');
+    context.clearRect(0, 0, 1, 1);
+    for (const color of backgrounds.reverse()) {
+      context.fillStyle = color;
+      context.fillRect(0, 0, 1, 1);
+    }
+    const background = context.getImageData(0, 0, 1, 1).data;
+    context.fillStyle = getComputedStyle(element).color;
+    context.fillRect(0, 0, 1, 1);
+    const foreground = context.getImageData(0, 0, 1, 1).data;
+    const luminance = (rgba: Uint8ClampedArray) => {
+      const linear = Array.from(rgba).slice(0, 3).map((channel) => {
+        const value = channel / 255;
+        return value <= 0.04045 ? value / 12.92 : ((value + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+    };
+    const first = luminance(foreground);
+    const second = luminance(background);
+    return (Math.max(first, second) + 0.05) / (Math.min(first, second) + 0.05);
+  });
 }
 
 test('unknown structures offer an opt-in check without automatic PubChem traffic', async ({ page }) => {
@@ -82,11 +130,33 @@ test('RDKit sanitization permits a user-initiated exact-identity response withou
   await expect(result).toContainText('trioxidane', { timeout: 40_000 });
   await expect(announcement).toContainText('trioxidane');
   await expect(announcement).toContainText('H2O3');
-  await expect(result.getByRole('link')).toHaveAttribute('href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890');
+  const recordLink = result.getByRole('link');
+  await expect(recordLink).toHaveAttribute('href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890');
   expect(unexpectedNavigations).toHaveLength(0);
   expect(submitted).toHaveLength(1);
   expect(submitted[0]).toContain('O');
   expect(await page.evaluate(() => window.__bondlabStore!.getState().atoms.length)).toBe(5);
+
+  // Both controls use one theme-aware accent; switching themes must update both
+  // without clearing the result or issuing another request.
+  for (const theme of ['dark', 'light', 'dark'] as const) {
+    await page.evaluate((nextTheme) => {
+      const state = window.__bondlabStore!.getState();
+      if (state.theme !== nextTheme) state.toggleTheme();
+    }, theme);
+    const accent = theme === 'light' ? /\btext-indigo-700\b/ : /\btext-indigo-400\b/;
+    await expect(button).toHaveClass(accent);
+    await expect(recordLink).toHaveClass(accent);
+    await expect(button).toBeEnabled();
+    if (theme === 'light') {
+      const buttonRatio = await lightTextContrast(button);
+      const linkRatio = await lightTextContrast(recordLink);
+      console.log('PUBCHEM_LIGHT_CONTRAST', JSON.stringify({ buttonRatio, linkRatio }));
+      expect(buttonRatio, 'enabled 12px action label contrast').toBeGreaterThanOrEqual(4.5);
+      expect(linkRatio, '12px record link contrast').toBeGreaterThanOrEqual(4.5);
+    }
+  }
+  expect(submitted).toHaveLength(1);
 
   // External identification never replaces the local recognizer.
   const name = await page.evaluate(async () => {

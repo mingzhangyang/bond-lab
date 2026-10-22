@@ -56,6 +56,7 @@ export function ExternalIdentityCheck({ isDark }: { isDark: boolean }) {
   const bonds = useStore((state) => state.bonds);
   const language = useStore((state) => state.language);
   const wording = WORDING[language];
+  const accentTextClass = isDark ? 'text-indigo-400' : 'text-indigo-700';
   const [state, setState] = useState<CheckState>({ phase: 'idle' });
   const sequence = useRef(0);
   const controller = useRef<AbortController | null>(null);
@@ -158,7 +159,7 @@ export function ExternalIdentityCheck({ isDark }: { isDark: boolean }) {
     <div className={`rounded-xl border p-3 text-xs space-y-2 ${isDark ? 'border-white/10 bg-white/5' : 'border-zinc-200 bg-zinc-50'}`}
       data-testid="external-identity">
       <button type="button" onClick={() => void inspect()} disabled={state.phase === 'loading'}
-        className="w-full min-h-[44px] rounded-lg font-semibold border border-indigo-500/40 bg-indigo-500/10 px-3 py-2 text-indigo-400 disabled:opacity-60 touch-manipulation">
+        className={`w-full min-h-[44px] rounded-lg font-semibold border border-indigo-500/40 bg-indigo-500/10 px-3 py-2 ${accentTextClass} disabled:opacity-60 touch-manipulation`}>
         {state.phase === 'loading' ? wording.checking : wording.action}
       </button>
       <p role="status" aria-live="polite" aria-atomic="true" className="sr-only"
@@ -174,7 +175,7 @@ export function ExternalIdentityCheck({ isDark }: { isDark: boolean }) {
               <p className="font-semibold">{wording.matched}</p>
               <p>{state.result.iupacName} · {state.result.molecularFormula}</p>
               <a href={`https://pubchem.ncbi.nlm.nih.gov/compound/${state.result.cid}`}
-                target="_blank" rel="noopener noreferrer" className="underline text-indigo-400">
+                target="_blank" rel="noopener noreferrer" className={`underline ${accentTextClass}`}>
                 {wording.details} (CID {state.result.cid})
               </a>
             </div>

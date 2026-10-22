@@ -130,15 +130,22 @@ export function exportChemicalStructure(
   for (const bond of bonds) {
     const a = index.get(bond.source)!;
     const b = index.get(bond.target)!;
+    // Catalog semantics are defaults for missing annotations, not permission
+    // to override them. Check both metal-anion and intra-ion covalent edges.
+    const catalogKind: ChemicalLinkKind | undefined = isFormulaUnit
+      ? (ionicPairs.has(pair(a, b)) ? 'ionic-association' : 'covalent')
+      : undefined;
+    if (catalogKind !== undefined && bond.kind !== undefined && bond.kind !== catalogKind) {
+      return unsupported('bond_kind_conflict');
+    }
+    const kind = bond.kind ?? catalogKind;
     // A kind on one edge does not establish the meaning of another.
-    // Only an exact formula-unit match may infer a missing metal-edge kind.
     const hasMetal = METALS.has(atoms[a].element) || METALS.has(atoms[b].element);
     if (!isFormulaUnit && hasMetal
-      && bond.kind !== 'covalent' && bond.kind !== 'ionic-association') {
+      && kind !== 'covalent' && kind !== 'ionic-association') {
       return unsupported('metal_bond_type_not_specified');
     }
-    const ionic = ionicPairs.has(pair(a, b)) || bond.kind === 'ionic-association';
-    if (ionic) {
+    if (kind === 'ionic-association') {
       if (!isFormulaUnit && (atoms[a].formalCharge === undefined || atoms[b].formalCharge === undefined)) {
         return unsupported('ionic_charges_required');
       }
