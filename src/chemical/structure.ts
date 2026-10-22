@@ -124,15 +124,19 @@ export function exportChemicalStructure(
       charges[i] = rule.charges[i];
     }
     for (const value of rule.ionicPairs) ionicPairs.add(value);
-  } else if (atoms.some((atom) => METALS.has(atom.element))
-    && !bonds.some((bond) => bond.kind === 'ionic-association')) {
-    return unsupported('metal_bond_type_not_specified');
   }
 
   const neighbors: { index: number; order: number }[][] = atoms.map(() => []);
   for (const bond of bonds) {
     const a = index.get(bond.source)!;
     const b = index.get(bond.target)!;
+    // A kind on one edge does not establish the meaning of another.
+    // Only an exact formula-unit match may infer a missing metal-edge kind.
+    const hasMetal = METALS.has(atoms[a].element) || METALS.has(atoms[b].element);
+    if (!isFormulaUnit && hasMetal
+      && bond.kind !== 'covalent' && bond.kind !== 'ionic-association') {
+      return unsupported('metal_bond_type_not_specified');
+    }
     const ionic = ionicPairs.has(pair(a, b)) || bond.kind === 'ionic-association';
     if (ionic) {
       if (!isFormulaUnit && (atoms[a].formalCharge === undefined || atoms[b].formalCharge === undefined)) {

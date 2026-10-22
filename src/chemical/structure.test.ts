@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { exportChemicalStructure } from './structure.ts';
+import { exportChemicalStructure, type ChemicalAtom, type ChemicalBond } from './structure.ts';
 import { HYDROXIDE_DEFINITIONS } from '../data/hydroxides.ts';
 import { MOLECULE_TEMPLATES } from '../data/moleculeTemplates.ts';
 import { templateToMoleculeGraph } from '../moleculeRecognition.ts';
@@ -69,4 +69,86 @@ test('disconnected inventory, malformed bond and charge mismatch are not submitt
   const graph = templateToMoleculeGraph(HYDROXIDE_DEFINITIONS.find((m) => m.name === 'Calcium Hydroxide')!);
   const metadata = graph.atoms.map((atom) => ({ ...atom, formalCharge: atom.element === 'Ca' ? 1 : undefined }));
   assert.equal(exportChemicalStructure(metadata, graph.bonds).status, 'unsupported');
+});
+
+// Explicit bond semantics in these synthetic fixtures test export, not chemical stability.
+function mixedMetalGraph(): { atoms: ChemicalAtom[]; bonds: ChemicalBond[] } {
+  return {
+    atoms: [
+      { id: 'ca', element: 'Ca', formalCharge: 2 },
+      { id: 'o', element: 'O', formalCharge: -1 },
+      { id: 'h', element: 'H', formalCharge: 0 },
+      { id: 'c', element: 'C', formalCharge: -1 },
+    ],
+    bonds: [
+      { id: 'ca-o', source: 'ca', target: 'o', order: 1, kind: 'ionic-association' },
+      { id: 'o-h', source: 'o', target: 'h', order: 1 },
+      { id: 'ca-c', source: 'ca', target: 'c', order: 1 },
+    ],
+  };
+}
+
+test('a marked ionic edge cannot authorize untyped metal edges, regardless of order or direction', () => {
+  const { atoms, bonds } = mixedMetalGraph();
+  for (const order of [[0, 1, 2], [0, 2, 1], [1, 0, 2], [1, 2, 0], [2, 0, 1], [2, 1, 0]]) {
+    for (let mask = 0; mask < 8; mask++) {
+      const permuted = order.map((index, position) => {
+        const bond = bonds[index];
+        return (mask & (1 << position)) === 0 ? bond
+          : { ...bond, source: bond.target, target: bond.source };
+      });
+      assert.deepEqual(exportChemicalStructure(atoms, permuted), {
+        status: 'unsupported', reason: 'metal_bond_type_not_specified',
+      }, `order=${order.join(',')}, reversed=${mask}`);
+    }
+  }
+});
+
+test('nonmetal ionic annotation does not authorize an untyped metal edge', () => {
+  const { atoms, bonds } = mixedMetalGraph();
+  bonds[0].kind = undefined;
+  bonds[1].kind = 'ionic-association';
+  bonds[2].kind = 'covalent';
+  assert.deepEqual(exportChemicalStructure(atoms, bonds), {
+    status: 'unsupported', reason: 'metal_bond_type_not_specified',
+  });
+});
+
+test('explicitly typed mixed metal edges retain their chosen bond meaning', () => {
+  const { atoms, bonds } = mixedMetalGraph();
+  bonds[2].kind = 'covalent';
+  const outcome = exportChemicalStructure(atoms, bonds);
+  assert.equal(outcome.status, 'ready');
+  if (outcome.status !== 'ready') return;
+  assert.equal(outcome.smiles, '[Ca+2][C-].[O-][H]');
+  assert.equal(outcome.atomCount, 4);
+  assert.deepEqual(outcome.charges, [2, -1, 0, -1]);
+});
+
+test('explicitly typed ionic metal edges remain disconnected in exported chemistry', () => {
+  const { atoms, bonds } = mixedMetalGraph();
+  bonds[2].kind = 'ionic-association';
+  const outcome = exportChemicalStructure(atoms, bonds);
+  assert.equal(outcome.status, 'ready');
+  if (outcome.status !== 'ready') return;
+  assert.equal(outcome.smiles, '[Ca+2].[O-][H].[C-]');
+});
+
+test('unexpected runtime kind values cannot masquerade as an explicit metal bond kind', () => {
+  for (const kind of [null, '', 'coordinate']) {
+    const { atoms, bonds } = mixedMetalGraph();
+    bonds[2].kind = kind as unknown as ChemicalBond['kind'];
+    assert.deepEqual(exportChemicalStructure(atoms, bonds), {
+      status: 'unsupported', reason: 'metal_bond_type_not_specified',
+    });
+  }
+});
+
+test('ionic edges still require explicit endpoint charges outside the known catalog', () => {
+  const { atoms, bonds } = mixedMetalGraph();
+  bonds[2].kind = 'ionic-association';
+  atoms[3].formalCharge = undefined;
+  assert.deepEqual(exportChemicalStructure(atoms, bonds), {
+    status: 'unsupported', reason: 'ionic_charges_required',
+  });
 });

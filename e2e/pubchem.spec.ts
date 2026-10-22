@@ -65,6 +65,11 @@ test('RDKit sanitization permits a user-initiated exact-identity response withou
 
   const button = page.getByRole('button', { name: /PubChem/ });
   await expect(button).toBeVisible();
+  const announcement = page.getByTestId('external-identity-announcement');
+  await expect(announcement).toHaveAttribute('role', 'status');
+  await expect(announcement).toHaveAttribute('aria-live', 'polite');
+  await expect(announcement).toHaveAttribute('aria-atomic', 'true');
+  await expect(announcement).toHaveText('');
   expect(submitted).toHaveLength(0);
 
   const unexpectedNavigations: string[] = [];
@@ -75,6 +80,8 @@ test('RDKit sanitization permits a user-initiated exact-identity response withou
 
   const result = page.getByTestId('pubchem-match');
   await expect(result).toContainText('trioxidane', { timeout: 40_000 });
+  await expect(announcement).toContainText('trioxidane');
+  await expect(announcement).toContainText('H2O3');
   await expect(result.getByRole('link')).toHaveAttribute('href', 'https://pubchem.ncbi.nlm.nih.gov/compound/7890');
   expect(unexpectedNavigations).toHaveLength(0);
   expect(submitted).toHaveLength(1);

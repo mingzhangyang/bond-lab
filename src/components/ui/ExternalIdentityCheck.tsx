@@ -125,6 +125,35 @@ export function ExternalIdentityCheck({ isDark }: { isDark: boolean }) {
     }
   };
 
+  // This node remains mounted across idle, loading and completion: screen
+  // readers can observe each update without a focus change or a new live region.
+  let announcement = '';
+  switch (state.phase) {
+    case 'loading':
+      announcement = wording.checking;
+      break;
+    case 'unsupported':
+      announcement = `${wording.unsupported} (${state.reason})`;
+      break;
+    case 'rejected':
+      announcement = wording.rejected;
+      break;
+    case 'local_unavailable':
+      announcement = wording.localUnavailable;
+      break;
+    case 'remote':
+      if (state.result.status === 'matched') {
+        announcement = `${wording.accepted} ${wording.matched}: ${state.result.iupacName}, ${state.result.molecularFormula}`;
+      } else {
+        const remoteMessage = state.result.status === 'not_found' ? wording.missing
+          : state.result.status === 'ambiguous' ? wording.ambiguous : wording.remoteUnavailable;
+        announcement = `${wording.accepted} ${remoteMessage}`;
+      }
+      break;
+    default:
+      break;
+  }
+
   return (
     <div className={`rounded-xl border p-3 text-xs space-y-2 ${isDark ? 'border-white/10 bg-white/5' : 'border-zinc-200 bg-zinc-50'}`}
       data-testid="external-identity">
@@ -132,6 +161,8 @@ export function ExternalIdentityCheck({ isDark }: { isDark: boolean }) {
         className="w-full min-h-[44px] rounded-lg font-semibold border border-indigo-500/40 bg-indigo-500/10 px-3 py-2 text-indigo-400 disabled:opacity-60 touch-manipulation">
         {state.phase === 'loading' ? wording.checking : wording.action}
       </button>
+      <p role="status" aria-live="polite" aria-atomic="true" className="sr-only"
+        data-testid="external-identity-announcement">{announcement}</p>
       {state.phase === 'unsupported' && <p>{wording.unsupported} ({state.reason})</p>}
       {state.phase === 'rejected' && <p>{wording.rejected}</p>}
       {state.phase === 'local_unavailable' && <p>{wording.localUnavailable}</p>}
