@@ -75,7 +75,7 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
           : bond
       ));
 
-      if (!isAtomBondingValid(source, state.atoms, nextBonds) || !isAtomBondingValid(target, state.atoms, nextBonds)) {
+      if (!state.atoms.every((atom) => isAtomBondingValid(atom.id, state.atoms, nextBonds))) {
         return state;
       }
 
@@ -101,6 +101,8 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
       };
     }
 
+    // A new connection can invalidate a resonance exception on a third atom.
+    // Validate the whole proposed graph, not only the two clicked endpoints.
     const newBondId = createId();
     const nextBonds = [
       ...state.bonds,
@@ -112,7 +114,7 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
       },
     ];
 
-    if (!isAtomBondingValid(source, state.atoms, nextBonds) || !isAtomBondingValid(target, state.atoms, nextBonds)) {
+    if (!state.atoms.every((atom) => isAtomBondingValid(atom.id, state.atoms, nextBonds))) {
       return state;
     }
 
@@ -154,12 +156,14 @@ export const createMoleculeSlice: StateCreator<GameState, [], [], MoleculeSlice>
       isSameBondPair(bond, removedBond.source, removedBond.target)
     ));
 
-    if (!atomsExist || duplicateBondExists) {
+    const nextBonds = [...state.bonds, removedBond];
+    if (!atomsExist || duplicateBondExists
+      || !state.atoms.every((atom) => isAtomBondingValid(atom.id, state.atoms, nextBonds))) {
       return { lastRemovedBond: null };
     }
 
     return {
-      bonds: [...state.bonds, removedBond],
+      bonds: nextBonds,
       lastRemovedBond: null,
     };
   }),

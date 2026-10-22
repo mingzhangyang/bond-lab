@@ -361,27 +361,58 @@ function getAtomById(atomId: string, atoms: BondingAtom[]): BondingAtom | undefi
   return atoms.find((atom) => atom.id === atomId);
 }
 
-function isCarbonOxygenPair(atoms: BondingAtom[], bonds: BondingBond[]): boolean {
-  if (atoms.length !== 2 || bonds.length !== 1) return false;
-  const pair = [...atoms.map((atom) => atom.element)].sort().join('-');
-  return pair === 'C-O';
-}
-
-function isCarbonMonoxide(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
-  if (!isCarbonOxygenPair(atoms, bonds)) return false;
-  if (bonds[0]?.order !== 3) return false;
+/** Only small, isolated connected components may use resonance exceptions. */
+function getResonanceProfile(
+  atomId: string,
+  atoms: BondingAtom[],
+  bonds: BondingBond[],
+): { limit: number; target: number } | null {
   const atom = getAtomById(atomId, atoms);
-  return atom?.element === 'C' || atom?.element === 'O';
+  if (!atom || (atom.element !== 'O' && atom.element !== 'C')) return null;
+  const componentIds = new Set([atomId]);
+  const pending = [atomId];
+  for (let i = 0; i < pending.length; i++) {
+    for (const bond of bonds) {
+      const neighbor = bond.source === pending[i] ? bond.target
+        : bond.target === pending[i] ? bond.source : null;
+      if (neighbor === null || componentIds.has(neighbor)) continue;
+      componentIds.add(neighbor);
+      if (componentIds.size > 3) return null;
+      pending.push(neighbor);
+    }
+  }
+  const componentAtoms = atoms.filter((candidate) => componentIds.has(candidate.id));
+  const componentBonds = bonds.filter((bond) => componentIds.has(bond.source) && componentIds.has(bond.target));
+  if (componentAtoms.length !== componentIds.size) return null;
+
+  if (componentAtoms.length === 2 && componentBonds.length === 1
+    && componentAtoms.map((candidate) => candidate.element).sort().join('-') === 'C-O') {
+    return {
+      limit: atom.element === 'O' ? 3 : ELEMENTS.C.maxBonds,
+      target: componentBonds[0].order === 3 ? 3 : ELEMENTS[atom.element].maxBonds,
+    };
+  }
+
+  // O=O-O and O-O=O are the supported Lewis representations of ozone.
+  // Do not turn this into a general three-bond allowance for oxygen.
+  if (componentAtoms.length === 3 && componentBonds.length === 2
+    && componentAtoms.every((candidate) => candidate.element === 'O')
+    && componentBonds.every((bond) => bond.source !== bond.target && (bond.order === 1 || bond.order === 2))) {
+    const totalOrder = componentBonds.reduce((sum, bond) => sum + bond.order, 0);
+    if (totalOrder > 3) return null;
+    const incident = componentBonds.filter((bond) => bond.source === atomId || bond.target === atomId);
+    return {
+      limit: incident.length === 2 ? 3 : 2,
+      target: totalOrder === 3 ? getBondOrderSum(atomId, componentBonds) : incident.length === 2 ? 3 : 2,
+    };
+  }
+  return null;
 }
 
 export function getAtomBondLimit(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
-  // O's default maxBonds is 2, but a C-O diatomic molecule must be able to reach a triple bond (CO)
-  if (atom.element === 'O' && isCarbonOxygenPair(atoms, bonds)) {
-    return 3;
-  }
-  return ELEMENTS[atom.element].maxBonds;
+  return getResonanceProfile(atomId, atoms, bonds)?.limit ?? ELEMENTS[atom.element].maxBonds;
 }
 
 export function isAtomBondingValid(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
@@ -391,8 +422,5 @@ export function isAtomBondingValid(atomId: string, atoms: BondingAtom[], bonds: 
 export function getAtomBondTarget(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
-  if (isCarbonMonoxide(atomId, atoms, bonds)) {
-    return 3;
-  }
-  return ELEMENTS[atom.element].maxBonds;
+  return getResonanceProfile(atomId, atoms, bonds)?.target ?? ELEMENTS[atom.element].maxBonds;
 }

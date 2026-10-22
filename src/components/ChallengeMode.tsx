@@ -9,7 +9,8 @@ import {
 } from 'lucide-react';
 import { useStore } from '../store';
 import { identifyMolecule } from '../identifier';
-import { getMessages, localizeMoleculeName, type Language } from '../i18n';
+import { getMessages, type Language } from '../i18n';
+import { localizeMoleculeName } from '../moleculeDisplay';
 import {
   getProgressColorClass,
 } from '../challengeLayout';
