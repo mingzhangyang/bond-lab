@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import app, { handleIdentity, PubChemQuota } from './index.mjs';
+import app, { handleIdentity } from './index.mjs';
 
 const request = (data = { smiles: '[O]([H])[H]' }, options = {}) => new Request(
   'https://example.com/api/pubchem/identity', {
@@ -9,21 +9,29 @@ const request = (data = { smiles: '[O]([H])[H]' }, options = {}) => new Request(
     body: JSON.stringify(data),
   },
 );
-const env = {
-  PUBCHEM_QUOTA: { idFromName: () => 'global', get: () => ({ fetch: async () => new Response(null, { status: 204 }) }) },
-};
+const quotaEnv = (permit) => ({
+  PUBCHEM_QUOTA: { idFromName: () => 'global', get: () => ({ fetch: permit }) },
+});
+const env = quotaEnv(async () => new Response(null, { status: 204 }));
 const good = (value) => new Response(JSON.stringify(value), { status: 200, headers: { 'Content-Type': 'application/json' } });
 
-test('valid structure performs fixed identity POST then property GET and never returns upstream URLs', async () => {
+test('valid structure performs fixed identity POST then property GET and charges both requests', async () => {
   const urls = [];
+  let permits = 0;
   const fetcher = async (url, options) => {
     urls.push([url, options]);
+    assert.equal(permits, urls.length, 'each outgoing request must have its own permit');
     if (urls.length === 1) return good({ IdentifierList: { CID: [962] } });
     return good({ PropertyTable: { Properties: [{
       CID: 962, IUPACName: 'oxidane', MolecularFormula: 'H2O',
     }] } });
   };
-  const response = await handleIdentity(request(), env, { fetcher, cache: null });
+  const counted = quotaEnv(async (_, init) => {
+    assert.equal(init.method, 'POST');
+    permits++;
+    return new Response(null, { status: 204 });
+  });
+  const response = await handleIdentity(request(), counted, { fetcher, cache: null });
   assert.equal(response.status, 200);
   assert.deepEqual(await response.json(), { status: 'matched', cid: 962, iupacName: 'oxidane', molecularFormula: 'H2O' });
   assert.equal(urls.length, 2);
@@ -55,13 +63,43 @@ test('validation blocks cross-origin use, oversized payloads and arbitrary field
   assert.equal(large.status, 400);
 });
 
-test('fails closed without a global rate-limit binding; quota allows at most two lookups per second', async () => {
-  const missing = await handleIdentity(request(), {}, { cache: null });
-  assert.equal(missing.status, 503);
-  const quota = new PubChemQuota();
-  assert.equal((await quota.fetch()).status, 204);
-  assert.equal((await quota.fetch()).status, 204);
-  assert.equal((await quota.fetch()).status, 429);
+test('missing or unavailable quota fails closed without contacting PubChem', async () => {
+  let calls = 0;
+  const dependencies = { cache: null, fetcher: async () => { calls++; return good({}); } };
+  for (const binding of [{}, quotaEnv(async () => { throw new Error('offline'); }),
+    quotaEnv(async () => new Response(null, { status: 503 }))]) {
+    const response = await handleIdentity(request(), binding, dependencies);
+    assert.equal(response.status, 503);
+    assert.deepEqual(await response.json(), { status: 'unavailable' });
+  }
+  assert.equal(calls, 0);
+});
+
+test('quota denial on the second request is never cached as a molecular miss', async () => {
+  let permits = 0;
+  let calls = 0;
+  let writes = 0;
+  const binding = quotaEnv(async () => new Response(null, { status: ++permits === 1 ? 204 : 429 }));
+  const response = await handleIdentity(request(), binding, {
+    fetcher: async () => { calls++; return good({ IdentifierList: { CID: [962] } }); },
+    cache: { match: async () => undefined, put: async () => { writes++; } },
+  });
+  assert.equal(response.status, 429);
+  assert.deepEqual(await response.json(), { status: 'unavailable', reason: 'rate_limited' });
+  assert.equal(calls, 1);
+  assert.equal(writes, 0);
+  assert.equal(response.headers.get('Cache-Control'), 'no-store');
+});
+
+test('cached identities do not consume quota or upstream requests', async () => {
+  let calls = 0;
+  const result = { status: 'not_found' };
+  const response = await handleIdentity(request(), {}, {
+    cache: { match: async () => good(result) },
+    fetcher: async () => { calls++; return good({}); },
+  });
+  assert.deepEqual(await response.json(), result);
+  assert.equal(calls, 0);
 });
 
 test('route does not return SPA for unknown API paths', async () => {

@@ -32,36 +32,93 @@ This extends PR #8's *offline exact graph recognizer*, not replaces it.
 
 ## Operational safeguards
 
-- The endpoint accepts a bounded JSON body and a restricted SMILES character
-  alphabet, checks Origin, never accepts caller-supplied URLs and has request
-  timeouts / bounded upstream response sizes.
-- A **single global Durable Object** enforces at most two lookups per second;
-  each lookup uses at most two PubChem REST requests (4 requests/s). The
-  gateway **fails closed** if that quota binding is unavailable.
-- Positive, negative and ambiguous results have separate bounded cache TTLs.
-  Real PubChem outages, 429 responses and invalid payloads are never cached
-  as a negative structural result.
-- Only the chemical string is submitted. The gateway sends no cookies,
-  API keys, user identifiers, personal data or application state upstream.
-- A declined/failed lookup does not disable the editor. Edits made while a
-  query is running invalidate its result and abort any in-flight HTTP request.
-- Deploying requires Wrangler static assets plus the `PUBCHEM_QUOTA`
-  Durable Object binding/migration defined in `wrangler.toml`. This is an
-  infrastructure change, **not** just a Vite static upload.
+- A fixed same-origin gateway accepts only bounded JSON with SMILES (never an
+  arbitrary URL). It validates Origin, enforces deadlines, and reads at most
+  32 KiB from each PubChem response.
+- A single, independently deployed, private Durable Object enforces a **global
+  rolling limit of four actual PubChem HTTP requests per second**, including
+  the follow-up CID properties request. It persists permits using SQLite
+  storage and survives process restarts.
+- Every upstream HTTP request requires a fresh permit. Quota denial returns
+  HTTP 429; missing/unavailable quota returns 503. Neither gets cached or
+  converted to a false 'invalid molecule' conclusion.
+- Successful identities, explicit misses and ambiguous outcomes use separate
+  cache lifetimes. Real upstream errors are never cached as misses.
+- Only the chemical structure string is sent upstream. No browser cookies,
+  credentials, app state or personal data is attached to that request.
+- Network failures never stop normal game editing. Edits invalidate any
+  in-flight response, so obsolete results cannot overwrite the next structure.
+
+## Cloudflare deployment and check failure (2026-10-22)
+
+The original pull request failed its *Cloudflare Workers Builds* check, although
+unit, type, build and targeted browser tests passed. The non-production
+Cloudflare trigger executes `npm run build` and `wrangler versions upload`.
+The old application config incorrectly owned a **new** Durable Object migration
+and called itself `bondlab` while the connected deployment is named
+`bond-lab`. Cloudflare refuses to apply object migrations during versions
+upload and warned about the Worker-name mismatch.
+
+The migration is now isolated from the application:
+
+- `wrangler.toml` is the preview/branch-build config. It uses the correct
+  `bond-lab` name and carries **no Durable Object binding or migration**.
+  A preview may browse/edit molecules but its optional PubChem query returns
+  503 instead of bypassing global quota enforcement.
+- `worker/quota/wrangler.jsonc` declares the *separate* private Worker
+  `bond-lab-pubchem-quota`, which alone owns and provisions the persistent
+  `PubChemQuota` SQLite class. The policy and implementation live under
+  `worker/quota/`. No external route or workers.dev URL is exposed.
+- `wrangler.production.toml` references that external class by
+  `script_name` and performs **no lifecycle migration** in the main app.
+
+### Required one-time setup and release order
+
+The connected Cloudflare authorization currently cannot write Worker Scripts
+(the API returns 403 and requests Workers Scripts Write or Editor scope).
+The private quota Worker therefore has **not** been provisioned, and neither
+the production app nor its PubChem endpoint should be considered deployed.
+
+1. With a properly scoped Cloudflare credential, **deploy the private quota
+   Worker first**:
+
+   ```sh
+   npm ci
+   npx wrangler deploy --config worker/quota/wrangler.jsonc
+   ```
+
+   Confirm that `PubChemQuota` exists in that Worker and that neither a
+   public route nor a workers.dev subdomain is enabled.
+
+2. Verify the main application's **production** deployment configuration,
+   separate from non-production's `wrangler versions upload`:
+
+   ```sh
+   npx wrangler deploy --dry-run --config wrangler.production.toml
+   ```
+
+   After checking against live Cloudflare bindings, arrange for production
+   deployment to use `wrangler.production.toml`. The separate quota owner
+   should remain independently managed. Do **not** make every preview use
+   `wrangler deploy` or silently remove the fail-closed quota requirement.
+
+3. Verify real PubChem identity requests and the actual production route
+   after deployment. A green static check proves only the preview build is
+   compatible with `versions upload`, not that the private quota Worker exists.
 
 ## Testing
 
 ```sh
 npm ci
 npm run verify
+node --test worker/*.test.mjs
 npm run test:e2e
-npm run cf:dev    # local Worker with /api routing (if Wrangler is installed)
 ```
 
-Tests cover all hydroxide export charges/partitions, explicit hydrogen counts,
-ring closures, unsupported metal graphs, invalid inventories, origin validation,
-bounded/failed upstream requests, ambiguous responses and quota behavior.
-Browser coverage asserts that lookup remains opt-in and is not shown for water.
+Tests cover exact identity, ionic exports, origin filtering, ambiguous results,
+timeouts, rate-limit failures, cache-hit behavior, rolling-window persistence,
+restarts, Cloudflare preview/production config separation and browser opt-in.
+The production path intentionally stays blocked until provisioning is complete.
 
 Neither RDKit sanitization nor PubChem identity search is a thermodynamic
 stability estimator. We intentionally do not classify a failed lookup as

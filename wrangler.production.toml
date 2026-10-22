@@ -1,0 +1,17 @@
+name = "bond-lab"
+compatibility_date = "2026-10-22"
+workers_dev = false
+main = "./worker/index.mjs"
+
+[assets]
+directory = "./dist"
+not_found_handling = "single-page-application"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Separate state owner. Deploy worker/quota/wrangler.jsonc first.
+# No class lifecycle change occurs in this application Worker.
+[[durable_objects.bindings]]
+name = "PUBCHEM_QUOTA"
+class_name = "PubChemQuota"
+script_name = "bond-lab-pubchem-quota"

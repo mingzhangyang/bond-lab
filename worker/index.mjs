@@ -43,32 +43,28 @@ async function responseJson(response) {
   return JSON.parse(await limitedText(response.body, MAX_UPSTREAM));
 }
 
-async function upstream(url, init, fetcher) {
-  const abort = new AbortController();
-  const timer = setTimeout(() => abort.abort(), 8000);
-  try {
-    return await fetcher(url, { ...init, signal: abort.signal, redirect: 'error' });
-  } finally {
-    clearTimeout(timer);
+class QuotaError extends Error {
+  constructor(rateLimited) {
+    super(rateLimited ? 'rate_limited' : 'quota_unavailable');
+    this.rateLimited = rateLimited;
   }
 }
 
-export class PubChemQuota {
-  constructor() {
-    this.second = -1;
-    this.count = 0;
-  }
-
-  async fetch() {
-    const second = Math.floor(Date.now() / 1000);
-    if (second !== this.second) {
-      this.second = second;
-      this.count = 0;
-    }
-    // Each successful identity search makes at most two upstream requests.
-    if (this.count >= 2) return new Response(null, { status: 429 });
-    this.count++;
-    return new Response(null, { status: 204 });
+async function upstream(url, init, fetcher, quota) {
+  // Charge every outgoing HTTP request, including the delayed property lookup.
+  // One permit per identity lookup would allow its second request to burst later.
+  const permit = await quota.fetch('https://quota.invalid/permit', { method: 'POST' });
+  if (!permit.ok) throw new QuotaError(permit.status === 429);
+  const abort = new AbortController();
+  const timer = setTimeout(() => abort.abort(), 8000);
+  try {
+    const response = await fetcher(url, { ...init, signal: abort.signal, redirect: 'error' });
+    // Keep the timeout alive while consuming the bounded response body as well.
+    const data = response.ok ? await responseJson(response) : null;
+    if (!response.ok) await response.body?.cancel();
+    return { ok: response.ok, status: response.status, data };
+  } finally {
+    clearTimeout(timer);
   }
 }
 
@@ -107,17 +103,10 @@ export async function handleIdentity(request, env, dependencies = {}) {
   // A single named DO enforces an account-wide budget, not a per-isolate guess.
   // If it is unavailable, fail closed rather than risking PubChem abuse.
   if (!env.PUBCHEM_QUOTA) return json({ status: 'unavailable' }, 503);
-  const stub = env.PUBCHEM_QUOTA.get(env.PUBCHEM_QUOTA.idFromName('global'));
-  let permit;
-  try {
-    permit = await stub.fetch('https://quota.invalid/permit');
-  } catch {
-    return json({ status: 'unavailable' }, 503);
-  }
-  if (!permit.ok) return json({ status: 'unavailable', reason: 'rate_limited' }, 429);
 
   const fetcher = dependencies.fetcher ?? fetch;
   try {
+    const quota = env.PUBCHEM_QUOTA.get(env.PUBCHEM_QUOTA.idFromName('global'));
     const identityUrl = `${PUBCHEM}/compound/fastidentity/smiles/cids/JSON?identity_type=same_stereo_isotope&MaxRecords=3`;
     const response = await upstream(identityUrl, {
       method: 'POST',
@@ -126,13 +115,13 @@ export async function handleIdentity(request, env, dependencies = {}) {
         Accept: 'application/json',
       },
       body: new URLSearchParams({ smiles }).toString(),
-    }, fetcher);
+    }, fetcher, quota);
     let output;
     if (response.status === 404) {
       output = json({ status: 'not_found' }, 200, 1800);
     } else {
       if (!response.ok) return json({ status: 'unavailable' }, 503);
-      const identity = await responseJson(response);
+      const identity = response.data;
       const cids = identity?.IdentifierList?.CID;
       if (!Array.isArray(cids)) return json({ status: 'unavailable' }, 503);
       if (cids.length === 0) output = json({ status: 'not_found' }, 200, 1800);
@@ -141,9 +130,9 @@ export async function handleIdentity(request, env, dependencies = {}) {
         const cid = cids[0];
         if (!Number.isSafeInteger(cid) || cid <= 0) return json({ status: 'unavailable' }, 503);
         const propertyUrl = `${PUBCHEM}/compound/cid/${cid}/property/MolecularFormula,IUPACName/JSON`;
-        const details = await upstream(propertyUrl, { headers: { Accept: 'application/json' } }, fetcher);
+        const details = await upstream(propertyUrl, { headers: { Accept: 'application/json' } }, fetcher, quota);
         if (!details.ok) return json({ status: 'unavailable' }, 503);
-        const property = (await responseJson(details))?.PropertyTable?.Properties?.[0];
+        const property = details.data?.PropertyTable?.Properties?.[0];
         if (typeof property?.IUPACName !== 'string' || typeof property?.MolecularFormula !== 'string') {
           return json({ status: 'unavailable' }, 503);
         }
@@ -158,8 +147,10 @@ export async function handleIdentity(request, env, dependencies = {}) {
       await cache.put(cacheKey, output.clone()).catch(() => {});
     }
     return output;
-  } catch {
-    return json({ status: 'unavailable' }, 503);
+  } catch (error) {
+    return error instanceof QuotaError && error.rateLimited
+      ? json({ status: 'unavailable', reason: 'rate_limited' }, 429)
+      : json({ status: 'unavailable' }, 503);
   }
 }
 
