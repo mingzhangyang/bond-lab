@@ -138,7 +138,7 @@ test('Safari multi-touch touchstart fallback cancels, but a single touch still c
     onFinish: (completed) => finishes.push(completed),
   });
   target.dispatchEvent(Object.assign(new Event('touchstart'), { touches: [{}] }));
-  assert.deepEqual(finishes, []);
+  assert.equal(finishes.length, 0);
   target.dispatchEvent(Object.assign(new Event('touchstart'), { touches: [{}, {}] }));
   target.dispatchEvent(pointer('pointerup', 1));
   assert.deepEqual(finishes, [false]);

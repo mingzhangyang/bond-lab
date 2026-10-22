@@ -348,7 +348,7 @@ export function normalizeBondChemistry(
   };
 }
 
-function getBondOrderSum(atomId: string, bonds: BondingBond[]): number {
+function getBondOrderSum(atomId: string, bonds: readonly BondingBond[]): number {
   return bonds.reduce((sum, bond) => {
     if (bond.source === atomId || bond.target === atomId) {
       return sum + bond.order;
@@ -357,15 +357,15 @@ function getBondOrderSum(atomId: string, bonds: BondingBond[]): number {
   }, 0);
 }
 
-function getAtomById(atomId: string, atoms: BondingAtom[]): BondingAtom | undefined {
+function getAtomById(atomId: string, atoms: readonly BondingAtom[]): BondingAtom | undefined {
   return atoms.find((atom) => atom.id === atomId);
 }
 
 /** Only small, isolated connected components may use resonance exceptions. */
 function getResonanceProfile(
   atomId: string,
-  atoms: BondingAtom[],
-  bonds: BondingBond[],
+  atoms: readonly BondingAtom[],
+  bonds: readonly BondingBond[],
 ): { limit: number; target: number } | null {
   const atom = getAtomById(atomId, atoms);
   if (!atom || (atom.element !== 'O' && atom.element !== 'C')) return null;
@@ -409,17 +409,17 @@ function getResonanceProfile(
   return null;
 }
 
-export function getAtomBondLimit(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
+export function getAtomBondLimit(atomId: string, atoms: readonly BondingAtom[], bonds: readonly BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
   return getResonanceProfile(atomId, atoms, bonds)?.limit ?? ELEMENTS[atom.element].maxBonds;
 }
 
-export function isAtomBondingValid(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): boolean {
+export function isAtomBondingValid(atomId: string, atoms: readonly BondingAtom[], bonds: readonly BondingBond[]): boolean {
   return getBondOrderSum(atomId, bonds) <= getAtomBondLimit(atomId, atoms, bonds);
 }
 
-export function getAtomBondTarget(atomId: string, atoms: BondingAtom[], bonds: BondingBond[]): number {
+export function getAtomBondTarget(atomId: string, atoms: readonly BondingAtom[], bonds: readonly BondingBond[]): number {
   const atom = getAtomById(atomId, atoms);
   if (!atom) return 0;
   return getResonanceProfile(atomId, atoms, bonds)?.target ?? ELEMENTS[atom.element].maxBonds;

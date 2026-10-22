@@ -102,7 +102,7 @@ test('a second Shift+touch rotation cancels the first bond pointer session', asy
       type: 'touchMove', touchPoints: [movedA, movedB], modifiers: shift,
     });
     const secondAfter = await position(ids.secondOffAxisAtom);
-    expect(Math.hypot(...secondAfter.map((value, i) => value - secondBefore[i]))).toBeGreaterThan(0.05);
+    expect(Math.hypot(...secondAfter.map((value: number, i: number) => value - secondBefore[i]))).toBeGreaterThan(0.05);
 
     // Releasing B must clear the owner, without resurrecting the stale A session.
     await cdp.send('Input.dispatchTouchEvent', {

@@ -60,7 +60,7 @@ export function prepareMoleculeGraph(
       || indices.has(atom.id) || !SUPPORTED_ELEMENTS.has(atom.element)) return null;
     indices.set(atom.id, elements.length);
     elements.push(atom.element);
-    elementCounts[atom.element]++;
+    elementCounts[atom.element as ElementType]++;
   }
 
   const neighbors = elements.map(() => new Map<number, number>());
