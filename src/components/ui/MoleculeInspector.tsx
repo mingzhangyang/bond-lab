@@ -8,6 +8,7 @@ import {
 } from 'lucide-react';
 import type { MoleculeInfo } from '../../moleculeInfo';
 import { getMessages } from '../../i18n';
+import { ExternalIdentityCheck } from './ExternalIdentityCheck';
 
 interface MoleculeMatch {
   name: string;
@@ -104,6 +105,8 @@ export function MoleculeInspector({
           </div>
         )}
 
+        {molecule.name === 'Unknown Molecule' && <ExternalIdentityCheck isDark={isDark} />}
+
         <div className="mt-auto pt-6 border-t border-white/10 flex flex-col gap-3">
           <div className={`info-display text-[10px] uppercase tracking-widest font-bold flex items-center gap-1.5 ${headingTextClass}`}>
             <Zap size={14} className="opacity-70" />
@@ -149,7 +152,7 @@ export function MoleculeInspector({
 
   return (
     <div
-      className={`lab-reveal fixed inset-x-3 z-[58] rounded-3xl px-6 py-4 pointer-events-auto transform transition-all ${panelClass}`}
+      className={`lab-reveal fixed inset-x-3 z-[58] rounded-3xl px-6 py-4 max-h-[calc(100dvh-12rem)] overflow-y-auto pointer-events-auto transform transition-all ${panelClass}`}
       style={{ animationDelay: '130ms', bottom: 'calc(5.55rem + env(safe-area-inset-bottom))' }}
       data-testid="mobile-molecule-sheet"
     >
@@ -180,6 +183,10 @@ export function MoleculeInspector({
               <p className={`text-xs leading-relaxed ${secondaryTextClass}`}>{moleculeInfo.fact}</p>
             </div>
           </div>
+        )}
+
+        {molecule.name === 'Unknown Molecule' && (
+          <div className="mt-3 text-left"><ExternalIdentityCheck isDark={isDark} /></div>
         )}
 
         <div className="mt-4 pt-3 border-t border-white/5 flex flex-col items-center">
