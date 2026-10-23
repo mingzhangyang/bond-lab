@@ -167,3 +167,89 @@ test('RDKit sanitization permits a user-initiated exact-identity response withou
   });
   expect(name).toBe('Unknown Molecule');
 });
+
+for (const remoteStatus of ['matched', 'unavailable'] as const) {
+  test(`challenge lookup is opt-in and never judges the challenge: ${remoteStatus}`, async ({ page }) => {
+    test.setTimeout(90_000);
+    const requests: string[] = [];
+    let release!: () => void;
+    const pendingResponse = new Promise<void>((resolve) => { release = resolve; });
+    await page.route('**/api/pubchem/identity', async (route) => {
+      requests.push(route.request().postDataJSON().smiles);
+      await pendingResponse;
+      await route.fulfill({
+        status: remoteStatus === 'matched' ? 200 : 503,
+        contentType: 'application/json',
+        body: JSON.stringify(remoteStatus === 'matched'
+          ? { status: 'matched', cid: 962, iupacName: 'Water', molecularFormula: 'H2O' }
+          : { status: 'unavailable' }),
+      });
+    });
+    const read = () => page.evaluate(async () => {
+      const path = '/src/identifier.ts';
+      const { identifyMolecule } = await import(/* @vite-ignore */ path);
+      const state = window.__bondlabStore!.getState();
+      return {
+        active: state.challengeActive,
+        target: state.challengeTarget,
+        status: state.challengeStatus,
+        left: state.challengeTimeLeft,
+        molecule: identifyMolecule(state.atoms, state.bonds)?.name,
+        atoms: state.atoms,
+        bonds: state.bonds,
+      };
+    });
+    try {
+      await openLab(page);
+      await page.evaluate(() => {
+        const state = window.__bondlabStore!.getState();
+        state.setLanguage('en');
+        state.startChallenge({ name: 'Water', formula: 'H2O' }, 120);
+      });
+      await expect.poll(async () => (await read()).left, { timeout: 10_000 }).toBeLessThan(120);
+      expect(requests).toHaveLength(0);
+      await page.evaluate(() => {
+        const state = window.__bondlabStore!.getState();
+        const ids = (['H', 'O', 'O', 'O', 'H'] as const).map((element) => state.addAtom(element));
+        for (let i = 0; i < ids.length - 1; i++) state.addBond(ids[i], ids[i + 1]);
+      });
+      const button = page.getByTestId('external-identity').getByRole('button', { name: /PubChem/ });
+      await expect(button).toBeVisible();
+      await expect(button).toBeEnabled();
+      const before = await read();
+      expect(before).toMatchObject({ active: true, target: { name: 'Water', formula: 'H2O' }, status: 'playing', molecule: 'Unknown Molecule' });
+      expect(requests).toHaveLength(0);
+      await button.click();
+      await expect.poll(() => requests.length, { timeout: 40_000 }).toBe(1);
+      const whilePending = await read();
+      await expect.poll(async () => (await read()).left, { timeout: 10_000 }).toBeLessThan(whilePending.left);
+      release();
+      const announcement = page.getByTestId('external-identity-announcement');
+      if (remoteStatus === 'matched') await expect(page.getByTestId('pubchem-match')).toContainText('Water');
+      else await expect(announcement).toContainText('PubChem unavailable');
+      await expect(button).toBeEnabled();
+      const after = await read();
+      expect(after).toMatchObject({
+        active: true, target: before.target, status: 'playing',
+        molecule: before.molecule, atoms: before.atoms, bonds: before.bonds,
+      });
+      expect(after.left).toBeLessThan(whilePending.left);
+      expect(requests).toHaveLength(1);
+      // Only the locally assembled target, not the external identity, can win.
+      await page.evaluate(() => {
+        const state = window.__bondlabStore!.getState();
+        state.clear();
+        const o = state.addAtom('O');
+        const h1 = state.addAtom('H');
+        const h2 = state.addAtom('H');
+        state.addBond(o, h1);
+        state.addBond(o, h2);
+      });
+      await expect.poll(async () => (await read()).status).toBe('won');
+      expect((await read()).molecule).toBe('Water');
+      expect(requests).toHaveLength(1);
+    } finally {
+      release();
+    }
+  });
+}

@@ -8,7 +8,10 @@ This extends PR #8's *offline exact graph recognizer*, not replaces it.
   linked atom inventory before displaying a molecule or compound formula.
 - For an unrecognized, connected inventory the player can explicitly press
   **Check structure / PubChem**; no PubChem request happens on initial load, on
-  each bond mutation, in challenge mode, or for built-in recognized molecules.
+  each bond mutation, or for built-in recognized molecules.
+- During desktop challenges, players may explicitly request PubChem information
+  for unknown connected structures. External results remain supplemental: they
+  never alter challenge targets, countdowns, local judging, or win/loss state.
 - `chemical/structure.ts` exports explicit bracketed atoms with **no inferred H**.
   Rings are preserved; the export is bounded by size and bond count. Optional
   `formalCharge`/`isotope` metadata is distinct from editor element identity.
