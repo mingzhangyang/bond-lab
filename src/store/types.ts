@@ -5,6 +5,8 @@ import type { ElementType } from '../chemistry.ts';
 export interface Atom {
   id: string;
   element: ElementType;
+  formalCharge?: number;
+  isotope?: number;
 }
 
 export interface Bond {
@@ -12,6 +14,7 @@ export interface Bond {
   source: string;
   target: string;
   order: number;
+  kind?: 'covalent' | 'ionic-association';
   bondLength?: number;
   bondEnergy?: number;
   rotatable?: boolean;

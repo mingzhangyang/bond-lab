@@ -1,0 +1,28 @@
+name: Chemistry integration checks
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 18
+    steps:
+      - uses: actions/checkout@v4
+      - name: Node 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Verify unit tests, types and production build
+        run: npm run verify
+      - name: Install browser
+        run: npx playwright install --with-deps chromium
+      - name: Run molecular recognition and PubChem browser regressions
+        run: npx playwright test e2e/pubchem.spec.ts e2e/molecule-recognition.spec.ts --retries=0

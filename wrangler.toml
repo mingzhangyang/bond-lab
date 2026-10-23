@@ -1,7 +1,16 @@
-name = "bondlab"
-compatibility_date = "2026-03-26"
+name = "bond-lab"
+compatibility_date = "2026-10-22"
 workers_dev = false
+main = "./worker/index.mjs"
 
 [assets]
 directory = "./dist"
 not_found_handling = "single-page-application"
+binding = "ASSETS"
+run_worker_first = ["/api/*"]
+
+# Cloudflare's non-production Build trigger uses `wrangler versions upload`.
+# Preview uploads must not depend on a new Durable Object namespace or cause
+# its lifecycle migration. The API intentionally fails closed (503) here.
+# `wrangler.production.toml` enables the external quota binding after the
+# separately managed private quota Worker has been provisioned.
